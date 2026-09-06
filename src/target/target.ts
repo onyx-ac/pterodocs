@@ -1,0 +1,146 @@
+/**
+ * What a publishing target has to be able to do.
+ *
+ * WordPress is the only implementation today, but keeping the contract
+ * explicit is what stops target vocabulary leaking into the renderer and the
+ * reconciler.
+ */
+
+/** What a target can and cannot do. */
+export interface TargetCapabilities {
+  /** Page ids must exist before bodies can be rendered, as WordPress's page list needs. */
+  needsIdsBeforeRender: boolean;
+  /** Files can be uploaded and referenced. */
+  supportsMedia: boolean;
+  /** Pages with no source can be removed. */
+  supportsPrune: boolean;
+  /** Pages nest; a flat target gets its whole path as one name. */
+  supportsHierarchy: boolean;
+  /** There is a separate summary field. */
+  supportsExcerpt: boolean;
+  /** Arbitrary key/value metadata can be written. */
+  supportsMeta: boolean;
+  /** A page can be given a template. */
+  supportsTemplates: boolean;
+  /** A page can be created unpublished. */
+  supportsDrafts: boolean;
+}
+
+/** A page as it exists on the target. */
+export interface RemotePage {
+  id: number;
+  parent: number;
+  slug: string;
+  status: string;
+  link: string;
+  title: string;
+  content?: string;
+  excerpt?: string;
+  menuOrder: number;
+  template: string;
+  meta?: Record<string, unknown> | undefined;
+}
+
+/** A page as pterodoc would publish it. */
+export interface RenderedPage {
+  /** Path within the published tree. */
+  path: string;
+  /** Slug of the last path segment. */
+  slug: string;
+  /** Page title. */
+  title: string;
+  /** The composed body. */
+  content: string;
+  /** Short summary. */
+  excerpt: string;
+  /** Position among siblings. */
+  menuOrder: number;
+  /** Metadata to write, when the target supports it. */
+  meta: Record<string, string>;
+  /** Source file, for messages. */
+  file?: string | undefined;
+  /** Version this page belongs to. */
+  versionName?: string | undefined;
+}
+
+/** A file to upload. */
+export interface MediaUpload {
+  bytes: Uint8Array;
+  filename: string;
+  hash: string;
+  mime: string;
+  alt: string;
+  title: string;
+}
+
+/** An uploaded file. */
+export interface MediaRef {
+  id: number;
+  hash: string;
+  url: string;
+  filename: string;
+  mime: string;
+}
+
+/** Asking the target to make sure a page exists. */
+export interface EnsureRequest {
+  path: string;
+  slug: string;
+  parentId: number | null;
+  title: string;
+  menuOrder: number;
+  isRoot: boolean;
+}
+
+/** What came of that. */
+export interface EnsureResult {
+  id: number | null;
+  created: boolean;
+  warnings: string[];
+}
+
+/** An open connection to a target. */
+export interface TargetSession {
+  /** Every page under the target's namespace, fetched once. */
+  loadIndex(): Promise<RemotePage[]>;
+  /**
+   * Make sure everything above the documentation root exists.
+   *
+   * The target owns this because only it knows what a path is made of. Pages
+   * it has to create are reported so the plan can show them; pages that were
+   * already there are never touched.
+   */
+  ensureRootParent(): Promise<{ id: number | null; created: { path: string; id: number | null }[] }>;
+  /** Make sure a page exists at this position, and give back its id. */
+  ensurePage(request: EnsureRequest): Promise<EnsureResult>;
+  /** Fetch a page with the fields needed to compare it. */
+  fetchPage(id: number): Promise<RemotePage>;
+  /** Which fields of an existing page differ from the rendered one. */
+  diffPage(remote: RemotePage, rendered: RenderedPage, parentId: number): string[];
+  /** Write a rendered page, returning warnings for anything the target refused. */
+  writePage(id: number, page: RenderedPage, parentId: number): Promise<{ warnings: string[] }>;
+  /** Pages below a root that no rendered page accounts for, deepest first. */
+  computePrune(index: RemotePage[], rootId: number, keepIds: Set<number>): RemotePage[];
+  /** Remove a page. Never a permanent delete. */
+  removePage(page: RemotePage): Promise<void>;
+  /** Files already uploaded, by content hash. */
+  loadMediaIndex(): Promise<Map<string, MediaRef>>;
+  /** Upload one file. */
+  uploadMedia(upload: MediaUpload): Promise<MediaRef>;
+  /** How many requests this session has made. */
+  requestCount(): number;
+}
+
+/** A place documentation can be published. */
+export interface Target {
+  /** Name used in messages and in the plan. */
+  readonly name: string;
+  /** What this target can do. */
+  readonly capabilities: TargetCapabilities;
+  /** Absolute site path for a tree path: the target owns URL policy. */
+  hrefFor(treePath: string, context: { versionName: string; locale: string }): string;
+  /** The path pages are published under, for messages. */
+  readonly rootPath: string;
+  /** Open a session. */
+  open(context: { locale: string; dryRun: boolean }): Promise<TargetSession>;
+}

@@ -58,6 +58,8 @@ export interface PageTree {
   byPath: Map<string, PageNode>;
   /** Pages by the permalink Docusaurus gave their document. */
   byPermalink: Map<string, PageNode>;
+  /** Pages by their source file, relative to the site directory. */
+  bySourcePath: Map<string, PageNode>;
 }
 
 /** Everything needed to build one version's tree. */
@@ -308,6 +310,7 @@ export function buildPageTree(input: BuildPageTreeInput): PageTree {
       // A directory page and a document at the same path: the document wins,
       // which is how an `index.md` or a front-matter slug takes over a folder.
       existing.doc = doc;
+      existing.description = doc.description;
       if (!claimed.has(doc.treePath)) existing.title = doc.title;
       continue;
     }
@@ -321,6 +324,7 @@ export function buildPageTree(input: BuildPageTreeInput): PageTree {
       // title is also its navigation label, and the sidebar label is what a
       // reader saw in the navigation on Docusaurus.
       title: claimed.get(doc.treePath) ?? doc.title,
+      description: doc.description,
       doc,
       parent,
       children: [],
@@ -388,18 +392,26 @@ export function buildPageTree(input: BuildPageTreeInput): PageTree {
   };
   finish(root);
 
-  // Docusaurus already worked out the pagination; reuse it rather than
-  // recomputing an order that could disagree with the site.
+  // Pagination walks the pages that exist here.
+  //
+  // Docusaurus's own previous/next skip a category that has no document of its
+  // own, because on that site such a category is not a page. Here it is one:
+  // it has a URL a reader can land on, so sending them past it would be wrong.
+  chain.forEach((node, index) => {
+    const previous = chain[index - 1];
+    const next = chain[index + 1];
+    if (previous) node.previousPath = previous.path;
+    if (next) node.nextPath = next.path;
+  });
+
   const byPermalink = new Map<string, PageNode>();
+  const bySourcePath = new Map<string, PageNode>();
   for (const node of byPath.values()) {
-    if (node.doc) byPermalink.set(node.doc.permalink, node);
-  }
-  for (const node of byPath.values()) {
-    const previous = node.doc?.previous?.permalink;
-    const next = node.doc?.next?.permalink;
-    if (previous && byPermalink.has(previous)) node.previousPath = byPermalink.get(previous)!.path;
-    if (next && byPermalink.has(next)) node.nextPath = byPermalink.get(next)!.path;
+    if (!node.doc) continue;
+    byPermalink.set(node.doc.permalink, node);
+    byPermalink.set(node.doc.permalink.replace(/\/$/, ''), node);
+    bySourcePath.set(node.doc.sourceRelativePath, node);
   }
 
-  return { root, chain, byPath, byPermalink };
+  return { root, chain, byPath, byPermalink, bySourcePath };
 }

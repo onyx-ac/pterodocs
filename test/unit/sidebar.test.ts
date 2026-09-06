@@ -55,11 +55,30 @@ test('a category names its directory, and its own page supplies the body', async
   assert.equal(beta.doc?.id, 'beta/index');
 });
 
-test('pagination comes from Docusaurus rather than being recomputed', async () => {
+test('pagination walks the pages that exist, including section pages', async () => {
   const { tree } = build(await version('mini'));
+
+  // Docusaurus would send the reader from the root straight to alpha/first,
+  // because a category with no document of its own is not a page there. Here
+  // it is a page with a URL of its own, so the reader passes through it.
   const first = tree.byPath.get('alpha/first')!;
-  assert.equal(first.previousPath, '');
+  assert.equal(first.previousPath, 'alpha');
   assert.equal(first.nextPath, 'alpha/second');
+
+  const alpha = tree.byPath.get('alpha')!;
+  assert.equal(alpha.previousPath, undefined, 'the first page has nothing before it');
+  assert.equal(tree.byPath.get('beta/child')!.nextPath, undefined, 'nor the last anything after');
+});
+
+test('a page is findable by the file it came from, for relative links', async () => {
+  const { tree } = build(await version('mini'));
+  assert.equal(tree.bySourcePath.get('docs/beta/index.md')?.path, 'beta');
+  assert.equal(tree.bySourcePath.get('docs/alpha/first.md')?.path, 'alpha/first');
+});
+
+test('a page carries its description, so a section can summarise its children', async () => {
+  const { tree } = build(await version('mini'));
+  assert.equal(tree.byPath.get('alpha/first')!.description, 'The first page.');
 });
 
 test('a cross-reference to another sidebar publishes no page', async () => {

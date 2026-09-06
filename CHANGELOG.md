@@ -18,6 +18,13 @@
 - Model capture, so a site can be rendered without Docusaurus and a bug can be reported
   reproducibly.
 
+- The WordPress target: page creation and updates identified by parent and slug, so a
+  re-run rewrites only what differs; media upload keyed by content hash; pruning that
+  trashes rather than deletes.
+- The reconciler, the configuration file and the command line (`sync`, `render`,
+  `doctor`, `capture`, `init`), with rendered pages, a manifest and a plan written for
+  every run.
+
 ### Fixed
 Carried over from the original script, each with a test:
 - Reference-style links (`[text][ref]`) resolve instead of printing as literal text, and
