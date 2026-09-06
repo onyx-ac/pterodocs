@@ -1,0 +1,9 @@
+node_modules/
+lib/
+*.tsbuildinfo
+.pterodoc/
+.env
+
+# The fixture site is a real Docusaurus site; its build artefacts are not source.
+test/fixtures/site/.docusaurus/
+test/fixtures/site/build/
