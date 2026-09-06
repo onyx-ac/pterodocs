@@ -30,6 +30,13 @@
   block equivalents, and plain HTML is carried through. A component or an expression
   with no equivalent is reported with its file, line and column rather than dropped.
 
+- Images: references are found wherever they sit, resolved against the document, the
+  localised copy, the static directories or `@site/`, uploaded to the media library and
+  rewritten. A file is identified by the hash of its contents, carried in its media slug,
+  so a fresh checkout never uploads anything twice.
+- Versions and locales, each published into its own subtree with its own navigation.
+- A Docusaurus plugin, for a site that would rather publish from `postBuild`.
+
 ### Fixed
 Carried over from the original script, each with a test:
 - Reference-style links (`[text][ref]`) resolve instead of printing as literal text, and
