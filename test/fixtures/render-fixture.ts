@@ -14,14 +14,15 @@ import { createTheme } from '../../src/render/theme';
 const here = path.dirname(fileURLToPath(import.meta.url));
 
 /** Fixtures that have a golden file, and the options they render with. */
-export const FIXTURES = ['sample', 'fixes'] as const;
+export const FIXTURES = ['sample', 'fixes', 'sample.mdx'] as const;
 
 /** Render one fixture the way the golden was produced. */
 export function renderFixture(name: (typeof FIXTURES)[number]): RenderedDoc {
-  const markdown = fs.readFileSync(path.join(here, `${name}.md`), 'utf8');
+  const file = name.endsWith('.mdx') ? name : `${name}.md`;
+  const markdown = fs.readFileSync(path.join(here, file), 'utf8');
   return renderDoc({
     markdown,
-    file: `${name}.md`,
+    file,
     permalink: `/docstack/docs/${name}`,
     // The DocStack prefix, so the output can be compared with the tool this
     // package was extracted from.
@@ -33,5 +34,5 @@ export function renderFixture(name: (typeof FIXTURES)[number]): RenderedDoc {
 
 /** Path of a fixture's golden file. */
 export function goldenPath(name: (typeof FIXTURES)[number]): string {
-  return path.join(here, `${name}.expected.html`);
+  return path.join(here, `${name.replace(/\.mdx$/, '.mdx')}.expected.html`);
 }

@@ -25,6 +25,7 @@ import { escapeShortcodesInHast, hastToHtml, renderInline } from './inline';
 import { headingIdFor, type Slugger } from './slug';
 import { renderCode } from './code';
 import { renderAdmonition, DEFAULT_ADMONITION_KEYWORDS } from './admonitions';
+import { renderJsxBlock, type JsxElement } from './components';
 import type { Theme } from './theme';
 import type { IssueCollector } from '../util/issues';
 
@@ -46,6 +47,8 @@ export interface RenderContext {
   source: string;
   /** Media already uploaded, keyed by the URL as written in the source. */
   media?: Map<string, { id: number; url: string }> | undefined;
+  /** What to do about JSX with no translation. */
+  onUnknownJsx?: 'report' | 'placeholder' | 'error';
 }
 
 /** A context with the defaults a caller usually wants. */
@@ -225,6 +228,29 @@ export function renderBlock(node: RootContent, ctx: RenderContext): string {
         line: node.position?.start.line,
       });
       return joinBlocks((directive.children as RootContent[]).map((child) => renderBlock(child, ctx)));
+    }
+
+    case 'mdxJsxFlowElement': {
+      const element = node as unknown as JsxElement;
+      const rendered = renderJsxBlock(element, {
+        theme: ctx.theme,
+        issues: ctx.issues,
+        source: ctx.source,
+        file: ctx.file,
+        renderChild: (child) => renderBlock(child, ctx),
+      });
+      if (rendered !== undefined) return rendered;
+      ctx.issues.add({
+        code: 'mdx-unknown-component',
+        severity: ctx.onUnknownJsx === 'error' ? 'error' : 'warning',
+        message: `<${element.name ?? 'fragment'}> is a React component, which a page cannot run, so it was left out.`,
+        file: ctx.file,
+        line: node.position?.start.line,
+        column: node.position?.start.column,
+      });
+      return ctx.onUnknownJsx === 'placeholder'
+        ? serializeBlock('html', undefined, `<!-- pterodoc: <${element.name ?? 'fragment'}> omitted -->`)
+        : '';
     }
 
     case 'html': {

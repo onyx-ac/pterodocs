@@ -212,3 +212,86 @@ test('an empty paragraph produces no block', () => {
   });
   assert.equal(renderBlock({ type: 'paragraph', children: [] } as never, ctx), '');
 });
+
+test('MDX imports and comments leave nothing behind', () => {
+  const { body, issues } = renderDoc({
+    markdown: "import X from './x';\n\n{/* a comment */}\n\nJust prose.\n",
+    file: 't.mdx',
+    permalink: '/docs/t',
+    theme: createTheme({ classPrefix: 'x' }),
+  });
+  assert.equal(body, '<!-- wp:paragraph -->\n<p>Just prose.</p>\n<!-- /wp:paragraph -->');
+  assert.deepEqual(issues.issues, []);
+});
+
+test('tabs become collapsible sections, because a page cannot run script', () => {
+  const { body } = renderDoc({
+    markdown:
+      '<Tabs>\n  <TabItem value="a" label="First">\n\nOne.\n\n  </TabItem>\n  <TabItem value="b" label="Second">\n\nTwo.\n\n  </TabItem>\n</Tabs>\n',
+    file: 't.mdx',
+    permalink: '/docs/t',
+    theme: createTheme({ classPrefix: 'x' }),
+  });
+  assert.ok(body.includes('x-tabs'), body);
+  assert.equal((body.match(/<!-- wp:details -->/g) ?? []).length, 2);
+  assert.ok(body.includes('<summary>First</summary>'), body);
+  assert.ok(body.includes('One.') && body.includes('Two.'), 'no tab content may be lost');
+});
+
+test('a code block component keeps its code', () => {
+  const { body } = renderDoc({
+    markdown: '<CodeBlock language="ts" title="a.ts">\nconst a = 1;\n</CodeBlock>\n',
+    file: 't.mdx',
+    permalink: '/docs/t',
+    theme: createTheme({ classPrefix: 'x' }),
+  });
+  assert.ok(body.includes('<code>const a = 1;</code>'), body);
+  assert.ok(body.includes('a.ts'), body);
+});
+
+test('a React component nobody can render is reported, not silently dropped', () => {
+  const { body, issues } = renderDoc({
+    markdown: '<MyChart data={points} />\n\nAfter.\n',
+    file: 't.mdx',
+    permalink: '/docs/t',
+    theme: createTheme({ classPrefix: 'x' }),
+  });
+  assert.ok(body.includes('After.'));
+  const issue = issues.issues.find((entry) => entry.code === 'mdx-unknown-component')!;
+  assert.equal(issue.severity, 'warning');
+  assert.equal(issue.file, 't.mdx');
+  assert.equal(issue.line, 1);
+});
+
+test('an unresolvable expression is reported with what it said', () => {
+  const { issues } = renderDoc({
+    markdown: 'Version {siteConfig.version} here.\n',
+    file: 't.mdx',
+    permalink: '/docs/t',
+    theme: createTheme({ classPrefix: 'x' }),
+  });
+  const issue = issues.issues.find((entry) => entry.code === 'mdx-expression')!;
+  assert.match(issue.message, /siteConfig\.version/);
+});
+
+test('plain HTML elements inside MDX are carried through as written', () => {
+  const { body, issues } = renderDoc({
+    markdown: 'Press <kbd>Esc</kbd> to stop.\n',
+    file: 't.mdx',
+    permalink: '/docs/t',
+    theme: createTheme({ classPrefix: 'x' }),
+  });
+  assert.ok(body.includes('<kbd>Esc</kbd>'), body);
+  assert.deepEqual(issues.issues, []);
+});
+
+test('an MDX file is only parsed as MDX', () => {
+  // The same source as markdown keeps the angle brackets as literal HTML.
+  const asMarkdown = renderDoc({
+    markdown: '<Tabs>\n\nOne.\n\n</Tabs>\n',
+    file: 't.md',
+    permalink: '/docs/t',
+    theme: createTheme({ classPrefix: 'x' }),
+  });
+  assert.ok(!asMarkdown.body.includes('x-tabs'), asMarkdown.body);
+});

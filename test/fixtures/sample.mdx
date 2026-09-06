@@ -1,0 +1,48 @@
+---
+title: "An MDX page"
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import Logo from './logo.png';
+
+# The title the theme prints
+
+A paragraph with an <kbd>Esc</kbd> key and {/* a comment that vanishes */} nothing else.
+
+<Tabs>
+  <TabItem value="npm" label="npm">
+
+```bash
+npm install thing
+```
+
+  </TabItem>
+  <TabItem value="yarn" label="Yarn">
+
+```bash
+yarn add thing
+```
+
+  </TabItem>
+</Tabs>
+
+<Details summary="Why it works this way">
+
+Because tabs need script, and a page does not have any.
+
+</Details>
+
+<Admonition type="tip" title="Worth knowing">
+
+Admonitions written as components work too.
+
+</Admonition>
+
+<CodeBlock language="ts" title="example.ts">
+const value = 1;
+</CodeBlock>
+
+The build is version {siteConfig.version}, which cannot be known here.
+
+<MyCustomChart data={points} />

@@ -25,6 +25,11 @@
   `doctor`, `capture`, `init`), with rendered pages, a manifest and a plan written for
   every run.
 
+- MDX: imports and comments are removed, `Tabs` and `TabItem` become collapsible
+  sections that need no script, `Details`, `CodeBlock` and `Admonition` become their
+  block equivalents, and plain HTML is carried through. A component or an expression
+  with no equivalent is reported with its file, line and column rather than dropped.
+
 ### Fixed
 Carried over from the original script, each with a test:
 - Reference-style links (`[text][ref]`) resolve instead of printing as literal text, and

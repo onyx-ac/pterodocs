@@ -8,6 +8,7 @@
 import matter from 'gray-matter';
 import { parseMarkdown, detectFormat, type MarkdownFormat } from './parse';
 import { resolveReferences } from './references';
+import { lowerMdx, type UnknownPolicy } from './mdx';
 import { rewriteLinks, type LinkResolver } from './links';
 import { createRenderContext, renderBody, type RenderContext } from './renderers';
 import { createSlugger } from './slug';
@@ -30,6 +31,11 @@ export { resolveReferences } from './references';
 export { rewriteLinks, toInternalPath, isAbsoluteUrl } from './links';
 export type { LinkResolver, ResolvedLink } from './links';
 export { DEFAULT_ADMONITION_KEYWORDS } from './admonitions';
+export { lowerMdx, isTranslatable, KNOWN_COMPONENTS } from './mdx';
+export type { UnknownPolicy } from './mdx';
+export { renderJsxBlock, attribute } from './components';
+export { collectImages, resolveImage } from './images';
+export type { ImageReference, ResolvedImage } from './images';
 
 /** What to render, and how. */
 export interface RenderDocInput {
@@ -53,6 +59,8 @@ export interface RenderDocInput {
   dedupeTitle?: boolean;
   /** Uploaded media, keyed by the URL as written in the source. */
   media?: Map<string, { id: number; url: string }>;
+  /** What to do about JSX with no translation. */
+  onUnknownJsx?: UnknownPolicy;
   /** Collector to record issues into; a fresh one is made when omitted. */
   issues?: IssueCollector;
 }
@@ -80,6 +88,15 @@ export function renderDoc(input: RenderDocInput): RenderedDoc {
   const format = input.format ?? (input.file ? detectFormat(input.file) : 'md');
   const root = parseMarkdown(source, format);
 
+  if (format === 'mdx') {
+    lowerMdx(root, {
+      source,
+      file: input.file,
+      issues,
+      onUnknown: input.onUnknownJsx ?? 'report',
+    });
+  }
+
   resolveReferences(root);
   const links = input.resolveLink
     ? rewriteLinks(root, input.permalink, input.resolveLink, issues)
@@ -94,6 +111,7 @@ export function renderDoc(input: RenderDocInput): RenderedDoc {
     file: input.file,
     source,
     media: input.media,
+    onUnknownJsx: input.onUnknownJsx ?? 'report',
   });
 
   const { body, firstParagraph } = renderBody(root, ctx, {

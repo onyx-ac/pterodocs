@@ -395,6 +395,7 @@ function renderPageFor(input: {
         admonitionKeywords: input.admonitionKeywords,
         maintainCase: model.maintainCase,
         dedupeTitle: config.dedupeTitle,
+        onUnknownJsx: config.mdxOnUnknown,
         media: input.media,
         issues,
         resolveLink: makeLinkResolver(doc, tree, config, model, input.href),
