@@ -1,0 +1,1651 @@
+{
+  "capture": 1,
+  "pterodoc": "0.1.0",
+  "capturedAt": "2026-09-06T11:27:26.493Z",
+  "model": {
+    "siteDir": "/site",
+    "url": "https://onyx-og.github.io",
+    "baseUrl": "/docstack/",
+    "locale": "en",
+    "defaultLocale": "en",
+    "locales": [
+      "en"
+    ],
+    "markdownFormat": "md",
+    "maintainCase": false,
+    "siteTitle": "DocStack",
+    "staticDirs": [
+      "/site/static"
+    ],
+    "docusaurusVersion": "3.10.2",
+    "instances": [
+      {
+        "id": "default",
+        "routeBasePath": "docs",
+        "contentDirName": "docs",
+        "admonitionKeywords": [
+          "secondary",
+          "info",
+          "success",
+          "danger",
+          "note",
+          "tip",
+          "warning",
+          "important",
+          "caution"
+        ],
+        "breadcrumbs": true,
+        "versions": [
+          {
+            "name": "current",
+            "label": "Next",
+            "isLast": true,
+            "pathPrefix": "/docstack/docs",
+            "contentPath": "/site/docs",
+            "contentPathLocalized": "/site/docs",
+            "banner": null,
+            "noIndex": false,
+            "sidebars": {
+              "docs": [
+                {
+                  "type": "doc",
+                  "id": "intro"
+                },
+                {
+                  "type": "category",
+                  "label": "Get started",
+                  "collapsed": false,
+                  "items": [
+                    {
+                      "type": "doc",
+                      "id": "get-started/installation"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "get-started/quickstart"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "get-started/examples"
+                    }
+                  ],
+                  "collapsible": true
+                },
+                {
+                  "type": "category",
+                  "label": "Guides",
+                  "collapsed": false,
+                  "items": [
+                    {
+                      "type": "doc",
+                      "id": "guides/model-your-data"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "guides/triggers"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "guides/jobs"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "guides/query-with-sql"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "guides/encrypt-fields"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "guides/transactions"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "guides/patches"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "guides/sync"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "guides/google-drive"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "guides/filtering"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "guides/react"
+                    }
+                  ],
+                  "collapsible": true
+                },
+                {
+                  "type": "category",
+                  "label": "Concepts",
+                  "items": [
+                    {
+                      "type": "doc",
+                      "id": "concepts/core-concepts"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "concepts/offline-first-and-sync"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "concepts/schema-engine"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "concepts/query-engine"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "concepts/crypto-engine"
+                    },
+                    {
+                      "type": "category",
+                      "label": "Access control",
+                      "link": {
+                        "type": "doc",
+                        "id": "concepts/access-control/index"
+                      },
+                      "items": [
+                        {
+                          "type": "doc",
+                          "id": "concepts/access-control/policy-model"
+                        },
+                        {
+                          "type": "doc",
+                          "id": "concepts/access-control/crypto-access"
+                        },
+                        {
+                          "type": "doc",
+                          "id": "concepts/access-control/architectures"
+                        },
+                        {
+                          "type": "doc",
+                          "id": "concepts/access-control/threat-model"
+                        },
+                        {
+                          "type": "doc",
+                          "id": "concepts/access-control/recipes"
+                        }
+                      ],
+                      "collapsed": true,
+                      "collapsible": true
+                    },
+                    {
+                      "type": "doc",
+                      "id": "concepts/transactions"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "concepts/patches"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "concepts/security"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "concepts/under-the-hood"
+                    }
+                  ],
+                  "collapsed": true,
+                  "collapsible": true
+                },
+                {
+                  "type": "category",
+                  "label": "Reference",
+                  "items": [
+                    {
+                      "type": "doc",
+                      "id": "reference/class-and-attribute-options"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "reference/trigger-and-job-models"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "reference/scheduler-options"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "reference/sync-options"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "reference/patch-format"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "reference/internal-documents"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "reference/sql-dialect"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "reference/server"
+                    },
+                    {
+                      "type": "category",
+                      "label": "API reference",
+                      "items": [
+                        {
+                          "type": "ref",
+                          "id": "api/client/index",
+                          "label": "@docstack/client",
+                          "translatable": true
+                        },
+                        {
+                          "type": "ref",
+                          "id": "api/react/index",
+                          "label": "@docstack/react",
+                          "translatable": true
+                        },
+                        {
+                          "type": "ref",
+                          "id": "api/server/index",
+                          "label": "@docstack/server (preview)",
+                          "translatable": true
+                        }
+                      ],
+                      "collapsed": true,
+                      "collapsible": true
+                    }
+                  ],
+                  "collapsed": true,
+                  "collapsible": true
+                },
+                {
+                  "type": "category",
+                  "label": "Contributing",
+                  "items": [
+                    {
+                      "type": "doc",
+                      "id": "contributing/monorepo-and-builds"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "contributing/schema-propagation-internals"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "contributing/decision-records"
+                    },
+                    {
+                      "type": "doc",
+                      "id": "contributing/roadmap"
+                    }
+                  ],
+                  "collapsed": true,
+                  "collapsible": true
+                }
+              ]
+            },
+            "docs": [
+              {
+                "id": "concepts/access-control/architectures",
+                "versionName": "current",
+                "title": "Secure architectures",
+                "description": "Deployment stories the cryptographic access model enables: team workspaces, untrusted storage, multi-tenant products, vendor-blind deployments, field fleets.",
+                "sourceAliased": "@site/docs/concepts/access-control/architectures.md",
+                "sourceAbsolutePath": "/site/docs/concepts/access-control/architectures.md",
+                "sourceRelativePath": "docs/concepts/access-control/architectures.md",
+                "sourceDirName": "concepts/access-control",
+                "slug": "/concepts/access-control/architectures",
+                "permalink": "/docstack/docs/concepts/access-control/architectures",
+                "treePath": "concepts/access-control/architectures",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Secure architectures",
+                  "description": "Deployment stories the cryptographic access model enables: team workspaces, untrusted storage, multi-tenant products, vendor-blind deployments, field fleets.",
+                  "sidebar_position": 4
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 4,
+                "previous": {
+                  "title": "Scopes & keys",
+                  "permalink": "/docstack/docs/concepts/access-control/crypto-access"
+                },
+                "next": {
+                  "title": "Threat model",
+                  "permalink": "/docstack/docs/concepts/access-control/threat-model"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/access-control/crypto-access",
+                "versionName": "current",
+                "title": "Scopes & keys",
+                "description": "How scope keys are sealed, admitted to the keyring at unlock, managed by the application, rotated on revocation, and what they cost.",
+                "sourceAliased": "@site/docs/concepts/access-control/crypto-access.md",
+                "sourceAbsolutePath": "/site/docs/concepts/access-control/crypto-access.md",
+                "sourceRelativePath": "docs/concepts/access-control/crypto-access.md",
+                "sourceDirName": "concepts/access-control",
+                "slug": "/concepts/access-control/crypto-access",
+                "permalink": "/docstack/docs/concepts/access-control/crypto-access",
+                "treePath": "concepts/access-control/crypto-access",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Scopes & keys",
+                  "description": "How scope keys are sealed, admitted to the keyring at unlock, managed by the application, rotated on revocation, and what they cost.",
+                  "sidebar_position": 3
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 3,
+                "previous": {
+                  "title": "Attribute policies",
+                  "permalink": "/docstack/docs/concepts/access-control/policy-model"
+                },
+                "next": {
+                  "title": "Secure architectures",
+                  "permalink": "/docstack/docs/concepts/access-control/architectures"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/access-control/index",
+                "versionName": "current",
+                "title": "Access control",
+                "description": "DocStack has one access-control language, a monotone attribute formula sealing a scope of content, and it is enforced by cryptography rather than by checks.",
+                "sourceAliased": "@site/docs/concepts/access-control/index.md",
+                "sourceAbsolutePath": "/site/docs/concepts/access-control/index.md",
+                "sourceRelativePath": "docs/concepts/access-control/index.md",
+                "sourceDirName": "concepts/access-control",
+                "slug": "/concepts/access-control/",
+                "permalink": "/docstack/docs/concepts/access-control/",
+                "treePath": "concepts/access-control",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Access control",
+                  "description": "DocStack has one access-control language, a monotone attribute formula sealing a scope of content, and it is enforced by cryptography rather than by checks.",
+                  "sidebar_position": 1,
+                  "sidebar_label": "Overview"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 1,
+                "previous": {
+                  "title": "Crypto engine",
+                  "permalink": "/docstack/docs/concepts/crypto-engine"
+                },
+                "next": {
+                  "title": "Attribute policies",
+                  "permalink": "/docstack/docs/concepts/access-control/policy-model"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/access-control/policy-model",
+                "versionName": "current",
+                "title": "Attribute policies",
+                "description": "The formula language, scopes, and write-time labeling that decide who can open which content.",
+                "sourceAliased": "@site/docs/concepts/access-control/policy-model.md",
+                "sourceAbsolutePath": "/site/docs/concepts/access-control/policy-model.md",
+                "sourceRelativePath": "docs/concepts/access-control/policy-model.md",
+                "sourceDirName": "concepts/access-control",
+                "slug": "/concepts/access-control/policy-model",
+                "permalink": "/docstack/docs/concepts/access-control/policy-model",
+                "treePath": "concepts/access-control/policy-model",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Attribute policies",
+                  "description": "The formula language, scopes, and write-time labeling that decide who can open which content.",
+                  "sidebar_position": 2
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 2,
+                "previous": {
+                  "title": "Overview",
+                  "permalink": "/docstack/docs/concepts/access-control/"
+                },
+                "next": {
+                  "title": "Scopes & keys",
+                  "permalink": "/docstack/docs/concepts/access-control/crypto-access"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/access-control/recipes",
+                "versionName": "current",
+                "title": "Recipes",
+                "description": "Common access patterns expressed in the one language: role-gated records, public when published, departments, multi-tenant separation, departures, admin access.",
+                "sourceAliased": "@site/docs/concepts/access-control/recipes.md",
+                "sourceAbsolutePath": "/site/docs/concepts/access-control/recipes.md",
+                "sourceRelativePath": "docs/concepts/access-control/recipes.md",
+                "sourceDirName": "concepts/access-control",
+                "slug": "/concepts/access-control/recipes",
+                "permalink": "/docstack/docs/concepts/access-control/recipes",
+                "treePath": "concepts/access-control/recipes",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Recipes",
+                  "description": "Common access patterns expressed in the one language: role-gated records, public when published, departments, multi-tenant separation, departures, admin access.",
+                  "sidebar_position": 6
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 6,
+                "previous": {
+                  "title": "Threat model",
+                  "permalink": "/docstack/docs/concepts/access-control/threat-model"
+                },
+                "next": {
+                  "title": "Transactions",
+                  "permalink": "/docstack/docs/concepts/transactions"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/access-control/threat-model",
+                "versionName": "current",
+                "title": "Threat model",
+                "description": "What the cryptographic access model guarantees, to whom, what the mathematics does not do, and the residues named plainly.",
+                "sourceAliased": "@site/docs/concepts/access-control/threat-model.md",
+                "sourceAbsolutePath": "/site/docs/concepts/access-control/threat-model.md",
+                "sourceRelativePath": "docs/concepts/access-control/threat-model.md",
+                "sourceDirName": "concepts/access-control",
+                "slug": "/concepts/access-control/threat-model",
+                "permalink": "/docstack/docs/concepts/access-control/threat-model",
+                "treePath": "concepts/access-control/threat-model",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Threat model",
+                  "description": "What the cryptographic access model guarantees, to whom, what the mathematics does not do, and the residues named plainly.",
+                  "sidebar_position": 5
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 5,
+                "previous": {
+                  "title": "Secure architectures",
+                  "permalink": "/docstack/docs/concepts/access-control/architectures"
+                },
+                "next": {
+                  "title": "Recipes",
+                  "permalink": "/docstack/docs/concepts/access-control/recipes"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/core-concepts",
+                "versionName": "current",
+                "title": "Core concepts",
+                "description": "The ideas everything else rests on: everything is a document, the authoring pipeline, logic as data, access by scope, encryption under a key the application owns, migrations as patches, and sync as convergence.",
+                "sourceAliased": "@site/docs/concepts/core-concepts.md",
+                "sourceAbsolutePath": "/site/docs/concepts/core-concepts.md",
+                "sourceRelativePath": "docs/concepts/core-concepts.md",
+                "sourceDirName": "concepts",
+                "slug": "/concepts/core-concepts",
+                "permalink": "/docstack/docs/concepts/core-concepts",
+                "treePath": "concepts/core-concepts",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Core concepts",
+                  "description": "The ideas everything else rests on: everything is a document, the authoring pipeline, logic as data, access by scope, encryption under a key the application owns, migrations as patches, and sync as convergence.",
+                  "sidebar_position": 1
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 1,
+                "previous": {
+                  "title": "React bindings",
+                  "permalink": "/docstack/docs/guides/react"
+                },
+                "next": {
+                  "title": "Offline-first and the sync model",
+                  "permalink": "/docstack/docs/concepts/offline-first-and-sync"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/crypto-engine",
+                "versionName": "current",
+                "title": "Crypto engine",
+                "description": "The key hierarchy today, the canary, locked stacks, key identifiers and the keyring, which reads decrypt and which deliberately do not, and how scopes will choose the key a document is sealed under.",
+                "sourceAliased": "@site/docs/concepts/crypto-engine.md",
+                "sourceAbsolutePath": "/site/docs/concepts/crypto-engine.md",
+                "sourceRelativePath": "docs/concepts/crypto-engine.md",
+                "sourceDirName": "concepts",
+                "slug": "/concepts/crypto-engine",
+                "permalink": "/docstack/docs/concepts/crypto-engine",
+                "treePath": "concepts/crypto-engine",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Crypto engine",
+                  "description": "The key hierarchy today, the canary, locked stacks, key identifiers and the keyring, which reads decrypt and which deliberately do not, and how scopes will choose the key a document is sealed under.",
+                  "sidebar_position": 5
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 5,
+                "previous": {
+                  "title": "Query engine",
+                  "permalink": "/docstack/docs/concepts/query-engine"
+                },
+                "next": {
+                  "title": "Overview",
+                  "permalink": "/docstack/docs/concepts/access-control/"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/offline-first-and-sync",
+                "versionName": "current",
+                "title": "Offline-first and the sync model",
+                "description": "Why the engine is embedded, how the stack stays reactive from one changes feed, what replication carries and why it bypasses the pipeline, and the guardrails around it.",
+                "sourceAliased": "@site/docs/concepts/offline-first-and-sync.md",
+                "sourceAbsolutePath": "/site/docs/concepts/offline-first-and-sync.md",
+                "sourceRelativePath": "docs/concepts/offline-first-and-sync.md",
+                "sourceDirName": "concepts",
+                "slug": "/concepts/offline-first-and-sync",
+                "permalink": "/docstack/docs/concepts/offline-first-and-sync",
+                "treePath": "concepts/offline-first-and-sync",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Offline-first and the sync model",
+                  "description": "Why the engine is embedded, how the stack stays reactive from one changes feed, what replication carries and why it bypasses the pipeline, and the guardrails around it.",
+                  "sidebar_position": 2
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 2,
+                "previous": {
+                  "title": "Core concepts",
+                  "permalink": "/docstack/docs/concepts/core-concepts"
+                },
+                "next": {
+                  "title": "Schema engine",
+                  "permalink": "/docstack/docs/concepts/schema-engine"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/patches",
+                "versionName": "current",
+                "title": "Patches & migrations",
+                "description": "Why the data model ships as versioned patch documents, why a chain applies through one transaction, how deferral behind the document key works, and how the sync gate keeps divergent devices apart.",
+                "sourceAliased": "@site/docs/concepts/patches.md",
+                "sourceAbsolutePath": "/site/docs/concepts/patches.md",
+                "sourceRelativePath": "docs/concepts/patches.md",
+                "sourceDirName": "concepts",
+                "slug": "/concepts/patches",
+                "permalink": "/docstack/docs/concepts/patches",
+                "treePath": "concepts/patches",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Patches & migrations",
+                  "description": "Why the data model ships as versioned patch documents, why a chain applies through one transaction, how deferral behind the document key works, and how the sync gate keeps divergent devices apart.",
+                  "sidebar_position": 8,
+                  "sidebar_label": "Patches & migrations"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 8,
+                "previous": {
+                  "title": "Transactions",
+                  "permalink": "/docstack/docs/concepts/transactions"
+                },
+                "next": {
+                  "title": "Security overview",
+                  "permalink": "/docstack/docs/concepts/security"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/query-engine",
+                "versionName": "current",
+                "title": "Query engine",
+                "description": "How a SQL statement becomes rows: parse, plan, execute; what the planner pushes down to the index and what it evaluates in memory; how encryption and scopes shape the result.",
+                "sourceAliased": "@site/docs/concepts/query-engine.md",
+                "sourceAbsolutePath": "/site/docs/concepts/query-engine.md",
+                "sourceRelativePath": "docs/concepts/query-engine.md",
+                "sourceDirName": "concepts",
+                "slug": "/concepts/query-engine",
+                "permalink": "/docstack/docs/concepts/query-engine",
+                "treePath": "concepts/query-engine",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Query engine",
+                  "description": "How a SQL statement becomes rows: parse, plan, execute; what the planner pushes down to the index and what it evaluates in memory; how encryption and scopes shape the result.",
+                  "sidebar_position": 4
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 4,
+                "previous": {
+                  "title": "Schema engine",
+                  "permalink": "/docstack/docs/concepts/schema-engine"
+                },
+                "next": {
+                  "title": "Crypto engine",
+                  "permalink": "/docstack/docs/concepts/crypto-engine"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/schema-engine",
+                "versionName": "current",
+                "title": "Schema engine",
+                "description": "How a class document becomes a validator, how attribute types map to Zod, and how a schema change propagates to the documents that already exist.",
+                "sourceAliased": "@site/docs/concepts/schema-engine.md",
+                "sourceAbsolutePath": "/site/docs/concepts/schema-engine.md",
+                "sourceRelativePath": "docs/concepts/schema-engine.md",
+                "sourceDirName": "concepts",
+                "slug": "/concepts/schema-engine",
+                "permalink": "/docstack/docs/concepts/schema-engine",
+                "treePath": "concepts/schema-engine",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Schema engine",
+                  "description": "How a class document becomes a validator, how attribute types map to Zod, and how a schema change propagates to the documents that already exist.",
+                  "sidebar_position": 3
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 3,
+                "previous": {
+                  "title": "Offline-first and the sync model",
+                  "permalink": "/docstack/docs/concepts/offline-first-and-sync"
+                },
+                "next": {
+                  "title": "Query engine",
+                  "permalink": "/docstack/docs/concepts/query-engine"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/security",
+                "versionName": "current",
+                "title": "Security overview",
+                "description": "The five properties the engine enforces on its own, how sessions are established, what leaves the device, and the limits stated plainly.",
+                "sourceAliased": "@site/docs/concepts/security.md",
+                "sourceAbsolutePath": "/site/docs/concepts/security.md",
+                "sourceRelativePath": "docs/concepts/security.md",
+                "sourceDirName": "concepts",
+                "slug": "/concepts/security",
+                "permalink": "/docstack/docs/concepts/security",
+                "treePath": "concepts/security",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Security overview",
+                  "description": "The five properties the engine enforces on its own, how sessions are established, what leaves the device, and the limits stated plainly.",
+                  "sidebar_position": 9
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 9,
+                "previous": {
+                  "title": "Patches & migrations",
+                  "permalink": "/docstack/docs/concepts/patches"
+                },
+                "next": {
+                  "title": "Under the hood",
+                  "permalink": "/docstack/docs/concepts/under-the-hood"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/transactions",
+                "versionName": "current",
+                "title": "Transactions",
+                "description": "Why the stage sits above the storage plugin and commits through it, how overlay reads and the validation sweep work, what atomicity DocStack can honestly promise, and what the next version adds.",
+                "sourceAliased": "@site/docs/concepts/transactions.md",
+                "sourceAbsolutePath": "/site/docs/concepts/transactions.md",
+                "sourceRelativePath": "docs/concepts/transactions.md",
+                "sourceDirName": "concepts",
+                "slug": "/concepts/transactions",
+                "permalink": "/docstack/docs/concepts/transactions",
+                "treePath": "concepts/transactions",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Transactions",
+                  "description": "Why the stage sits above the storage plugin and commits through it, how overlay reads and the validation sweep work, what atomicity DocStack can honestly promise, and what the next version adds.",
+                  "sidebar_position": 7
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 7,
+                "previous": {
+                  "title": "Recipes",
+                  "permalink": "/docstack/docs/concepts/access-control/recipes"
+                },
+                "next": {
+                  "title": "Patches & migrations",
+                  "permalink": "/docstack/docs/concepts/patches"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "concepts/under-the-hood",
+                "versionName": "current",
+                "title": "Under the hood",
+                "description": "The libraries the engine is built on, the engines and where each lives in the source, and the patterns that recur across them.",
+                "sourceAliased": "@site/docs/concepts/under-the-hood.md",
+                "sourceAbsolutePath": "/site/docs/concepts/under-the-hood.md",
+                "sourceRelativePath": "docs/concepts/under-the-hood.md",
+                "sourceDirName": "concepts",
+                "slug": "/concepts/under-the-hood",
+                "permalink": "/docstack/docs/concepts/under-the-hood",
+                "treePath": "concepts/under-the-hood",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Under the hood",
+                  "description": "The libraries the engine is built on, the engines and where each lives in the source, and the patterns that recur across them.",
+                  "sidebar_position": 10
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 10,
+                "previous": {
+                  "title": "Security overview",
+                  "permalink": "/docstack/docs/concepts/security"
+                },
+                "next": {
+                  "title": "Class & attribute options",
+                  "permalink": "/docstack/docs/reference/class-and-attribute-options"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "contributing/decision-records",
+                "versionName": "current",
+                "title": "Decision records",
+                "description": "Every architecture decision record in specs/adr, with its status, date and a one-line summary, plus the specs that accompany them.",
+                "sourceAliased": "@site/docs/contributing/decision-records.md",
+                "sourceAbsolutePath": "/site/docs/contributing/decision-records.md",
+                "sourceRelativePath": "docs/contributing/decision-records.md",
+                "sourceDirName": "contributing",
+                "slug": "/contributing/decision-records",
+                "permalink": "/docstack/docs/contributing/decision-records",
+                "treePath": "contributing/decision-records",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Decision records",
+                  "description": "Every architecture decision record in specs/adr, with its status, date and a one-line summary, plus the specs that accompany them.",
+                  "sidebar_position": 4
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 4,
+                "previous": {
+                  "title": "Schema propagation internals",
+                  "permalink": "/docstack/docs/contributing/schema-propagation-internals"
+                },
+                "next": {
+                  "title": "Roadmap",
+                  "permalink": "/docstack/docs/contributing/roadmap"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "contributing/monorepo-and-builds",
+                "versionName": "current",
+                "title": "Monorepo & builds",
+                "description": "How the repository is laid out, how each package is built and tested, what the root scripts do, and the conventions a contribution is expected to follow.",
+                "sourceAliased": "@site/docs/contributing/monorepo-and-builds.md",
+                "sourceAbsolutePath": "/site/docs/contributing/monorepo-and-builds.md",
+                "sourceRelativePath": "docs/contributing/monorepo-and-builds.md",
+                "sourceDirName": "contributing",
+                "slug": "/contributing/monorepo-and-builds",
+                "permalink": "/docstack/docs/contributing/monorepo-and-builds",
+                "treePath": "contributing/monorepo-and-builds",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Monorepo & builds",
+                  "description": "How the repository is laid out, how each package is built and tested, what the root scripts do, and the conventions a contribution is expected to follow.",
+                  "sidebar_position": 1,
+                  "sidebar_label": "Monorepo & builds"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 1,
+                "previous": {
+                  "title": "Server (preview)",
+                  "permalink": "/docstack/docs/reference/server"
+                },
+                "next": {
+                  "title": "Schema propagation internals",
+                  "permalink": "/docstack/docs/contributing/schema-propagation-internals"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "contributing/roadmap",
+                "versionName": "current",
+                "title": "Roadmap",
+                "description": "Work the decision records have accepted or flagged but that is not yet built, in order, with what was deliberately dropped and what is only under evaluation.",
+                "sourceAliased": "@site/docs/contributing/roadmap.md",
+                "sourceAbsolutePath": "/site/docs/contributing/roadmap.md",
+                "sourceRelativePath": "docs/contributing/roadmap.md",
+                "sourceDirName": "contributing",
+                "slug": "/contributing/roadmap",
+                "permalink": "/docstack/docs/contributing/roadmap",
+                "treePath": "contributing/roadmap",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Roadmap",
+                  "description": "Work the decision records have accepted or flagged but that is not yet built, in order, with what was deliberately dropped and what is only under evaluation.",
+                  "sidebar_position": 5
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 5,
+                "previous": {
+                  "title": "Decision records",
+                  "permalink": "/docstack/docs/contributing/decision-records"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "contributing/schema-propagation-internals",
+                "versionName": "current",
+                "title": "Schema propagation internals",
+                "description": "What actually runs when a class document changes, where the code lives, the lock that guards a class mid-propagation, and the design that was planned and not built.",
+                "sourceAliased": "@site/docs/contributing/schema-propagation-internals.md",
+                "sourceAbsolutePath": "/site/docs/contributing/schema-propagation-internals.md",
+                "sourceRelativePath": "docs/contributing/schema-propagation-internals.md",
+                "sourceDirName": "contributing",
+                "slug": "/contributing/schema-propagation-internals",
+                "permalink": "/docstack/docs/contributing/schema-propagation-internals",
+                "treePath": "contributing/schema-propagation-internals",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Schema propagation internals",
+                  "description": "What actually runs when a class document changes, where the code lives, the lock that guards a class mid-propagation, and the design that was planned and not built.",
+                  "sidebar_position": 2
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 2,
+                "previous": {
+                  "title": "Monorepo & builds",
+                  "permalink": "/docstack/docs/contributing/monorepo-and-builds"
+                },
+                "next": {
+                  "title": "Decision records",
+                  "permalink": "/docstack/docs/contributing/decision-records"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "get-started/examples",
+                "versionName": "current",
+                "title": "Examples & workbench",
+                "description": "The hosted workbench, the runnable example app in the repository, and the test suite that doubles as executable documentation.",
+                "sourceAliased": "@site/docs/get-started/examples.md",
+                "sourceAbsolutePath": "/site/docs/get-started/examples.md",
+                "sourceRelativePath": "docs/get-started/examples.md",
+                "sourceDirName": "get-started",
+                "slug": "/get-started/examples",
+                "permalink": "/docstack/docs/get-started/examples",
+                "treePath": "get-started/examples",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Examples & workbench",
+                  "description": "The hosted workbench, the runnable example app in the repository, and the test suite that doubles as executable documentation.",
+                  "sidebar_position": 3,
+                  "sidebar_label": "Examples & workbench"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 3,
+                "previous": {
+                  "title": "Quickstart",
+                  "permalink": "/docstack/docs/get-started/quickstart"
+                },
+                "next": {
+                  "title": "Model your data",
+                  "permalink": "/docstack/docs/guides/model-your-data"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "get-started/installation",
+                "versionName": "current",
+                "title": "Installation",
+                "description": "Install @docstack/client and its PouchDB peers, add the React bindings, and check what a browser needs to run DocStack.",
+                "sourceAliased": "@site/docs/get-started/installation.md",
+                "sourceAbsolutePath": "/site/docs/get-started/installation.md",
+                "sourceRelativePath": "docs/get-started/installation.md",
+                "sourceDirName": "get-started",
+                "slug": "/get-started/installation",
+                "permalink": "/docstack/docs/get-started/installation",
+                "treePath": "get-started/installation",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Installation",
+                  "description": "Install @docstack/client and its PouchDB peers, add the React bindings, and check what a browser needs to run DocStack.",
+                  "sidebar_position": 1
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 1,
+                "previous": {
+                  "title": "Introduction",
+                  "permalink": "/docstack/docs/"
+                },
+                "next": {
+                  "title": "Quickstart",
+                  "permalink": "/docstack/docs/get-started/quickstart"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "get-started/quickstart",
+                "versionName": "current",
+                "title": "Quickstart",
+                "description": "Open a local database, define a class, write a document and query it with SQL; then do the same from React and ship the schema as a patch.",
+                "sourceAliased": "@site/docs/get-started/quickstart.md",
+                "sourceAbsolutePath": "/site/docs/get-started/quickstart.md",
+                "sourceRelativePath": "docs/get-started/quickstart.md",
+                "sourceDirName": "get-started",
+                "slug": "/get-started/quickstart",
+                "permalink": "/docstack/docs/get-started/quickstart",
+                "treePath": "get-started/quickstart",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Quickstart",
+                  "description": "Open a local database, define a class, write a document and query it with SQL; then do the same from React and ship the schema as a patch.",
+                  "sidebar_position": 2
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 2,
+                "previous": {
+                  "title": "Installation",
+                  "permalink": "/docstack/docs/get-started/installation"
+                },
+                "next": {
+                  "title": "Examples & workbench",
+                  "permalink": "/docstack/docs/get-started/examples"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "guides/encrypt-fields",
+                "versionName": "current",
+                "title": "Encrypt fields",
+                "description": "Flag an attribute as encrypted, supply the document key the application owns, work with a locked stack, rotate keys, and know what reaches a remote.",
+                "sourceAliased": "@site/docs/guides/encrypt-fields.md",
+                "sourceAbsolutePath": "/site/docs/guides/encrypt-fields.md",
+                "sourceRelativePath": "docs/guides/encrypt-fields.md",
+                "sourceDirName": "guides",
+                "slug": "/guides/encrypt-fields",
+                "permalink": "/docstack/docs/guides/encrypt-fields",
+                "treePath": "guides/encrypt-fields",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Encrypt fields",
+                  "description": "Flag an attribute as encrypted, supply the document key the application owns, work with a locked stack, rotate keys, and know what reaches a remote.",
+                  "sidebar_position": 5
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 5,
+                "previous": {
+                  "title": "Query with SQL",
+                  "permalink": "/docstack/docs/guides/query-with-sql"
+                },
+                "next": {
+                  "title": "Write transactions",
+                  "permalink": "/docstack/docs/guides/transactions"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "guides/filtering",
+                "versionName": "current",
+                "title": "Filter what replicates",
+                "description": "Narrow replication by class or with a predicate, understand why changing a filter re-replicates, and what filters deliberately do not do.",
+                "sourceAliased": "@site/docs/guides/filtering.md",
+                "sourceAbsolutePath": "/site/docs/guides/filtering.md",
+                "sourceRelativePath": "docs/guides/filtering.md",
+                "sourceDirName": "guides",
+                "slug": "/guides/filtering",
+                "permalink": "/docstack/docs/guides/filtering",
+                "treePath": "guides/filtering",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Filter what replicates",
+                  "description": "Narrow replication by class or with a predicate, understand why changing a filter re-replicates, and what filters deliberately do not do.",
+                  "sidebar_position": 10,
+                  "sidebar_label": "Filter what replicates"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 10,
+                "previous": {
+                  "title": "Google Drive",
+                  "permalink": "/docstack/docs/guides/google-drive"
+                },
+                "next": {
+                  "title": "React bindings",
+                  "permalink": "/docstack/docs/guides/react"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "guides/google-drive",
+                "versionName": "current",
+                "title": "Google Drive",
+                "description": "Sync and back up a stack to the user's own Google Drive with the published adapter; your application owns the OAuth token, DocStack owns the lifecycle.",
+                "sourceAliased": "@site/docs/guides/google-drive.md",
+                "sourceAbsolutePath": "/site/docs/guides/google-drive.md",
+                "sourceRelativePath": "docs/guides/google-drive.md",
+                "sourceDirName": "guides",
+                "slug": "/guides/google-drive",
+                "permalink": "/docstack/docs/guides/google-drive",
+                "treePath": "guides/google-drive",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Google Drive",
+                  "description": "Sync and back up a stack to the user's own Google Drive with the published adapter; your application owns the OAuth token, DocStack owns the lifecycle.",
+                  "sidebar_position": 9
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 9,
+                "previous": {
+                  "title": "Sync to a remote",
+                  "permalink": "/docstack/docs/guides/sync"
+                },
+                "next": {
+                  "title": "Filter what replicates",
+                  "permalink": "/docstack/docs/guides/filtering"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "guides/jobs",
+                "versionName": "current",
+                "title": "Background jobs & scheduling",
+                "description": "Define jobs as documents, run them on demand or from a trigger, and let the scheduler run an allow-listed set unattended under the constraints a client actually imposes.",
+                "sourceAliased": "@site/docs/guides/jobs.md",
+                "sourceAbsolutePath": "/site/docs/guides/jobs.md",
+                "sourceRelativePath": "docs/guides/jobs.md",
+                "sourceDirName": "guides",
+                "slug": "/guides/jobs",
+                "permalink": "/docstack/docs/guides/jobs",
+                "treePath": "guides/jobs",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Background jobs & scheduling",
+                  "description": "Define jobs as documents, run them on demand or from a trigger, and let the scheduler run an allow-listed set unattended under the constraints a client actually imposes.",
+                  "sidebar_position": 3,
+                  "sidebar_label": "Jobs & scheduling"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 3,
+                "previous": {
+                  "title": "Triggers",
+                  "permalink": "/docstack/docs/guides/triggers"
+                },
+                "next": {
+                  "title": "Query with SQL",
+                  "permalink": "/docstack/docs/guides/query-with-sql"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "guides/model-your-data",
+                "versionName": "current",
+                "title": "Model your data",
+                "description": "Define classes and attributes, relate them with domains, write and read documents, and choose the class flags that change what a class costs.",
+                "sourceAliased": "@site/docs/guides/model-your-data.md",
+                "sourceAbsolutePath": "/site/docs/guides/model-your-data.md",
+                "sourceRelativePath": "docs/guides/model-your-data.md",
+                "sourceDirName": "guides",
+                "slug": "/guides/model-your-data",
+                "permalink": "/docstack/docs/guides/model-your-data",
+                "treePath": "guides/model-your-data",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Model your data",
+                  "description": "Define classes and attributes, relate them with domains, write and read documents, and choose the class flags that change what a class costs.",
+                  "sidebar_position": 1
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 1,
+                "previous": {
+                  "title": "Examples & workbench",
+                  "permalink": "/docstack/docs/get-started/examples"
+                },
+                "next": {
+                  "title": "Triggers",
+                  "permalink": "/docstack/docs/guides/triggers"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "guides/patches",
+                "versionName": "current",
+                "title": "Evolve the schema with patches",
+                "description": "Ship your data model as versioned patch documents that apply once per device, merge into existing classes, carry seed data and one-shot migration jobs, and gate replication between devices on different versions.",
+                "sourceAliased": "@site/docs/guides/patches.md",
+                "sourceAbsolutePath": "/site/docs/guides/patches.md",
+                "sourceRelativePath": "docs/guides/patches.md",
+                "sourceDirName": "guides",
+                "slug": "/guides/patches",
+                "permalink": "/docstack/docs/guides/patches",
+                "treePath": "guides/patches",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Evolve the schema with patches",
+                  "description": "Ship your data model as versioned patch documents that apply once per device, merge into existing classes, carry seed data and one-shot migration jobs, and gate replication between devices on different versions.",
+                  "sidebar_position": 7,
+                  "sidebar_label": "Schema patches"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 7,
+                "previous": {
+                  "title": "Write transactions",
+                  "permalink": "/docstack/docs/guides/transactions"
+                },
+                "next": {
+                  "title": "Sync to a remote",
+                  "permalink": "/docstack/docs/guides/sync"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "guides/query-with-sql",
+                "versionName": "current",
+                "title": "Query with SQL",
+                "description": "Run SELECT statements with joins, aggregation, subqueries and positional parameters against local documents, stream large results, and know exactly what the dialect does not support.",
+                "sourceAliased": "@site/docs/guides/query-with-sql.md",
+                "sourceAbsolutePath": "/site/docs/guides/query-with-sql.md",
+                "sourceRelativePath": "docs/guides/query-with-sql.md",
+                "sourceDirName": "guides",
+                "slug": "/guides/query-with-sql",
+                "permalink": "/docstack/docs/guides/query-with-sql",
+                "treePath": "guides/query-with-sql",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Query with SQL",
+                  "description": "Run SELECT statements with joins, aggregation, subqueries and positional parameters against local documents, stream large results, and know exactly what the dialect does not support.",
+                  "sidebar_position": 4
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 4,
+                "previous": {
+                  "title": "Jobs & scheduling",
+                  "permalink": "/docstack/docs/guides/jobs"
+                },
+                "next": {
+                  "title": "Encrypt fields",
+                  "permalink": "/docstack/docs/guides/encrypt-fields"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "guides/react",
+                "versionName": "current",
+                "title": "React bindings",
+                "description": "Mount the provider that owns the database lifecycle and use hooks that are live by default, so components re-render when the data they read changes, locally or over sync.",
+                "sourceAliased": "@site/docs/guides/react.md",
+                "sourceAbsolutePath": "/site/docs/guides/react.md",
+                "sourceRelativePath": "docs/guides/react.md",
+                "sourceDirName": "guides",
+                "slug": "/guides/react",
+                "permalink": "/docstack/docs/guides/react",
+                "treePath": "guides/react",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "React bindings",
+                  "description": "Mount the provider that owns the database lifecycle and use hooks that are live by default, so components re-render when the data they read changes, locally or over sync.",
+                  "sidebar_position": 10
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 10,
+                "previous": {
+                  "title": "Filter what replicates",
+                  "permalink": "/docstack/docs/guides/filtering"
+                },
+                "next": {
+                  "title": "Core concepts",
+                  "permalink": "/docstack/docs/concepts/core-concepts"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "guides/sync",
+                "versionName": "current",
+                "title": "Sync to a remote",
+                "description": "Replicate a stack to any PouchDB-compatible remote with one call, show honest sync state, sync many databases at once, and understand the two guardrails the sync layer refuses to relax.",
+                "sourceAliased": "@site/docs/guides/sync.md",
+                "sourceAbsolutePath": "/site/docs/guides/sync.md",
+                "sourceRelativePath": "docs/guides/sync.md",
+                "sourceDirName": "guides",
+                "slug": "/guides/sync",
+                "permalink": "/docstack/docs/guides/sync",
+                "treePath": "guides/sync",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Sync to a remote",
+                  "description": "Replicate a stack to any PouchDB-compatible remote with one call, show honest sync state, sync many databases at once, and understand the two guardrails the sync layer refuses to relax.",
+                  "sidebar_position": 8
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 8,
+                "previous": {
+                  "title": "Schema patches",
+                  "permalink": "/docstack/docs/guides/patches"
+                },
+                "next": {
+                  "title": "Google Drive",
+                  "permalink": "/docstack/docs/guides/google-drive"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "guides/transactions",
+                "versionName": "current",
+                "title": "Write transactions",
+                "description": "Stage a multi-document change in memory, read your own staged state, and commit it as one batch through the full authoring pipeline, with the storage adapter's real atomicity reported on every commit.",
+                "sourceAliased": "@site/docs/guides/transactions.md",
+                "sourceAbsolutePath": "/site/docs/guides/transactions.md",
+                "sourceRelativePath": "docs/guides/transactions.md",
+                "sourceDirName": "guides",
+                "slug": "/guides/transactions",
+                "permalink": "/docstack/docs/guides/transactions",
+                "treePath": "guides/transactions",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Write transactions",
+                  "description": "Stage a multi-document change in memory, read your own staged state, and commit it as one batch through the full authoring pipeline, with the storage adapter's real atomicity reported on every commit.",
+                  "sidebar_position": 6
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 6,
+                "previous": {
+                  "title": "Encrypt fields",
+                  "permalink": "/docstack/docs/guides/encrypt-fields"
+                },
+                "next": {
+                  "title": "Schema patches",
+                  "permalink": "/docstack/docs/guides/patches"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "guides/triggers",
+                "versionName": "current",
+                "title": "Validate & react with triggers",
+                "description": "Attach small pieces of JavaScript to a class that run before or after a write, stored as data and hydrated at runtime.",
+                "sourceAliased": "@site/docs/guides/triggers.md",
+                "sourceAbsolutePath": "/site/docs/guides/triggers.md",
+                "sourceRelativePath": "docs/guides/triggers.md",
+                "sourceDirName": "guides",
+                "slug": "/guides/triggers",
+                "permalink": "/docstack/docs/guides/triggers",
+                "treePath": "guides/triggers",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Validate & react with triggers",
+                  "description": "Attach small pieces of JavaScript to a class that run before or after a write, stored as data and hydrated at runtime.",
+                  "sidebar_position": 2,
+                  "sidebar_label": "Triggers"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 2,
+                "previous": {
+                  "title": "Model your data",
+                  "permalink": "/docstack/docs/guides/model-your-data"
+                },
+                "next": {
+                  "title": "Jobs & scheduling",
+                  "permalink": "/docstack/docs/guides/jobs"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "intro",
+                "versionName": "current",
+                "title": "Introduction",
+                "description": "DocStack is an offline-first embedded document database for the browser, with schemas, SQL, triggers, jobs, encryption, migrations, transactions and sync to any PouchDB-compatible remote.",
+                "sourceAliased": "@site/docs/intro.md",
+                "sourceAbsolutePath": "/site/docs/intro.md",
+                "sourceRelativePath": "docs/intro.md",
+                "sourceDirName": ".",
+                "slug": "/",
+                "permalink": "/docstack/docs/",
+                "treePath": "",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Introduction",
+                  "description": "DocStack is an offline-first embedded document database for the browser, with schemas, SQL, triggers, jobs, encryption, migrations, transactions and sync to any PouchDB-compatible remote.",
+                  "slug": "/",
+                  "sidebar_position": 1
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 1,
+                "next": {
+                  "title": "Installation",
+                  "permalink": "/docstack/docs/get-started/installation"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "reference/class-and-attribute-options",
+                "versionName": "current",
+                "title": "Class & attribute options",
+                "description": "Every field of a class document, every attribute type with its configuration keys, the class flags, and the parameters of Class.create and Domain.create.",
+                "sourceAliased": "@site/docs/reference/class-and-attribute-options.md",
+                "sourceAbsolutePath": "/site/docs/reference/class-and-attribute-options.md",
+                "sourceRelativePath": "docs/reference/class-and-attribute-options.md",
+                "sourceDirName": "reference",
+                "slug": "/reference/class-and-attribute-options",
+                "permalink": "/docstack/docs/reference/class-and-attribute-options",
+                "treePath": "reference/class-and-attribute-options",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Class & attribute options",
+                  "description": "Every field of a class document, every attribute type with its configuration keys, the class flags, and the parameters of Class.create and Domain.create.",
+                  "sidebar_position": 1,
+                  "sidebar_label": "Class & attribute options"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 1,
+                "previous": {
+                  "title": "Under the hood",
+                  "permalink": "/docstack/docs/concepts/under-the-hood"
+                },
+                "next": {
+                  "title": "Trigger & job models",
+                  "permalink": "/docstack/docs/reference/trigger-and-job-models"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "reference/internal-documents",
+                "versionName": "current",
+                "title": "What stays on the device",
+                "description": "The documents DocStack keeps out of replication by default, the ones it optionally replicates, and the options that widen or narrow the list.",
+                "sourceAliased": "@site/docs/reference/internal-documents.md",
+                "sourceAbsolutePath": "/site/docs/reference/internal-documents.md",
+                "sourceRelativePath": "docs/reference/internal-documents.md",
+                "sourceDirName": "reference",
+                "slug": "/reference/internal-documents",
+                "permalink": "/docstack/docs/reference/internal-documents",
+                "treePath": "reference/internal-documents",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "What stays on the device",
+                  "description": "The documents DocStack keeps out of replication by default, the ones it optionally replicates, and the options that widen or narrow the list.",
+                  "sidebar_position": 6
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 6,
+                "previous": {
+                  "title": "Patch document format",
+                  "permalink": "/docstack/docs/reference/patch-format"
+                },
+                "next": {
+                  "title": "SQL dialect",
+                  "permalink": "/docstack/docs/reference/sql-dialect"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "reference/patch-format",
+                "versionName": "current",
+                "title": "Patch document format",
+                "description": "The fields of a patch, what its docs array may contain, the one-shot job shape, the ledger entry the stack writes, and the refusals.",
+                "sourceAliased": "@site/docs/reference/patch-format.md",
+                "sourceAbsolutePath": "/site/docs/reference/patch-format.md",
+                "sourceRelativePath": "docs/reference/patch-format.md",
+                "sourceDirName": "reference",
+                "slug": "/reference/patch-format",
+                "permalink": "/docstack/docs/reference/patch-format",
+                "treePath": "reference/patch-format",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Patch document format",
+                  "description": "The fields of a patch, what its docs array may contain, the one-shot job shape, the ledger entry the stack writes, and the refusals.",
+                  "sidebar_position": 5
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 5,
+                "previous": {
+                  "title": "Sync options & status",
+                  "permalink": "/docstack/docs/reference/sync-options"
+                },
+                "next": {
+                  "title": "What stays on the device",
+                  "permalink": "/docstack/docs/reference/internal-documents"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "reference/scheduler-options",
+                "versionName": "current",
+                "title": "Scheduler options",
+                "description": "Every option of JobScheduler.start with its default, the schedule grammar, the skip reasons a tick reports, and the shape of the per-device schedule state.",
+                "sourceAliased": "@site/docs/reference/scheduler-options.md",
+                "sourceAbsolutePath": "/site/docs/reference/scheduler-options.md",
+                "sourceRelativePath": "docs/reference/scheduler-options.md",
+                "sourceDirName": "reference",
+                "slug": "/reference/scheduler-options",
+                "permalink": "/docstack/docs/reference/scheduler-options",
+                "treePath": "reference/scheduler-options",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Scheduler options",
+                  "description": "Every option of JobScheduler.start with its default, the schedule grammar, the skip reasons a tick reports, and the shape of the per-device schedule state.",
+                  "sidebar_position": 3
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 3,
+                "previous": {
+                  "title": "Trigger & job models",
+                  "permalink": "/docstack/docs/reference/trigger-and-job-models"
+                },
+                "next": {
+                  "title": "Sync options & status",
+                  "permalink": "/docstack/docs/reference/sync-options"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "reference/server",
+                "versionName": "current",
+                "title": "Server (preview)",
+                "description": "What @docstack/server is for, the Express routes and environment variables its preview source exposes today, and why nothing is published yet.",
+                "sourceAliased": "@site/docs/reference/server.md",
+                "sourceAbsolutePath": "/site/docs/reference/server.md",
+                "sourceRelativePath": "docs/reference/server.md",
+                "sourceDirName": "reference",
+                "slug": "/reference/server",
+                "permalink": "/docstack/docs/reference/server",
+                "treePath": "reference/server",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Server (preview)",
+                  "description": "What @docstack/server is for, the Express routes and environment variables its preview source exposes today, and why nothing is published yet.",
+                  "sidebar_position": 8,
+                  "sidebar_label": "Server (preview)"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 8,
+                "previous": {
+                  "title": "SQL dialect",
+                  "permalink": "/docstack/docs/reference/sql-dialect"
+                },
+                "next": {
+                  "title": "Monorepo & builds",
+                  "permalink": "/docstack/docs/contributing/monorepo-and-builds"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "reference/sql-dialect",
+                "versionName": "current",
+                "title": "SQL dialect",
+                "description": "The exact grammar the query engine accepts, token by token, and the constructs it refuses with the error you will see.",
+                "sourceAliased": "@site/docs/reference/sql-dialect.md",
+                "sourceAbsolutePath": "/site/docs/reference/sql-dialect.md",
+                "sourceRelativePath": "docs/reference/sql-dialect.md",
+                "sourceDirName": "reference",
+                "slug": "/reference/sql-dialect",
+                "permalink": "/docstack/docs/reference/sql-dialect",
+                "treePath": "reference/sql-dialect",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "SQL dialect",
+                  "description": "The exact grammar the query engine accepts, token by token, and the constructs it refuses with the error you will see.",
+                  "sidebar_position": 7
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 7,
+                "previous": {
+                  "title": "What stays on the device",
+                  "permalink": "/docstack/docs/reference/internal-documents"
+                },
+                "next": {
+                  "title": "Server (preview)",
+                  "permalink": "/docstack/docs/reference/server"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "reference/sync-options",
+                "versionName": "current",
+                "title": "Sync options & status",
+                "description": "Every option of stack.sync and docstack.sync, the status object, the handle methods and events, the schema-gate error, and the write guard.",
+                "sourceAliased": "@site/docs/reference/sync-options.md",
+                "sourceAbsolutePath": "/site/docs/reference/sync-options.md",
+                "sourceRelativePath": "docs/reference/sync-options.md",
+                "sourceDirName": "reference",
+                "slug": "/reference/sync-options",
+                "permalink": "/docstack/docs/reference/sync-options",
+                "treePath": "reference/sync-options",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Sync options & status",
+                  "description": "Every option of stack.sync and docstack.sync, the status object, the handle methods and events, the schema-gate error, and the write guard.",
+                  "sidebar_position": 4,
+                  "sidebar_label": "Sync options & status"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 4,
+                "previous": {
+                  "title": "Scheduler options",
+                  "permalink": "/docstack/docs/reference/scheduler-options"
+                },
+                "next": {
+                  "title": "Patch document format",
+                  "permalink": "/docstack/docs/reference/patch-format"
+                },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "reference/trigger-and-job-models",
+                "versionName": "current",
+                "title": "Trigger & job document models",
+                "description": "The exact shape of trigger models on a class, ~Job and ~JobRun documents, the execute contract, and the one-shot job a patch may carry.",
+                "sourceAliased": "@site/docs/reference/trigger-and-job-models.md",
+                "sourceAbsolutePath": "/site/docs/reference/trigger-and-job-models.md",
+                "sourceRelativePath": "docs/reference/trigger-and-job-models.md",
+                "sourceDirName": "reference",
+                "slug": "/reference/trigger-and-job-models",
+                "permalink": "/docstack/docs/reference/trigger-and-job-models",
+                "treePath": "reference/trigger-and-job-models",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {
+                  "title": "Trigger & job document models",
+                  "description": "The exact shape of trigger models on a class, ~Job and ~JobRun documents, the execute contract, and the one-shot job a patch may carry.",
+                  "sidebar_position": 2,
+                  "sidebar_label": "Trigger & job models"
+                },
+                "sidebarName": "docs",
+                "sidebarPosition": 2,
+                "previous": {
+                  "title": "Class & attribute options",
+                  "permalink": "/docstack/docs/reference/class-and-attribute-options"
+                },
+                "next": {
+                  "title": "Scheduler options",
+                  "permalink": "/docstack/docs/reference/scheduler-options"
+                },
+                "tags": [],
+                "format": "md"
+              }
+            ],
+            "draftCount": 0
+          }
+        ]
+      }
+    ]
+  }
+}

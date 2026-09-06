@@ -1,0 +1,205 @@
+{
+  "capture": 1,
+  "pterodoc": "0.1.0",
+  "capturedAt": "2026-01-01T00:00:00.000Z",
+  "model": {
+    "siteDir": "/site",
+    "url": "https://example.test",
+    "baseUrl": "/",
+    "trailingSlash": false,
+    "locale": "en",
+    "defaultLocale": "en",
+    "locales": ["en", "fr"],
+    "markdownFormat": "md",
+    "maintainCase": false,
+    "siteTitle": "Example",
+    "staticDirs": ["/site/static"],
+    "docusaurusVersion": "3.10.2",
+    "instances": [
+      {
+        "id": "default",
+        "routeBasePath": "docs",
+        "contentDirName": "docs",
+        "admonitionKeywords": ["note", "warning"],
+        "breadcrumbs": true,
+        "versions": [
+          {
+            "name": "current",
+            "label": "Next",
+            "isLast": true,
+            "pathPrefix": "/docs",
+            "contentPath": "/site/docs",
+            "contentPathLocalized": "/site/docs",
+            "banner": null,
+            "noIndex": false,
+            "draftCount": 0,
+            "sidebars": {
+              "docs": [
+                { "type": "doc", "id": "intro" },
+                {
+                  "type": "category",
+                  "label": "Alpha",
+                  "items": [
+                    { "type": "doc", "id": "alpha/first" },
+                    { "type": "doc", "id": "alpha/second" }
+                  ]
+                },
+                {
+                  "type": "category",
+                  "label": "Beta",
+                  "link": { "type": "doc", "id": "beta/index" },
+                  "items": [{ "type": "doc", "id": "beta/child" }]
+                },
+                {
+                  "type": "category",
+                  "label": "Elsewhere",
+                  "items": [{ "type": "ref", "id": "other/thing" }]
+                },
+                { "type": "link", "href": "https://example.test", "label": "Home" }
+              ],
+              "other": [{ "type": "doc", "id": "other/thing" }]
+            },
+            "docs": [
+              {
+                "id": "intro",
+                "versionName": "current",
+                "title": "Welcome",
+                "description": "The landing page.",
+                "sourceAliased": "@site/docs/intro.md",
+                "sourceAbsolutePath": "/site/docs/intro.md",
+                "sourceRelativePath": "docs/intro.md",
+                "sourceDirName": ".",
+                "slug": "/",
+                "permalink": "/docs/",
+                "treePath": "",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": { "slug": "/" },
+                "sidebarName": "docs",
+                "next": { "title": "First", "permalink": "/docs/alpha/first" },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "alpha/first",
+                "versionName": "current",
+                "title": "First",
+                "description": "The first page.",
+                "sourceAliased": "@site/docs/alpha/first.md",
+                "sourceAbsolutePath": "/site/docs/alpha/first.md",
+                "sourceRelativePath": "docs/alpha/first.md",
+                "sourceDirName": "alpha",
+                "slug": "/alpha/first",
+                "permalink": "/docs/alpha/first",
+                "treePath": "alpha/first",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {},
+                "sidebarName": "docs",
+                "previous": { "title": "Welcome", "permalink": "/docs/" },
+                "next": { "title": "Second", "permalink": "/docs/alpha/second" },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "alpha/second",
+                "versionName": "current",
+                "title": "Second",
+                "description": "The second page.",
+                "sourceAliased": "@site/docs/alpha/second.md",
+                "sourceAbsolutePath": "/site/docs/alpha/second.md",
+                "sourceRelativePath": "docs/alpha/second.md",
+                "sourceDirName": "alpha",
+                "slug": "/alpha/second",
+                "permalink": "/docs/alpha/second",
+                "treePath": "alpha/second",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {},
+                "sidebarName": "docs",
+                "previous": { "title": "First", "permalink": "/docs/alpha/first" },
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "beta/index",
+                "versionName": "current",
+                "title": "Beta section",
+                "description": "A section with its own page.",
+                "sourceAliased": "@site/docs/beta/index.md",
+                "sourceAbsolutePath": "/site/docs/beta/index.md",
+                "sourceRelativePath": "docs/beta/index.md",
+                "sourceDirName": "beta",
+                "slug": "/beta/",
+                "permalink": "/docs/beta/",
+                "treePath": "beta",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {},
+                "sidebarName": "docs",
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "beta/child",
+                "versionName": "current",
+                "title": "Child",
+                "description": "Below the section page.",
+                "sourceAliased": "@site/docs/beta/child.md",
+                "sourceAbsolutePath": "/site/docs/beta/child.md",
+                "sourceRelativePath": "docs/beta/child.md",
+                "sourceDirName": "beta",
+                "slug": "/beta/child",
+                "permalink": "/docs/beta/child",
+                "treePath": "beta/child",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {},
+                "sidebarName": "docs",
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "other/thing",
+                "versionName": "current",
+                "title": "Another sidebar's page",
+                "description": "Reachable only from the other sidebar.",
+                "sourceAliased": "@site/docs/other/thing.md",
+                "sourceAbsolutePath": "/site/docs/other/thing.md",
+                "sourceRelativePath": "docs/other/thing.md",
+                "sourceDirName": "other",
+                "slug": "/other/thing",
+                "permalink": "/docs/other/thing",
+                "treePath": "other/thing",
+                "draft": false,
+                "unlisted": false,
+                "frontMatter": {},
+                "sidebarName": "other",
+                "tags": [],
+                "format": "md"
+              },
+              {
+                "id": "hidden",
+                "versionName": "current",
+                "title": "Hidden",
+                "description": "Unlisted on the site.",
+                "sourceAliased": "@site/docs/hidden.md",
+                "sourceAbsolutePath": "/site/docs/hidden.md",
+                "sourceRelativePath": "docs/hidden.md",
+                "sourceDirName": ".",
+                "slug": "/hidden",
+                "permalink": "/docs/hidden",
+                "treePath": "hidden",
+                "draft": false,
+                "unlisted": true,
+                "frontMatter": { "unlisted": true },
+                "tags": [],
+                "format": "md"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
