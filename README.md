@@ -79,8 +79,16 @@ rewrites what actually differs, and a second run reports everything as unchanged
 
 ## Status
 
-Early. The renderer, the model loader and the WordPress target are in place; see
-CHANGELOG.md for what has landed.
+Working, not yet published to npm. Install it from git:
+
+```console
+npm install --save-dev github:onyx-ac/pterodoc#v0.1.0
+```
+
+It has been verified against a real 47-page documentation set: rendering matches the
+script it was extracted from on 42 of those pages, and every one of the remaining five
+differs only where pterodoc is now correct. Versions, locales and the Docusaurus plugin
+are implemented but have not yet been exercised against a site that uses them.
 
 ## Licence
 

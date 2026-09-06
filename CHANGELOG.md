@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0
 
 ### Added
 - Project skeleton: TypeScript sources, a Rollup build emitting `lib/`, declarations from
