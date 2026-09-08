@@ -20,6 +20,7 @@ import type { SourceReader } from '../model/reader';
 import { renderDoc, excerptFor } from '../render/index';
 import { composePage, renderVersionBanner, type PageLayout } from '../render/page';
 import { createTheme, type Theme } from '../render/theme';
+import { stylesheetFor } from '../render/stylesheet';
 import { collectImages, resolveImage } from '../render/images';
 import type { LinkResolver } from '../render/links';
 import type { MediaRef, RenderedPage, Target, TargetSession } from '../target/target';
@@ -78,6 +79,8 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
     const theme = createTheme({
       classPrefix: config.classPrefix,
       blocks: config.blocks,
+      styles: config.styles,
+      highlight: config.highlight,
       strings: { ...config.strings, ...config.localeStrings[model.locale] },
     });
 
@@ -128,6 +131,9 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
   };
 
   const artifacts: Artifacts = {
+    stylesheet: stylesheetFor(
+      createTheme({ classPrefix: config.classPrefix, styles: config.styles, highlight: config.highlight }),
+    ),
     pages: prepared.map(({ page, locale, versionName }) => ({ page, locale, versionName })),
     manifest: prepared.map(({ node, page, locale, versionName }) => ({
       path: page.path,

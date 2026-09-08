@@ -40,6 +40,8 @@ export const DEFAULT_STRINGS: Strings = {
   unsupportedNotice: 'Content omitted: {what}',
 };
 
+import type { StylePolicy } from './stylesheet';
+
 /**
  * Which block vocabulary to emit.
  *
@@ -56,6 +58,10 @@ export interface Theme {
   readonly classPrefix: string;
   /** Whether the WordPress plugin is expected to be there. */
   readonly blocks: BlockVocabulary;
+  /** Whether a stylesheet is published with the pages. */
+  readonly styles: StylePolicy;
+  /** Whether fences are tokenised at publish time. */
+  readonly highlight: boolean;
   /** The resolved strings. */
   readonly strings: Strings;
   /** A prefixed class name: `cls('docs-nav')` with prefix `x` gives `x-docs-nav`. */
@@ -73,12 +79,16 @@ export function createTheme(options: {
   classPrefix?: string;
   strings?: Partial<Strings>;
   blocks?: BlockVocabulary;
+  styles?: StylePolicy;
+  highlight?: boolean;
 } = {}): Theme {
   const classPrefix = options.classPrefix ?? 'pterodoc';
   const strings: Strings = { ...DEFAULT_STRINGS, ...options.strings };
   return {
     classPrefix,
     blocks: options.blocks ?? 'core',
+    styles: options.styles ?? 'inline',
+    highlight: options.highlight !== false,
     strings,
     cls(name: string): string {
       return `${classPrefix}-${name}`;

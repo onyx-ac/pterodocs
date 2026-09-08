@@ -7,6 +7,7 @@
  */
 
 import { escapeText, joinBlocks, serializeBlock, serializeVoidBlock } from './blocks';
+import { stylesheetFor } from './stylesheet';
 import { excerptFrom } from './excerpt';
 import type { Theme } from './theme';
 
@@ -55,7 +56,7 @@ export const DEFAULT_LAYOUT: PageLayout = {
   kind: 'two-column',
   navWidth: '25%',
   mainWidth: '75%',
-  align: '',
+  align: 'full',
   nav: 'page-list',
   breadcrumb: true,
   pagination: true,
@@ -214,6 +215,19 @@ export function renderChildIndex(input: ComposePageInput, heading: string): stri
   return joinBlocks(parts);
 }
 
+/**
+ * The stylesheet, as a block.
+ *
+ * Stored with the page because a site that has installed nothing has nowhere
+ * else to read it from. A theme that already dresses these class names, or a
+ * site running the WordPress plugin, should turn this off.
+ */
+function renderStyles(theme: Theme): string {
+  if (theme.styles === 'none') return '';
+
+  return serializeBlock('html', undefined, `<style>${stylesheetFor(theme)}</style>`);
+}
+
 /** The navigation column's contents. */
 function renderNavigation(input: ComposePageInput): string {
   if (input.layout.nav === 'none') return '';
@@ -242,7 +256,9 @@ export function composePage(input: ComposePageInput): string {
     layout.pagination ? renderPagination(input) : '',
   ]);
 
-  if (layout.kind === 'single' || layout.nav === 'none') return main;
+  if (layout.kind === 'single' || layout.nav === 'none') {
+    return joinBlocks([renderStyles(theme), main]);
+  }
 
   const navClass = theme.cls('docs-nav');
   const mainClass = theme.cls('docs-main');
@@ -262,11 +278,13 @@ export function composePage(input: ComposePageInput): string {
   if (layout.align) attributes['align'] = layout.align;
   const alignClass = layout.align ? ` align${layout.align}` : '';
 
-  return serializeBlock(
+  const columns = serializeBlock(
     'columns',
     attributes,
     `<div class="wp-block-columns${alignClass} ${columnsClass}">${navColumn}\n\n${mainColumn}</div>`,
   );
+
+  return joinBlocks([renderStyles(theme), columns]);
 }
 
 /** Body for a path segment that exists only so the documentation has a parent. */

@@ -19,6 +19,9 @@ import { IssueCollector } from '../util/issues';
 
 export { createTheme, DEFAULT_STRINGS } from './theme';
 export type { Theme, Strings, BlockVocabulary } from './theme';
+export { stylesheetFor } from './stylesheet';
+export type { StylePolicy } from './stylesheet';
+export { highlightCode } from './highlight';
 export { parseMarkdown, detectFormat } from './parse';
 export type { MarkdownFormat } from './parse';
 export { renderBlock, renderBody, createRenderContext } from './renderers';

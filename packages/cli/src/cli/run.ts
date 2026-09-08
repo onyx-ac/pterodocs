@@ -128,7 +128,17 @@ async function commandSync(
       message: `The run finished but its output could not be written: ${plan.artifactError}`,
     });
   } else {
-    reporter.info(`Rendered pages and plan.json written to ${path.relative(process.cwd(), config.outDir) || config.outDir}/`);
+    const where = path.relative(process.cwd(), config.outDir) || config.outDir;
+    reporter.info(`Rendered pages and plan.json written to ${where}/`);
+
+    // Storing the stylesheet on every page is what makes an unstyled site look
+    // right with nothing installed, but it is the same few kilobytes over and
+    // over. Say so once, and say what the alternative is.
+    if (config.styles === 'inline') {
+      reporter.info(
+        `Each page carries the stylesheet. To store it once instead, paste ${where}/docs.css into Appearance, Customise, Additional CSS and set render.styles to 'none'.`,
+      );
+    }
   }
   if (config.dryRun && !config.offline) reporter.info('Dry run: the site was not modified.');
 

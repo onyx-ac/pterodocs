@@ -1,5 +1,41 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Documentation now looks like documentation with nothing installed. WordPress
+  renders core blocks with almost no opinion, so a published page arrived as an
+  unstyled outline: list markers down the navigation, a column too narrow to
+  hold a word, code in the body font. Three changes fix that, and none of them
+  needs a plugin.
+
+  - A stylesheet is published with the pages (`render.styles`, `inline` by
+    default). Every colour in it is mixed from `currentColor`, so it follows a
+    theme into dark rather than assuming light, and every rule sits inside
+    `:where()`, so a theme that has its own opinions keeps them.
+  - Fences are tokenised at publish time with Prism running in Node
+    (`render.highlight`, on by default). What is stored is Prism's classes,
+    never colours, so the markup stays a plain core code block and the palette
+    stays in CSS. It is the same vocabulary the WordPress plugin's browser-side
+    Prism produces, so one set of rules dresses both.
+  - The documentation layout is full width by default (`layout.align`), which
+    is what it was always meant to be.
+
+- The stylesheet is also written to `docs.css` beside the rendered pages,
+  whether or not the pages carry it. Storing it on every page is what makes a
+  site work with nothing installed, but it is the same few kilobytes over and
+  over: pasting that file into Appearance, Customise, Additional CSS once and
+  setting `render.styles` to `none` costs a minute and nothing thereafter. The
+  command line says so after a render.
+
+### Changed
+
+- `layout.align` defaults to `full` rather than to no alignment, and pages now
+  carry a stylesheet, so the first sync after upgrading rewrites every page.
+  Set `render.styles` to `none` and `layout.align` to `''` to keep the previous
+  output exactly.
+
 ## 0.2.0
 
 ### Changed

@@ -83,6 +83,10 @@ export interface ResolvedConfig {
   classPrefix: string;
   /** Which block vocabulary the renderer emits. */
   blocks: 'core' | 'plugin';
+  /** Whether a stylesheet is published with the pages. */
+  styles: 'inline' | 'none';
+  /** Whether fences are tokenised at publish time. */
+  highlight: boolean;
   dedupeTitle: boolean;
   unpublishedLinks: 'site' | 'drop';
   siteUrl: string;
@@ -321,6 +325,8 @@ export function resolveConfig(input: {
     layout,
     classPrefix: render.classPrefix ?? 'pterodoc',
     blocks: render.blocks === 'plugin' ? 'plugin' : 'core',
+    styles: render.styles === 'none' ? 'none' : 'inline',
+    highlight: render.highlight !== false,
     dedupeTitle: render.dedupeTitle !== false,
     unpublishedLinks: render.unpublishedLinks ?? 'site',
     siteUrl: render.siteUrl ?? '',

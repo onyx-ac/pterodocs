@@ -29,6 +29,7 @@
     "hast-util-to-html": "^9.0.5",
     "mdast-util-to-hast": "^13.2.0",
     "mdast-util-to-string": "^4.0.0",
+    "prismjs": "^1.30.0",
     "remark-directive": "^3.0.1",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",

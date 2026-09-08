@@ -82,6 +82,32 @@ Pages mirror your documentation URLs, so `/docs/guides/sync` on Docusaurus becom
 sidebar category. A page is identified by its parent and its slug, so re-running only
 rewrites what actually differs, and a second run reports everything as unchanged.
 
+## How it looks
+
+WordPress renders core blocks with almost no opinion, so pterodoc publishes a
+stylesheet with them: the navigation loses its list markers and becomes a sticky
+column that scrolls on its own, code gets a frame and a monospace face, tables
+scroll instead of overflowing, and the layout runs full width. Fences are
+tokenised at publish time, so code is highlighted with no JavaScript on the page
+at all.
+
+Every colour is mixed from `currentColor`, so it follows your theme into dark
+rather than assuming light, and every rule is wrapped in `:where()`, so a theme
+that already styles these class names keeps its own opinions.
+
+The stylesheet is stored on each page, which is the only place a site running
+nothing can read it from. It is the same few kilobytes on every page, so it is
+also written to `<output>/docs.css`: paste that into Appearance, Customise,
+Additional CSS once and set `render.styles` to `'none'`, and the pages carry
+nothing.
+
+```js
+render: {
+  styles: 'inline',   // 'none' once the CSS lives on the site
+  highlight: true,    // tokenise fences at publish time
+}
+```
+
 ## The WordPress plugin
 
 Optional, and worth installing. pterodoc writes ordinary core blocks, which are

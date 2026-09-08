@@ -74,6 +74,25 @@ export interface RenderConfig {
    * is.
    */
   blocks?: 'core' | 'plugin';
+  /**
+   * Whether a stylesheet is published with the pages.
+   *
+   * `inline` is the default and stores one with each page, because a site that
+   * has installed nothing has nowhere else to read it from: WordPress renders
+   * core blocks with almost no opinion, and documentation that arrives with
+   * none of its own looks like an unstyled outline. Set `none` when the theme
+   * already dresses these class names, or when the WordPress plugin is
+   * installed and bringing its own.
+   */
+  styles?: 'inline' | 'none';
+  /**
+   * Tokenise fences at publish time.
+   *
+   * On by default. What is stored is Prism's classes, never colours, so the
+   * palette stays in the stylesheet and restyling code never means publishing
+   * every page again.
+   */
+  highlight?: boolean;
   /** Drop a leading H1 that repeats the page title. */
   dedupeTitle?: boolean;
   /** Where links to unpublished documents point: the site, or nowhere. */
