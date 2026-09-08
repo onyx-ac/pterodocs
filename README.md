@@ -7,7 +7,7 @@
 Publishes a Docusaurus site to WordPress as a tree of native Gutenberg pages, so the
 docs you write once are indexed under your own domain without being rewritten by hand.
 
-[Install](#install) · [Usage](#usage) · [Configuration](#configuration) · [How it works](#how-it-works) · [Status](#status)
+[Install](#install) · [Usage](#usage) · [Configuration](#configuration) · [How it works](#how-it-works) · [Plugin](#the-wordpress-plugin) · [Status](#status)
 
 </div>
 
@@ -32,6 +32,11 @@ npm install --save-dev pterodoc
 ```
 
 pterodoc runs inside a Docusaurus project and expects `@docusaurus/core` to be present.
+It pulls in `@pterodoc/core`, `@pterodoc/docusaurus` and `@pterodoc/wordpress`, which are
+published in lockstep with it.
+
+Installing from a git URL is not supported: the repository is an npm workspace, and a git
+install would pack only its private root.
 
 ## Usage
 
@@ -107,21 +112,16 @@ markup, so WordPress stores the same content either way.
 
 ## Status
 
-Working.
+Working, and published.
 
-```console
-npm install --save-dev pterodoc
-```
+The publisher has been verified against a real 47-page documentation set: rendering
+matches the script it was extracted from on 42 of those pages, and every one of the
+remaining five differs only where pterodoc is now correct.
 
-It has been verified against a real 47-page documentation set: rendering matches the
-script it was extracted from on 42 of those pages, and every one of the remaining five
-differs only where pterodoc is now correct. Versions, locales and the Docusaurus plugin
-are implemented but have not yet been exercised against a site that uses them.
-
-Installing from a git URL is no longer supported: the repository is an npm workspace, and
-a git install would pack only its private root. `pterodoc` is the package to install; it
-pulls in `@pterodoc/core`, `@pterodoc/docusaurus` and `@pterodoc/wordpress`, which are
-published in lockstep with it.
+Not yet exercised against a site that uses them: versions, locales, and the Docusaurus
+build plugin. The WordPress plugin is newer still — its PHP and JavaScript are checked in
+CI and its markup decisions are covered by tests on the publisher's side, but its
+behaviour in a browser has not been through a release on a live site.
 
 ## Licence
 
