@@ -39,7 +39,7 @@ export type { UnknownPolicy } from './mdx';
 export { renderJsxBlock, attribute } from './components';
 export { collectImages, resolveImage } from './images';
 export type { ImageReference, ResolvedImage } from './images';
-export { composePage, DEFAULT_LAYOUT, renderNavigationStub, renderVersionBanner } from './page';
+export { composePage, DEFAULT_LAYOUT, isGeneratedPage, renderNavigationStub, renderVersionBanner } from './page';
 export type { ComposePageInput, PageLayout, PageLike } from './page';
 
 /** What to render, and how. */

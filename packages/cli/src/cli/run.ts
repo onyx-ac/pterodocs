@@ -16,6 +16,7 @@ import { createCaptureReader, writeCapture } from '@pterodoc/core/model';
 import type { SourceReader } from '@pterodoc/core/model';
 import { resolveTarget } from '../target';
 import { detectPlugin, WpClient, DEFAULT_RETRY } from '@pterodoc/wordpress';
+import { purgeTree } from '@pterodoc/core';
 import { runSync } from '@pterodoc/core';
 import { parseCliArgs, USAGE, type ParsedArgs } from './args';
 import { createReporter, type Reporter } from './reporter';
@@ -53,6 +54,8 @@ export async function main(argv: string[]): Promise<number> {
         return await commandInit(config, reporter);
       case 'capture':
         return await commandCapture(config, parsed, reporter);
+      case 'purge':
+        return await commandPurge(config, parsed, reporter);
       case 'doctor':
         return await commandDoctor(config, reporter);
       case 'render':
@@ -257,6 +260,66 @@ async function reportPlugin(config: ResolvedConfig, reporter: Reporter): Promise
       message: `The plugin is styling "${prefix}" but pterodoc writes "${config.classPrefix}". Set them the same, on the plugin's settings page or in render.classPrefix; nothing needs re-publishing.`,
     });
   }
+}
+
+/**
+ * `purge`.
+ *
+ * Deliberately does not load the site. Purging is what you do to a location the
+ * documentation has moved away from, and asking Docusaurus to describe a site
+ * in order to delete pages it no longer publishes to would be beside the point.
+ */
+async function commandPurge(
+  config: ResolvedConfig,
+  parsed: ParsedArgs,
+  reporter: Reporter,
+): Promise<number> {
+  const segments = [...config.rootSegments, ...config.baseSegments];
+  const where = `/${segments.join('/')}/`;
+
+  if (config.offline) {
+    throw new ConfigError(`No credentials, so ${where} cannot be read. Purging needs them.`);
+  }
+
+  const apply = parsed.flags.apply === true;
+  reporter.info(
+    apply
+      ? `Removing the documentation at ${config.targetUrl}${where}.`
+      : `Checking what would be removed at ${config.targetUrl}${where}. Nothing is written without --apply.`,
+  );
+
+  const session = await resolveTarget(config).open({ locale: '', dryRun: !apply });
+  const report = await purgeTree(session, {
+    segments,
+    classPrefix: config.classPrefix,
+    apply,
+    log: (message) => reporter.detail(message),
+  });
+
+  if (!report.root) {
+    reporter.info('Nothing is published there.');
+    return EXIT.ok;
+  }
+
+  for (const page of report.kept) {
+    reporter.issue({
+      code: 'purge-skipped-foreign',
+      severity: 'warning',
+      message: `${page.link} was left alone: pterodoc did not write it.`,
+    });
+  }
+
+  reporter.info('');
+  reporter.info(
+    apply
+      ? `Trashed ${report.removed.length} page(s); left ${report.kept.length} alone.`
+      : `Would trash ${report.removed.length} page(s); would leave ${report.kept.length} alone. Re-run with --apply.`,
+  );
+  if (apply) {
+    reporter.info('They are in the trash, not deleted.');
+  }
+
+  return EXIT.ok;
 }
 
 /** `init`. */

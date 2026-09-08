@@ -5,7 +5,7 @@ import { ConfigError } from '@pterodoc/core';
 import type { ConfigFlags } from '@pterodoc/core';
 
 /** Commands the CLI accepts. */
-export const COMMANDS = ['sync', 'render', 'doctor', 'capture', 'init'] as const;
+export const COMMANDS = ['sync', 'render', 'doctor', 'capture', 'purge', 'init'] as const;
 
 /** One of the commands. */
 export type Command = (typeof COMMANDS)[number];
@@ -20,6 +20,8 @@ Commands
   render      Render every page to the output directory; contacts nothing.
   doctor      Check the configuration, the credentials and the target.
   capture     Write the loaded site model to a JSON file.
+  purge       Remove the documentation pterodoc published at a path. Needs no
+              site: use it to clean up a location the docs have moved away from.
   init        Write a starter pterodoc.config.mjs.
 
 Source
@@ -40,6 +42,7 @@ Target
   --only <prefix>             Restrict writes to pages under <prefix>.
   --dry-run                   Plan and render, change nothing.
   --prune                     Trash pages with no source document.
+  --apply                     With purge, actually remove; otherwise it only reports.
   --offline                   Render only; never open a session.
   --no-media                  Skip uploads; leave image URLs as written.
 
@@ -98,6 +101,7 @@ export function parseCliArgs(argv: string[]): ParsedArgs {
         only: { type: 'string' },
         'dry-run': { type: 'boolean' },
         prune: { type: 'boolean' },
+        apply: { type: 'boolean' },
         offline: { type: 'boolean' },
         'no-media': { type: 'boolean' },
         out: { type: 'string' },
@@ -140,6 +144,7 @@ export function parseCliArgs(argv: string[]): ParsedArgs {
     out: values['out'] as string | undefined,
     dryRun: values['dry-run'] as boolean | undefined,
     prune: values['prune'] as boolean | undefined,
+    apply: values['apply'] as boolean | undefined,
     offline: values['offline'] as boolean | undefined,
     noMedia: values['no-media'] as boolean | undefined,
     strict: values['strict'] as boolean | undefined,

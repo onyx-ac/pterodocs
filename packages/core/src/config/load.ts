@@ -44,6 +44,8 @@ export interface ConfigFlags {
   out?: string | undefined;
   dryRun?: boolean | undefined;
   prune?: boolean | undefined;
+  /** With `purge`, actually remove rather than only reporting. */
+  apply?: boolean | undefined;
   offline?: boolean | undefined;
   noMedia?: boolean | undefined;
   strict?: boolean | undefined;

@@ -187,24 +187,30 @@ test('pages along the root path are created once and never edited again', async 
   await t.cleanup();
 });
 
-test('a page with no source document is reported, and only trashed when asked', async () => {
-  const t = await setup();
-  await t.run();
-
+/** Add a page under the documentation root that no document accounts for. */
+function orphan(t: Awaited<ReturnType<typeof setup>>, id: number, content: string): void {
   const docs = t.fake.pages.find((page) => page.slug === 'docs')!;
   t.fake.pages.push({
-    id: 999,
+    id,
     parent: docs.id,
-    slug: 'removed',
+    slug: `orphan-${id}`,
     status: 'publish',
-    link: 'https://example.test/removed/',
-    title: { raw: 'Removed', rendered: 'Removed' },
-    content: { raw: '' },
+    link: `https://example.test/orphan-${id}/`,
+    title: { raw: 'Orphan', rendered: 'Orphan' },
+    content: { raw: content },
     excerpt: { raw: '' },
     menu_order: 0,
     template: '',
     meta: {},
   });
+}
+
+test('a page with no source document is reported, and only trashed when asked', async () => {
+  const t = await setup();
+  await t.run();
+
+  // Written by pterodoc: it carries the class prefix pterodoc composes with.
+  orphan(t, 999, `<!-- wp:columns {"className":"${t.config.classPrefix}-docs"} --><div></div><!-- /wp:columns -->`);
 
   const reported = await t.run();
   const prune = reported.plan.actions.find((action) => action.op === 'prune')!;
@@ -215,6 +221,23 @@ test('a page with no source document is reported, and only trashed when asked', 
   const pruning = { ...t.config, prune: true };
   await runSync(pruning, { reader: t.reader, target: targetFor(pruning, t.fake) });
   assert.equal(t.fake.pages.find((page) => page.id === 999)!.status, 'trash');
+  await t.cleanup();
+});
+
+test('a page somebody else put under the documentation root is never trashed', async () => {
+  // Position inside the tree is not ownership. Pruning by position alone would
+  // make pterodoc delete work it did not do.
+  const t = await setup();
+  await t.run();
+
+  orphan(t, 998, '<!-- wp:paragraph --><p>Written by a person.</p><!-- /wp:paragraph -->');
+
+  const pruning = { ...t.config, prune: true };
+  const { plan } = await runSync(pruning, { reader: t.reader, target: targetFor(pruning, t.fake) });
+
+  assert.equal(t.fake.pages.find((page) => page.id === 998)!.status, 'publish');
+  assert.equal(plan.actions.some((action) => action.op === 'prune' && action.id === 998), false);
+  assert.ok(plan.issues.some((issue) => issue.code === 'prune-skipped-foreign'));
   await t.cleanup();
 });
 

@@ -18,7 +18,7 @@ import { buildPageTree, type PageNode, type PageTree } from '../model/tree';
 import type { Doc, DocsVersion, SiteModel } from '../model/types';
 import type { SourceReader } from '../model/reader';
 import { renderDoc, excerptFor } from '../render/index';
-import { composePage, renderVersionBanner, type PageLayout } from '../render/page';
+import { composePage, isGeneratedPage, renderVersionBanner, type PageLayout } from '../render/page';
 import { createTheme, type Theme } from '../render/theme';
 import { stylesheetFor } from '../render/stylesheet';
 import { collectImages, resolveImage } from '../render/images';
@@ -349,6 +349,19 @@ async function syncVersion(input: SyncVersionInput): Promise<{
       const keep = new Set<number>();
       for (const id of ids.values()) if (typeof id === 'number') keep.add(id);
       for (const page of session.computePrune(index, navRootId, keep)) {
+        // Position inside the tree is not ownership. Somebody may have added a
+        // page under the documentation root, and trashing it because this run
+        // did not account for it would be pterodoc deleting someone else's work.
+        const full = await session.fetchPage(page.id);
+        if (!isGeneratedPage(full.content ?? '', config.classPrefix)) {
+          issues.add({
+            code: 'prune-skipped-foreign',
+            severity: 'info',
+            message: `${page.link} sits under the documentation root but was not written by pterodoc, so it was left alone.`,
+          });
+          continue;
+        }
+
         actions.push({
           op: 'prune',
           path: page.slug,
