@@ -1,88 +1,32 @@
 {
-  "name": "pterodoc",
-  "version": "0.1.0",
-  "description": "Publish a Docusaurus site to WordPress as a tree of Gutenberg pages.",
-  "keywords": [
-    "docusaurus",
-    "wordpress",
-    "gutenberg",
-    "documentation",
-    "publishing",
-    "cli"
-  ],
+  "name": "pterodoc-workspace",
+  "private": true,
   "type": "module",
-  "bin": {
-    "pterodoc": "./bin/pterodoc.mjs"
-  },
-  "main": "./lib/index.js",
-  "module": "./lib/index.js",
-  "types": "./lib/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./lib/index.d.ts",
-      "default": "./lib/index.js"
-    },
-    "./plugin": {
-      "types": "./lib/plugin.d.ts",
-      "default": "./lib/plugin.js"
-    },
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "lib",
-    "bin",
-    "README.md",
-    "LICENCE.md",
-    "CHANGELOG.md"
+  "description": "Workspace root for pterodoc. The published packages live in packages/.",
+  "workspaces": [
+    "packages/*",
+    "packages/wordpress/plugin"
   ],
   "engines": {
     "node": ">=20.11"
   },
   "scripts": {
-    "clean": "node -e \"require('fs').rmSync('lib',{recursive:true,force:true});require('fs').rmSync('tsconfig.tsbuildinfo',{force:true})\"",
-    "build:types": "tsc -build --force ./tsconfig.json",
-    "build": "npm run clean && npm run build:types && rollup --config ./rollup.config.mjs",
+    "clean": "node scripts/clean.mjs",
+    "build:types": "tsc -b --force ./tsconfig.json",
+    "build:js": "rollup --config ./rollup.config.mjs",
+    "build": "npm run clean && npm run build:types && npm run build:js",
     "prepare": "npm run build",
-    "test": "tsx --test test/unit/*.test.ts test/integration/*.test.ts",
-    "test:unit": "tsx --test test/unit/*.test.ts",
-    "test:integration": "tsx --test test/integration/*.test.ts",
-    "fixtures": "tsx scripts/write-fixtures.ts"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.5",
-    "github-slugger": "1.5.0",
-    "gray-matter": "^4.0.3",
-    "hast-util-to-html": "^9.0.5",
-    "mdast-util-to-hast": "^13.2.0",
-    "mdast-util-to-string": "^4.0.0",
-    "remark-directive": "^3.0.1",
-    "remark-emoji": "^4.0.1",
-    "remark-frontmatter": "^5.0.0",
-    "remark-gfm": "^4.0.1",
-    "remark-mdx": "^3.1.0",
-    "remark-parse": "^11.0.0",
-    "unified": "^11.0.5",
-    "unist-util-visit": "^5.1.0"
-  },
-  "peerDependencies": {
-    "@docusaurus/core": ">=3.6.0 <4.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@docusaurus/core": {
-      "optional": true
-    }
+    "typecheck": "tsc -p ./tsconfig.dev.json",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "node scripts/tests.mjs unit",
+    "test:integration": "node scripts/tests.mjs integration",
+    "fixtures": "tsx scripts/write-fixtures.ts",
+    "release": "npm run build && npm publish --workspaces"
   },
   "devDependencies": {
-    "@docusaurus/core": "3.10.2",
-    "@docusaurus/preset-classic": "3.10.2",
-    "@docusaurus/types": "3.10.2",
+    "@rollup/plugin-replace": "^6.0.3",
     "@rollup/plugin-typescript": "^12.1.2",
-    "@types/github-slugger": "^1.3.0",
-    "@types/hast": "^3.0.4",
-    "@types/mdast": "^4.0.4",
     "@types/node": "^20.19.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
     "rollup": "^4.53.1",
     "tslib": "^2.8.1",
     "tsx": "^4.20.0",
@@ -97,8 +41,5 @@
   },
   "homepage": "https://github.com/onyx-ac/pterodoc#readme",
   "author": "Onyx <hello@onyx.ac> (https://onyx.ac)",
-  "license": "CC-BY-SA-4.0",
-  "publishConfig": {
-    "access": "public"
-  }
+  "license": "CC-BY-SA-4.0"
 }

@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "rootDir": "./src", "outDir": "./lib" },
+  "include": ["src"],
+  "exclude": ["lib", "test"],
+  "references": [
+    { "path": "../core" },
+    { "path": "../docusaurus" },
+    { "path": "../wordpress" }
+  ]
+}

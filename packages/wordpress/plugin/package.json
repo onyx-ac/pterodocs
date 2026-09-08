@@ -1,0 +1,19 @@
+{
+  "name": "@pterodoc/wp-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The pterodoc WordPress plugin. Not published to npm; it ships as a plugin zip.",
+  "type": "module",
+  "scripts": {
+    "vendor": "node tools/vendor-prism.mjs",
+    "lint:js": "node tools/lint.mjs",
+    "lint:php": "node tools/lint-php.mjs",
+    "plugin:zip": "node tools/zip.mjs",
+    "build": "npm run vendor && npm run plugin:zip",
+    "lint": "npm run lint:js && npm run lint:php"
+  },
+  "devDependencies": {
+    "prismjs": "^1.30.0"
+  },
+  "license": "CC-BY-SA-4.0"
+}

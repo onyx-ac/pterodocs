@@ -7,18 +7,75 @@ Docusaurus site to WordPress; it is a small, single-purpose tool and should stay
 
 ## Layout
 
+Four packages in an npm workspace. The dependency graph is acyclic and points inwards,
+and `npm ls` rather than convention is what enforces it.
+
+| Package | Responsibility |
+| :--- | :--- |
+| `@pterodoc/core` | Everything that knows neither the source nor the target. See below. |
+| `@pterodoc/docusaurus` | Everything that knows Docusaurus exists. Produces a `SiteModel`. |
+| `@pterodoc/wordpress` | The WordPress REST target, and the WordPress plugin under `plugin/`. |
+| `pterodoc` | The command line, the Docusaurus build plugin, and the public barrel. Depends on all three. |
+
+```
+@pterodoc/core  <-  @pterodoc/docusaurus  <-  pterodoc
+                <-  @pterodoc/wordpress   <-
+```
+
+`@pterodoc/core` must never import `@pterodoc/docusaurus` or `@pterodoc/wordpress`.
+Wiring the three together is what the `pterodoc` package is for, and it is the only one
+allowed to name a concrete source or target.
+
+Inside `packages/core/src`:
+
 | Directory | Responsibility |
 | :--- | :--- |
-| `src/cli/` | Argument parsing, output, exit codes. The only place that catches errors. |
-| `src/config/` | Discover, merge and validate configuration. No I/O beyond reading the config. |
-| `src/docusaurus/` | Everything that knows Docusaurus exists. Produces a `SiteModel`. |
-| `src/render/` | Markdown and MDX to Gutenberg blocks. Pure: no network, no Docusaurus, no target. |
-| `src/target/` | Where pages are published. WordPress today; the interface allows others. |
-| `src/sync/` | Reconciles a model with a target. The only layer that knows about all the others. |
-| `src/util/` | Small shared helpers with no domain knowledge. |
+| `config/` | Discover, merge and validate configuration. No I/O beyond reading the config. |
+| `model/` | The site model, the page tree and the `SourceReader` contract. Knows no source. |
+| `render/` | Markdown and MDX to Gutenberg blocks. Pure: no network, no source, no target. |
+| `target/` | The contract a publishing target implements. No implementation. |
+| `sync/` | Reconciles a model with a target. The only layer that knows about all the others. |
+| `util/` | Small shared helpers with no domain knowledge, and the error types. |
 
-The dependency graph is acyclic and points inwards: `cli → config → {docusaurus, render, target} → sync`.
-`render/` must never import from `target/` or `docusaurus/`; URL policy belongs to the target.
+`render/` must never import from `model/`; URL policy belongs to the target. Each of
+`model`, `render`, `target` and `util` has a barrel that is also a published subpath
+(`@pterodoc/core/render` and so on), so a cross-directory import goes through the barrel
+and a cross-package one is a mechanical rename away.
+
+## Building and testing
+
+`npm test` runs every package's suites from source through `tsconfig.dev.json`, with no
+build in the way. `npm run typecheck` is the only thing that typechecks `test/`; `tsx`
+strips types without checking them. `npm run build` is `tsc -b` for every `.d.ts` then
+rollup for every `.js` — they share `lib/`, which is why the base tsconfig sets
+`emitDeclarationOnly`. `prepare` is defined at the workspace root only.
+
+The four packages are versioned in lockstep
+(`npm version <v> --workspaces --include-workspace-root`); a test enforces it.
+
+## The WordPress plugin
+
+`packages/wordpress/plugin` is PHP, CSS and plain JavaScript, with no bundler:
+the file that ships is the file that was written. Four rules hold it together.
+
+- **It registers no block types.** Everything is `render_block` filters over the
+  core blocks pterodoc already emits. The test of any change is: deactivate the
+  plugin, and the documentation must still read.
+- **Build on the block supports, never fight them.** Tokens resolve through
+  `--wp--preset--*` and `--wp--style--*` first; colours are derived with
+  `color-mix` from the block's own resolved colours; the gutter is padding on the
+  column, never on a block. Every default is wrapped in `:where()`. There is no
+  `!important`, and adding one is a bug.
+- **`WP_HTML_Tag_Processor` cannot insert elements.** It changes attributes.
+  Anything needing new DOM is either a wrapper around a whole block or is added
+  by the front-end script.
+- **The server decides state; the script only changes it.** Which sidebar
+  branches are open is settled in PHP, so the first paint is right and there is
+  no flash of an expanded tree.
+
+Anything pterodoc emits for the plugin travels in block-comment attributes, never
+in markup. WordPress re-runs a block's save function on edit and compares, so
+markup core would not have written is markup the editor refuses.
 
 ## The rule that matters most
 

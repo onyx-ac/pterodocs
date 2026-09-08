@@ -1,0 +1,73 @@
+{
+  "name": "pterodoc",
+  "version": "0.1.0",
+  "description": "Publish a Docusaurus site to WordPress as a tree of Gutenberg pages.",
+  "keywords": [
+    "docusaurus",
+    "wordpress",
+    "gutenberg",
+    "documentation",
+    "publishing",
+    "cli"
+  ],
+  "type": "module",
+  "bin": {
+    "pterodoc": "./bin/pterodoc.mjs"
+  },
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./plugin": {
+      "types": "./lib/plugin/index.d.ts",
+      "default": "./lib/plugin/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "src",
+    "bin",
+    "README.md",
+    "LICENCE.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "build": "tsc -b --force && rollup -c",
+    "prepack": "node ../../scripts/stage-docs.mjs",
+    "test": "node ../../scripts/tests.mjs unit"
+  },
+  "dependencies": {
+    "@pterodoc/core": "0.1.0",
+    "@pterodoc/docusaurus": "0.1.0",
+    "@pterodoc/wordpress": "0.1.0"
+  },
+  "peerDependencies": {
+    "@docusaurus/core": ">=3.6.0 <4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@docusaurus/core": {
+      "optional": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onyx-ac/pterodoc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/onyx-ac/pterodoc/issues"
+  },
+  "homepage": "https://github.com/onyx-ac/pterodoc#readme",
+  "author": "Onyx <hello@onyx.ac> (https://onyx.ac)",
+  "license": "CC-BY-SA-4.0",
+  "publishConfig": {
+    "access": "public"
+  }
+}

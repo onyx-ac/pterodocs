@@ -1,0 +1,19 @@
+/*
+ * The editor canvas.
+ *
+ * Deliberately thin. The front-end stylesheet is not loaded into the editor,
+ * because the editor is where somebody is checking what the block itself holds
+ * — a sidebar pinned to the viewport and a sheet that opens over the canvas
+ * would be in the way. What is worth carrying across is the reading measure and
+ * the code block, because those change how the content itself reads.
+ */
+
+.editor-styles-wrapper :where(.wp-block-code) {
+	font-family: var(--wp--preset--font-family--monospace, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+	tab-size: 2;
+}
+
+/* Mark the generated layout, so it is obvious which blocks pterodoc owns. */
+.editor-styles-wrapper [class*="-docs-nav"]::before {
+	content: attr(data-pd-editor-label);
+}

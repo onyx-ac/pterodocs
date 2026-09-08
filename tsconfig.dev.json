@@ -1,0 +1,28 @@
+{
+  // Typechecking and running from source, with no build in the way. `tsx` uses
+  // these paths so `npm test` needs no `lib/`, and this is the only config that
+  // ever looks at `test/`.
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "emitDeclarationOnly": false,
+    "baseUrl": ".",
+    // Listed one by one on purpose: a `@pterodoc/core/*` wildcard maps to a
+    // directory, and neither Node nor tsx does directory-index resolution for
+    // a mapped path.
+    "paths": {
+      "@pterodoc/core": ["packages/core/src/index.ts"],
+      "@pterodoc/core/model": ["packages/core/src/model/index.ts"],
+      "@pterodoc/core/render": ["packages/core/src/render/index.ts"],
+      "@pterodoc/core/target": ["packages/core/src/target/index.ts"],
+      "@pterodoc/core/util": ["packages/core/src/util/index.ts"],
+      "@pterodoc/docusaurus": ["packages/docusaurus/src/index.ts"],
+      "@pterodoc/wordpress": ["packages/wordpress/src/index.ts"],
+      "pterodoc": ["packages/cli/src/index.ts"]
+    }
+  },
+  "include": ["packages/*/src", "packages/*/test", "scripts"]
+}
