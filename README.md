@@ -77,18 +77,51 @@ Pages mirror your documentation URLs, so `/docs/guides/sync` on Docusaurus becom
 sidebar category. A page is identified by its parent and its slug, so re-running only
 rewrites what actually differs, and a second run reports everything as unchanged.
 
-## Status
+## The WordPress plugin
 
-Working, not yet published to npm. Install it from git:
+Optional, and worth installing. pterodoc writes ordinary core blocks, which are
+correct but plain: no syntax highlighting, tables that overflow, a sidebar that
+is a bare expanded list. The plugin in `packages/wordpress/plugin` styles them.
+
+It registers no block types, so nothing about your content becomes dependent on
+it. Deactivate it and the documentation is still there, still readable, still
+navigable.
 
 ```console
-npm install --save-dev github:onyx-ac/pterodoc#v0.1.0
+npm run --workspace @pterodoc/wp-plugin build   # writes pterodoc.zip
+```
+
+Upload that under Plugins, Add New, Upload Plugin. Defaults live at Settings,
+pterodoc; any single block can override them from the block inspector.
+
+Two things to know. Its class prefix must match `render.classPrefix` — set it on
+the settings page, which needs no re-publishing; `pterodoc doctor` says whether
+the two agree. And because a sync rewrites a page's content, an override set on a
+block in the WordPress editor is replaced the next time that page is published:
+the settings page is the durable place for a preference.
+
+Once it is installed, `render.blocks: 'plugin'` lets pterodoc carry instructions
+core blocks cannot express — chiefly a fence's highlighted line range, which is
+otherwise reported as dropped. It travels in the block comment rather than in
+markup, so WordPress stores the same content either way.
+
+## Status
+
+Working.
+
+```console
+npm install --save-dev pterodoc
 ```
 
 It has been verified against a real 47-page documentation set: rendering matches the
 script it was extracted from on 42 of those pages, and every one of the remaining five
 differs only where pterodoc is now correct. Versions, locales and the Docusaurus plugin
 are implemented but have not yet been exercised against a site that uses them.
+
+Installing from a git URL is no longer supported: the repository is an npm workspace, and
+a git install would pack only its private root. `pterodoc` is the package to install; it
+pulls in `@pterodoc/core`, `@pterodoc/docusaurus` and `@pterodoc/wordpress`, which are
+published in lockstep with it.
 
 ## Licence
 

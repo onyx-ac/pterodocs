@@ -6,7 +6,7 @@
  */
 
 import fs from 'node:fs';
-import { FIXTURES, goldenPath, renderFixture } from '../test/fixtures/render-fixture';
+import { FIXTURES, goldenPath, renderFixture } from '../packages/core/test/fixtures/render-fixture';
 
 for (const name of FIXTURES) {
   const { body, issues } = renderFixture(name);

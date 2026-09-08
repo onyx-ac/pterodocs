@@ -1,5 +1,81 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Split into an npm workspace of four packages: `@pterodoc/core` (rendering, the site
+  model, the target contract, configuration and the reconciler), `@pterodoc/docusaurus`
+  (the site loader and its readers), `@pterodoc/wordpress` (the REST target) and
+  `pterodoc` (the command line, the Docusaurus build plugin and the public barrel).
+  The dependency graph points inwards and npm enforces it. The public surface of
+  `pterodoc` is unchanged, `pterodoc/plugin` still resolves, and the goldens still match
+  byte for byte.
+- The site model, the page tree, the `SourceReader` contract and model capture moved out
+  of the Docusaurus layer: they describe what a source produces, not how Docusaurus
+  produces it. `pterodoc --model` and every fixture-driven test now resolve without
+  Docusaurus in the graph at all.
+- The command line and the Docusaurus plugin build the target through one
+  `resolveTarget`, rather than each spelling out the same options. The plugin also
+  accepts a `target` of its own.
+- The version is stamped into the build instead of found by walking up the tree looking
+  for a manifest, which under a workspace would have found the wrong one and silently
+  reported `0.0.0`.
+- Installing from a git URL is no longer supported; install `pterodoc` from npm.
+
+### Added
+
+- A WordPress plugin, in `packages/wordpress/plugin`, that turns the pages
+  pterodoc publishes into a documentation experience: a full-width layout with
+  prose kept to a comfortable measure while code and tables run to the column
+  edge, syntax highlighting and a copy button, a sidebar that collapses to the
+  section being read and scrolls on its own, a bottom sheet or drawer on small
+  screens, and tables that scroll inside their own keyboard-reachable region.
+
+  It registers no block types. Everything is layered over the core blocks
+  pterodoc already writes, through `render_block` filters, one stylesheet and one
+  script — so deactivating it leaves documentation that is still readable and
+  still navigable. Site-wide defaults live on a settings page; any single block
+  can override them from the block inspector.
+
+  Its design is built on the block supports rather than around them. Every token
+  resolves through a theme's own global-styles variables first, syntax colours
+  are derived with `color-mix` from the code block's resolved colours so a
+  palette choice repaints them to match, the gutter is padding on the column
+  rather than on any block so `spacing` composes, and every default sits inside
+  `:where()` so anything set in the inspector wins. There is no `!important` in
+  the stylesheet.
+
+- `render.blocks`, either `'core'` (the default, and byte-for-byte what pterodoc
+  emitted before) or `'plugin'`. The second carries instructions the plugin can
+  act on in block-comment attributes only, never in markup, so WordPress stores
+  the same content either way and the editor has nothing to object to.
+
+- Highlighted line ranges survive when `render.blocks` is `'plugin'`. A
+  `{1,3-5}` on a fence had no core equivalent and was reported as dropped; it is
+  now carried and rendered.
+
+- `pterodoc doctor` reports whether the plugin is installed, and warns when its
+  class prefix disagrees with `render.classPrefix` — a mismatch that otherwise
+  publishes cleanly, loads cleanly and silently styles nothing.
+
+### Fixed
+
+- `pterodoc/plugin` shipped an `exports` entry pointing at a declaration file that is not
+  where tsc emits one, so the subpath resolved to `any` for every consumer.
+- `@types/mdast`, `@types/hast` and `@types/github-slugger` were development
+  dependencies, but the emitted declarations refer to those types; they are now real
+  dependencies of `@pterodoc/core`.
+- The fake WordPress used by the tests set `title` twice in one object literal, so the
+  first was always dead. Typechecking the test suites, which nothing did before, found
+  it.
+- Six tests asserted POSIX absolute paths and could not pass on Windows, where
+  `path.resolve` prepends the drive letter. They now build their fixtures with `path`.
+
+### Removed
+
+- `remark-emoji`, which was declared as a dependency and never imported.
+
 ## 0.1.0
 
 ### Added

@@ -5,5 +5,13 @@ lib/
 .env
 
 # The fixture site is a real Docusaurus site; its build artefacts are not source.
-test/fixtures/site/.docusaurus/
-test/fixtures/site/build/
+packages/docusaurus/test/fixtures/site/.docusaurus/
+packages/docusaurus/test/fixtures/site/build/
+
+# Staged into packages/cli at pack time; the originals live at the repository root.
+packages/cli/README.md
+packages/cli/CHANGELOG.md
+
+# The WordPress plugin: Prism is copied from npm, and the zip is a build output.
+packages/wordpress/plugin/assets/vendor/
+packages/wordpress/plugin/pterodoc.zip

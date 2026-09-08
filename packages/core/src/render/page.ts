@@ -1,0 +1,289 @@
+/**
+ * Page composition: the navigation and layout wrapped around a rendered body.
+ *
+ * This module deliberately describes the page tree structurally rather than
+ * importing it, so the renderer stays independent of where the model came from
+ * and of where the page is going.
+ */
+
+import { escapeText, joinBlocks, serializeBlock, serializeVoidBlock } from './blocks';
+import { excerptFrom } from './excerpt';
+import type { Theme } from './theme';
+
+/** The parts of a page node this module reads. */
+export interface PageLike {
+  /** Path within the published tree; '' is the root. */
+  path: string;
+  /** Title shown on the page and in navigation. */
+  title: string;
+  /** Short description, when the document supplied one. */
+  description?: string | undefined;
+  /** Parent page, for the breadcrumb. */
+  parent?: PageLike | undefined;
+  /** Children, in order. */
+  children: PageLike[];
+  /** Children grouped by the section that named them. */
+  sections: { label?: string | undefined; children: PageLike[] }[];
+  /** Path of the previous page in reading order. */
+  previousPath?: string | undefined;
+  /** Path of the next page. */
+  nextPath?: string | undefined;
+}
+
+/** How a page is laid out on the target. */
+export interface PageLayout {
+  /** `two-column` puts navigation beside the document; `single` omits it. */
+  kind: 'two-column' | 'single';
+  /** Width of the navigation column. */
+  navWidth: string;
+  /** Width of the document column. */
+  mainWidth: string;
+  /** Alignment of the columns block: '', 'wide' or 'full'. */
+  align: '' | 'wide' | 'full';
+  /** `page-list` renders the target's own page tree; `none` omits navigation. */
+  nav: 'page-list' | 'none';
+  /** Show a trail of links back to the root. */
+  breadcrumb: boolean;
+  /** Show previous and next links. */
+  pagination: boolean;
+  /** When to list child pages: automatically, always, or never. */
+  childIndex: 'auto' | 'always' | 'never';
+}
+
+/** The layout used when a site configures none. */
+export const DEFAULT_LAYOUT: PageLayout = {
+  kind: 'two-column',
+  navWidth: '25%',
+  mainWidth: '75%',
+  align: '',
+  nav: 'page-list',
+  breadcrumb: true,
+  pagination: true,
+  childIndex: 'auto',
+};
+
+/** Everything needed to compose one page. */
+export interface ComposePageInput {
+  /** The page being composed. */
+  node: PageLike;
+  /** The rendered document body; empty for a page with no document. */
+  body: string;
+  /** Tree paths this page's body already links to. */
+  links: Set<string>;
+  /** Absolute target URL for a tree path. */
+  href: (treePath: string) => string;
+  /** Look a page up by tree path, for previous and next. */
+  lookup: (treePath: string) => PageLike | undefined;
+  /** Class names and strings. */
+  theme: Theme;
+  /** How the page is laid out. */
+  layout: PageLayout;
+  /** Id of the page the navigation block should list from. */
+  navRootId?: number | null | undefined;
+  /** A notice shown above the body, such as an old-version banner. */
+  banner?: string | undefined;
+}
+
+/** A short summary of a page, for an index listing. */
+function summaryOf(node: PageLike, theme: Theme): string {
+  if (node.description) return excerptFrom(node.description, 140);
+  const count = node.children.length;
+  if (count === 1) return theme.text('pageCountOne');
+  if (count > 1) return theme.text('pageCount', { count });
+  return '';
+}
+
+/** The trail of links back to the root. */
+export function renderBreadcrumb(input: ComposePageInput): string {
+  const trail: PageLike[] = [];
+  for (let current = input.node.parent; current; current = current.parent) trail.unshift(current);
+  if (trail.length === 0) return '';
+
+  const links = trail.map(
+    (ancestor) => `<a href="${input.href(ancestor.path)}">${escapeText(ancestor.title)}</a>`,
+  );
+  links.push(escapeText(input.node.title));
+
+  const className = input.theme.cls('docs-breadcrumb');
+
+  // Marked up, the plugin can swap the separator for a configured one exactly
+  // rather than by guessing which run of text between two links is one. Left
+  // bare, it is the same characters it has always been.
+  const separator = escapeText(input.theme.strings.breadcrumbSeparator);
+  const joined =
+    input.theme.blocks === 'plugin'
+      ? links.join(`<span class="${input.theme.cls('breadcrumb-separator')}">${separator}</span>`)
+      : links.join(separator);
+
+  return serializeBlock(
+    'group',
+    { className },
+    `<div class="wp-block-group ${className}">${serializeBlock(
+      'paragraph',
+      undefined,
+      `<p>${joined}</p>`,
+    )}</div>`,
+  );
+}
+
+/** Previous and next links, following the site's own order. */
+export function renderPagination(input: ComposePageInput): string {
+  const previous = input.node.previousPath === undefined ? undefined : input.lookup(input.node.previousPath);
+  const next = input.node.nextPath === undefined ? undefined : input.lookup(input.node.nextPath);
+  if (!previous && !next) return '';
+
+  const parts: string[] = [];
+  if (previous) {
+    const className = input.theme.cls('docs-pagination-prev');
+    parts.push(
+      serializeBlock(
+        'paragraph',
+        { className },
+        `<p class="${className}"><a href="${input.href(previous.path)}">${escapeText(
+          input.theme.text('previous', { title: previous.title }),
+        )}</a></p>`,
+      ),
+    );
+  }
+  if (next) {
+    const className = input.theme.cls('docs-pagination-next');
+    parts.push(
+      serializeBlock(
+        'paragraph',
+        { className },
+        `<p class="${className}"><a href="${input.href(next.path)}">${escapeText(
+          input.theme.text('next', { title: next.title }),
+        )}</a></p>`,
+      ),
+    );
+  }
+
+  const className = input.theme.cls('docs-pagination');
+  return serializeBlock(
+    'group',
+    { className },
+    `<div class="wp-block-group ${className}">${joinBlocks(parts)}</div>`,
+  );
+}
+
+/** A list of the pages below this one, grouped as the sidebar grouped them. */
+export function renderChildIndex(input: ComposePageInput, heading: string): string {
+  const { node, theme } = input;
+  if (node.children.length === 0) return '';
+
+  const parts: string[] = [];
+  if (heading) {
+    const className = theme.cls('docs-index-heading');
+    parts.push(
+      serializeBlock(
+        'heading',
+        { className },
+        `<h2 class="wp-block-heading ${className}" id="in-this-section">${escapeText(heading)}</h2>`,
+      ),
+    );
+  }
+
+  for (const section of node.sections.length > 0 ? node.sections : [{ label: undefined, children: node.children }]) {
+    if (section.label) {
+      parts.push(
+        serializeBlock('heading', { level: 3 }, `<h3 class="wp-block-heading">${escapeText(section.label)}</h3>`),
+      );
+    }
+    const items = section.children
+      .map((child) => {
+        const summary = summaryOf(child, theme);
+        const link = `<a href="${input.href(child.path)}">${escapeText(child.title)}</a>`;
+        return serializeBlock(
+          'list-item',
+          undefined,
+          `<li>${link}${summary ? ` — ${escapeText(summary)}` : ''}</li>`,
+        );
+      })
+      .join('\n\n');
+
+    const className = theme.cls('docs-index');
+    parts.push(
+      serializeBlock(
+        'list',
+        { className },
+        `<ul class="wp-block-list ${className}">${items}</ul>`,
+      ),
+    );
+  }
+
+  return joinBlocks(parts);
+}
+
+/** The navigation column's contents. */
+function renderNavigation(input: ComposePageInput): string {
+  if (input.layout.nav === 'none') return '';
+  return serializeVoidBlock('page-list', { parentPageID: input.navRootId ?? 0 });
+}
+
+/** Compose the stored content of one page. */
+export function composePage(input: ComposePageInput): string {
+  const { node, theme, layout } = input;
+
+  let index = '';
+  if (node.children.length > 0 && layout.childIndex !== 'never') {
+    // A page that already links all of its children does not need a generated
+    // list; one that links none of them does.
+    const linksAllChildren = node.children.every((child) => input.links.has(child.path));
+    if (layout.childIndex === 'always' || !linksAllChildren) {
+      index = renderChildIndex(input, input.body ? theme.text('indexHeading') : '');
+    }
+  }
+
+  const main = joinBlocks([
+    input.banner ?? '',
+    layout.breadcrumb ? renderBreadcrumb(input) : '',
+    input.body,
+    index,
+    layout.pagination ? renderPagination(input) : '',
+  ]);
+
+  if (layout.kind === 'single' || layout.nav === 'none') return main;
+
+  const navClass = theme.cls('docs-nav');
+  const mainClass = theme.cls('docs-main');
+  const navColumn = serializeBlock(
+    'column',
+    { width: layout.navWidth, className: navClass },
+    `<div class="wp-block-column ${navClass}" style="flex-basis:${layout.navWidth}">${renderNavigation(input)}</div>`,
+  );
+  const mainColumn = serializeBlock(
+    'column',
+    { width: layout.mainWidth, className: mainClass },
+    `<div class="wp-block-column ${mainClass}" style="flex-basis:${layout.mainWidth}">${main}</div>`,
+  );
+
+  const columnsClass = theme.cls('docs');
+  const attributes: Record<string, unknown> = { className: columnsClass };
+  if (layout.align) attributes['align'] = layout.align;
+  const alignClass = layout.align ? ` align${layout.align}` : '';
+
+  return serializeBlock(
+    'columns',
+    attributes,
+    `<div class="wp-block-columns${alignClass} ${columnsClass}">${navColumn}\n\n${mainColumn}</div>`,
+  );
+}
+
+/** Body for a path segment that exists only so the documentation has a parent. */
+export function renderNavigationStub(selfId: number): string {
+  return serializeVoidBlock('page-list', { parentPageID: selfId });
+}
+
+/** A notice shown on every page of a version that is not the current one. */
+export function renderVersionBanner(theme: Theme, label: string, kind: string): string {
+  const className = `${theme.cls('version-banner')} ${theme.cls(`version-banner-${kind}`)}`;
+  return serializeBlock(
+    'group',
+    { className },
+    `<div class="wp-block-group ${className}">${serializeBlock(
+      'paragraph',
+      undefined,
+      `<p>${escapeText(theme.text('versionBanner', { label }))}</p>`,
+    )}</div>`,
+  );
+}

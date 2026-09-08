@@ -1,0 +1,43 @@
+{
+  "name": "@pterodoc/core",
+  "version": "0.1.0",
+  "description": "Rendering, the site model, the target contract and the reconciler behind pterodoc.",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": { "types": "./lib/index.d.ts", "default": "./lib/index.js" },
+    "./model": { "types": "./lib/model/index.d.ts", "default": "./lib/model/index.js" },
+    "./render": { "types": "./lib/render/index.d.ts", "default": "./lib/render/index.js" },
+    "./target": { "types": "./lib/target/index.d.ts", "default": "./lib/target/index.js" },
+    "./util": { "types": "./lib/util/index.d.ts", "default": "./lib/util/index.js" },
+    "./package.json": "./package.json"
+  },
+  "files": ["lib", "src", "README.md", "LICENCE.md"],
+  "engines": { "node": ">=20.11" },
+  "scripts": {
+    "build": "tsc -b --force && rollup -c",
+    "test": "node ../../scripts/tests.mjs unit"
+  },
+  "dependencies": {
+    "@types/github-slugger": "^1.3.0",
+    "@types/hast": "^3.0.4",
+    "@types/mdast": "^4.0.4",
+    "dotenv": "^16.4.5",
+    "github-slugger": "1.5.0",
+    "gray-matter": "^4.0.3",
+    "hast-util-to-html": "^9.0.5",
+    "mdast-util-to-hast": "^13.2.0",
+    "mdast-util-to-string": "^4.0.0",
+    "remark-directive": "^3.0.1",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-mdx": "^3.1.0",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0"
+  },
+  "repository": { "type": "git", "url": "git+https://github.com/onyx-ac/pterodoc.git" },
+  "license": "CC-BY-SA-4.0",
+  "publishConfig": { "access": "public" }
+}
