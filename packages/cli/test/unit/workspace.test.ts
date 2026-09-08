@@ -42,3 +42,32 @@ test('core depends on neither of the packages that depend on it', () => {
   assert.ok(!dependencies.includes('@pterodoc/docusaurus'));
   assert.ok(!dependencies.includes('@pterodoc/wordpress'));
 });
+
+test('the WordPress plugin agrees with its manifest about its own version', () => {
+  // WordPress reads the version from the plugin header, uses the constant to
+  // bust asset caches, and shows the stable tag to anyone installing it. Three
+  // copies of one number is three chances to ship a stale stylesheet.
+  const dir = path.join(packages, 'wordpress', 'plugin');
+  const version = JSON.parse(
+    fs.readFileSync(path.join(dir, 'package.json'), 'utf8'),
+  ).version as string;
+
+  const php = fs.readFileSync(path.join(dir, 'pterodoc.php'), 'utf8');
+  const readme = fs.readFileSync(path.join(dir, 'readme.txt'), 'utf8');
+
+  const header = /^ \* Version: +(.+)$/m.exec(php);
+  const constant = /const VERSION = '([^']+)';/.exec(php);
+  const stable = /^Stable tag: (.+)$/m.exec(readme);
+
+  assert.equal(header?.[1]?.trim(), version, 'the plugin header');
+  assert.equal(constant?.[1], version, 'the VERSION constant');
+  assert.equal(stable?.[1]?.trim(), version, 'the readme stable tag');
+});
+
+test('the plugin moves in step with the packages', () => {
+  const plugin = JSON.parse(
+    fs.readFileSync(path.join(packages, 'wordpress', 'plugin', 'package.json'), 'utf8'),
+  ).version as string;
+
+  assert.equal(plugin, manifest('core').version);
+});
