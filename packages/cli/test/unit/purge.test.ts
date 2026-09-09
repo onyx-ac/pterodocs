@@ -1,5 +1,5 @@
 /**
- * Removing documentation pterodoc published.
+ * Removing documentation pterodocs published.
  *
  * The property that matters is not that it deletes, but what it refuses to
  * delete: a page it cannot recognise as its own is left standing, however
@@ -14,7 +14,7 @@ import { createFakeWp, type FakeWp } from '../../../wordpress/test/fixtures/fake
 
 const PREFIX = 'docstack';
 
-/** Markup that carries pterodoc's signature. */
+/** Markup that carries pterodocs's signature. */
 const generated = (): string =>
   `<!-- wp:columns {"className":"${PREFIX}-docs"} --><div class="wp-block-columns ${PREFIX}-docs"></div><!-- /wp:columns -->`;
 
@@ -65,7 +65,7 @@ async function open(fake: FakeWp) {
       status: 'publish',
       template: '',
       lang: '',
-      mediaSlugPrefix: 'pterodocs',
+      mediaSlugPrefix: 'pterodoc',
       methodOverride: false,
       retry: { attempts: 1, baseDelayMs: 0, maxDelayMs: 0 },
     },
@@ -138,7 +138,7 @@ test('nothing above the documentation root is touched', async () => {
   assert.equal(statusOf(fake, 'docstack'), 'publish');
 });
 
-test('a page pterodoc did not write is left standing inside the tree', async () => {
+test('a page pterodocs did not write is left standing inside the tree', async () => {
   const fake = siteWithDocs();
   const docs = fake.pages.find((page) => page.slug === 'docs')!;
   fake.pages.push({

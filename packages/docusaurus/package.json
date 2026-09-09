@@ -1,7 +1,7 @@
 {
   "name": "@pterodocs/docusaurus",
   "version": "0.4.1",
-  "description": "Reads a pterodoc site model out of Docusaurus, using Docusaurus's own site loader.",
+  "description": "Reads a pterodocs site model out of Docusaurus, using Docusaurus's own site loader.",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

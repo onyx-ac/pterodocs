@@ -3,7 +3,7 @@ import type { Config } from '@docusaurus/types';
 /**
  * A minimal but real Docusaurus site.
  *
- * It exists so one test loads pterodoc's model through Docusaurus itself,
+ * It exists so one test loads pterodocs's model through Docusaurus itself,
  * which is the part of this tool that no captured fixture can prove.
  */
 const config: Config = {

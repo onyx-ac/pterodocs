@@ -44,7 +44,7 @@ fs.copyFileSync(
 );
 
 // Highlighted line ranges: Docusaurus writes them in the fence's metastring,
-// pterodoc carries them in the block comment, and this renders them.
+// pterodocs carries them in the block comment, and this renders them.
 fs.copyFileSync(
   path.join(source, 'plugins', 'line-highlight', 'prism-line-highlight.min.js'),
   path.join(target, 'plugins', 'line-highlight', 'prism-line-highlight.min.js'),

@@ -58,6 +58,6 @@ jobs:
 
       # The plugin ships as source, so what has to hold is that the exact bytes
       # WordPress will serve parse — as PHP, and as JavaScript.
-      - run: npm run --workspace @pterodoc/wp-plugin lint
+      - run: npm run --workspace @pterodocs/wp-plugin lint
 
-      - run: npm run --workspace @pterodoc/wp-plugin build
+      - run: npm run --workspace @pterodocs/wp-plugin build

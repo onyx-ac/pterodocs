@@ -2,7 +2,7 @@
   "name": "pterodocs-workspace",
   "private": true,
   "type": "module",
-  "description": "Workspace root for pterodoc. The published packages live in packages/.",
+  "description": "Workspace root for pterodocs. The published packages live in packages/.",
   "workspaces": [
     "packages/*",
     "packages/wordpress/plugin"

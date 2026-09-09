@@ -1,6 +1,9 @@
 node_modules/
 lib/
 *.tsbuildinfo
+.pterodocs/
+# The output directory before the rename; still ignored so an existing
+# checkout does not suddenly show it as untracked.
 .pterodoc/
 .env
 

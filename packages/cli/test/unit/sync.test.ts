@@ -209,7 +209,7 @@ test('a page with no source document is reported, and only trashed when asked', 
   const t = await setup();
   await t.run();
 
-  // Written by pterodoc: it carries the class prefix pterodoc composes with.
+  // Written by pterodocs: it carries the class prefix pterodocs composes with.
   orphan(t, 999, `<!-- wp:columns {"className":"${t.config.classPrefix}-docs"} --><div></div><!-- /wp:columns -->`);
 
   const reported = await t.run();
@@ -226,7 +226,7 @@ test('a page with no source document is reported, and only trashed when asked', 
 
 test('a page somebody else put under the documentation root is never trashed', async () => {
   // Position inside the tree is not ownership. Pruning by position alone would
-  // make pterodoc delete work it did not do.
+  // make pterodocs delete work it did not do.
   const t = await setup();
   await t.run();
 

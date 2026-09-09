@@ -2,7 +2,7 @@
  * What changes, and what must not, when the WordPress plugin is expected.
  *
  * The contract of `render.blocks: 'plugin'` is narrow on purpose: it may add
- * block-comment attributes and it may add markup of its own inside pterodoc's
+ * block-comment attributes and it may add markup of its own inside pterodocs's
  * generated furniture, but it must never change the markup of a core block —
  * WordPress re-runs a block's save function on edit and compares, and content
  * it would not have written itself is content the editor refuses.
@@ -97,7 +97,7 @@ test('the plugin gets a marked separator, so swapping it needs no guesswork', ()
   const body = breadcrumb('plugin');
   assert.ok(body.includes('<span class="x-breadcrumb-separator"> › </span>'), body);
 
-  // Still one paragraph of links: the marking is inside pterodoc's own
+  // Still one paragraph of links: the marking is inside pterodocs's own
   // furniture, not a change to how the breadcrumb is built.
   assert.equal(body.match(/<!-- wp:paragraph -->/g)?.length, 2);
 });

@@ -1,7 +1,7 @@
 /**
  * Looking right without anything installed.
  *
- * WordPress renders core blocks with almost no opinion, so what pterodoc
+ * WordPress renders core blocks with almost no opinion, so what pterodocs
  * publishes has to carry its own appearance: a stylesheet stored with the page,
  * and code tokenised before it ever gets there. These tests are about the two
  * properties that make that safe to do — the markup stays valid core blocks,
