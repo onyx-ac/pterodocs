@@ -1,6 +1,6 @@
 {
   "name": "@pterodoc/docusaurus",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Reads a pterodoc site model out of Docusaurus, using Docusaurus's own site loader.",
   "type": "module",
   "main": "./lib/index.js",
@@ -16,7 +16,7 @@
     "test": "node ../../scripts/tests.mjs integration"
   },
   "dependencies": {
-    "@pterodoc/core": "0.2.0"
+    "@pterodoc/core": "0.3.0"
   },
   "peerDependencies": {
     "@docusaurus/core": ">=3.6.0 <4.0.0"

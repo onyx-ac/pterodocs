@@ -149,6 +149,23 @@ build plugin. The WordPress plugin is newer still — its PHP and JavaScript are
 CI and its markup decisions are covered by tests on the publisher's side, but its
 behaviour in a browser has not been through a release on a live site.
 
+## Roadmap
+
+Next, in the order they would help most:
+
+- **`pterodoc preview`.** Render, then write a browsable page showing the result
+  at a phone width and a desktop one, with the navigation reconstructed — WordPress
+  renders `core/page-list` server-side, so a rendered file has only its
+  placeholder and the sidebar cannot otherwise be seen. Built by hand three
+  times while developing the stylesheet, and it produced two false bug reports
+  by quietly clipping its own output, which is the argument for it being a
+  command with tests rather than a script.
+- **An example Docusaurus site.** The fixture the integration test uses is four
+  documents, which is enough to prove the loader works and not enough to show a
+  sidebar, an admonition, tabs or a wide table. A fuller example would give the
+  preview something honest to run against, and would make the goldens
+  representative of what people actually publish.
+
 ## Licence
 
 CC-BY-SA-4.0. See LICENCE.md.

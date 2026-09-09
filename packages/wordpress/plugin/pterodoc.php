@@ -3,7 +3,7 @@
  * Plugin Name:       pterodoc
  * Plugin URI:        https://github.com/onyx-ac/pterodoc
  * Description:       Turns documentation published by pterodoc into a proper documentation experience: a collapsible sidebar, highlighted code with a copy button, scrolling tables and a full-width layout — all styled from your theme's own palette.
- * Version:           0.2.0
+ * Version:           0.3.0
  * Requires at least: 6.5
  * Requires PHP:      8.0
  * Author:            Onyx
@@ -22,7 +22,7 @@ namespace Pterodoc;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION = '0.2.0';
+const VERSION = '0.3.0';
 
 define( 'PTERODOC_FILE', __FILE__ );
 define( 'PTERODOC_DIR', plugin_dir_path( __FILE__ ) );

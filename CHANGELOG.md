@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.0
 
 ### Added
 
@@ -28,6 +28,22 @@
   over: pasting that file into Appearance, Customise, Additional CSS once and
   setting `render.styles` to `none` costs a minute and nothing thereafter. The
   command line says so after a render.
+
+### Fixed
+
+- The two columns overflowed the page. They carry inline `flex-basis` of 25% and
+  75%, which together are the whole content box, so any gap pushed the document
+  off the right edge — and an inline style cannot be overridden from a
+  stylesheet. The root is a grid now, where `flex-basis` is inert and `1fr`
+  accounts for the gap by itself. `layout.navWidth` still applies; it arrives as
+  a custom property, since the inline one is ignored.
+- That rule then never applied, because it was wrapped in `:where()`, which
+  scores zero specificity — core's own `.wp-block-columns{display:flex}` won at
+  every width. `:where()` is right wherever a theme should be able to override
+  pterodoc, and wrong for the layout, which has to win.
+- The navigation sheet was anchored to the top of small screens: the desktop
+  sidebar sets `top`, the sheet set `bottom`, and a box with both anchors to
+  `top`.
 
 ### Changed
 
