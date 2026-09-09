@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.1
+
+### Fixed
+
+- `pterodocs` declared a command called `pterodoc`, pointing at a file the
+  rename had moved. npm installs that without complaint and simply creates no
+  command, so 0.4.0 installed cleanly and could not be run. A test now checks
+  that every declared binary points at a file that is really there, and that the
+  command is named after the package.
+
 ## 0.4.0
 
 ### Changed

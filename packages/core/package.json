@@ -1,6 +1,6 @@
 {
   "name": "@pterodocs/core",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Rendering, the site model, the target contract and the reconciler behind pterodoc.",
   "type": "module",
   "main": "./lib/index.js",

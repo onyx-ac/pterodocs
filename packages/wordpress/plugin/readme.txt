@@ -4,7 +4,7 @@ Tags: documentation, docusaurus, gutenberg, syntax highlighting, docs
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 0.4.0
+Stable tag: 0.4.1
 License: CC-BY-SA-4.0
 License URI: https://creativecommons.org/licenses/by-sa/4.0/
 
@@ -105,5 +105,5 @@ step the plugin works and simply does not highlight.
 
 == Changelog ==
 
-= 0.4.0 =
+= 0.4.1 =
 * First release.

@@ -11,7 +11,12 @@ const packages = path.join(
 );
 
 /** Read one workspace manifest. */
-function manifest(name: string): { name: string; version: string; dependencies?: Record<string, string> } {
+function manifest(name: string): {
+  name: string;
+  version: string;
+  dependencies?: Record<string, string>;
+  bin?: Record<string, string>;
+} {
   return JSON.parse(fs.readFileSync(path.join(packages, name, 'package.json'), 'utf8'));
 }
 
@@ -70,4 +75,26 @@ test('the plugin moves in step with the packages', () => {
   ).version as string;
 
   assert.equal(plugin, manifest('core').version);
+});
+
+test('every declared binary points at a file that exists', () => {
+  // A bin naming a missing file installs without complaint and simply creates
+  // no command: `npm pack` lists it, the install succeeds, and the tool is
+  // unreachable. Renaming the file without the manifest shipped exactly that.
+  for (const name of NAMES) {
+    const dir = path.join(packages, name);
+    const bin = manifest(name).bin as Record<string, string> | undefined;
+    if (!bin) continue;
+
+    for (const [command, target] of Object.entries(bin)) {
+      const file = path.join(dir, target);
+      assert.ok(fs.existsSync(file), `${command} points at ${target}, which is not there`);
+    }
+  }
+});
+
+test('the command is named after the package', () => {
+  const bin = manifest('cli').bin as Record<string, string>;
+
+  assert.deepEqual(Object.keys(bin), ['pterodocs']);
 });
