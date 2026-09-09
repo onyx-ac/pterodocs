@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       pterodocs
- * Plugin URI:        https://github.com/onyx-ac/pterodoc
+ * Plugin URI:        https://github.com/onyx-ac/pterodocs
  * Description:       Turns documentation published by pterodocs into a proper documentation experience: a collapsible sidebar, highlighted code with a copy button, scrolling tables and a full-width layout — all styled from your theme's own palette.
  * Version:           0.4.1
  * Requires at least: 6.5

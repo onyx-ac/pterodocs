@@ -38,7 +38,7 @@
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0"
   },
-  "repository": { "type": "git", "url": "git+https://github.com/onyx-ac/pterodoc.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/onyx-ac/pterodocs.git" },
   "license": "CC-BY-SA-4.0",
   "publishConfig": { "access": "public" }
 }

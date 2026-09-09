@@ -1,6 +1,6 @@
 # @pterodocs/wordpress
 
-The WordPress REST target for [pterodocs](https://github.com/onyx-ac/pterodoc): pages
+The WordPress REST target for [pterodocs](https://github.com/onyx-ac/pterodocs): pages
 identified by parent and slug, media keyed by content hash, and pruning that trashes
 rather than deletes.
 

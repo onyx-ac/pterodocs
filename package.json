@@ -34,12 +34,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/onyx-ac/pterodoc.git"
+    "url": "git+https://github.com/onyx-ac/pterodocs.git"
   },
   "bugs": {
-    "url": "https://github.com/onyx-ac/pterodoc/issues"
+    "url": "https://github.com/onyx-ac/pterodocs/issues"
   },
-  "homepage": "https://github.com/onyx-ac/pterodoc#readme",
+  "homepage": "https://github.com/onyx-ac/pterodocs#readme",
   "author": "Onyx <hello@onyx.ac> (https://onyx.ac)",
   "license": "CC-BY-SA-4.0"
 }

@@ -14,7 +14,7 @@ full-width layout, all drawn from your theme's own palette.
 
 == Description ==
 
-[pterodocs](https://github.com/onyx-ac/pterodoc) publishes a Docusaurus site to
+[pterodocs](https://github.com/onyx-ac/pterodocs) publishes a Docusaurus site to
 WordPress as ordinary Gutenberg blocks. This plugin makes those pages look and
 behave like documentation.
 

@@ -28,4 +28,4 @@ function readVersion(): string {
 export const VERSION = readVersion();
 
 /** The User-Agent every outbound request identifies itself with. */
-export const USER_AGENT = `pterodocs/${VERSION} (+https://github.com/onyx-ac/pterodoc)`;
+export const USER_AGENT = `pterodocs/${VERSION} (+https://github.com/onyx-ac/pterodocs)`;
