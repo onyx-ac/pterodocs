@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **`llms.txt` and `llms-full.txt`.** Every run writes both into the output
+  directory and stores them on the documentation root page, where the WordPress
+  plugin serves them from the documentation's own root —
+  `/<root>/<base>/llms.txt` — rather than from the top of the domain. The root
+  file is supposed to describe an entire site, pterodocs only knows about its
+  own tree, and other plugins reasonably claim that path.
+
+  They are built from what the run published, not from a Docusaurus build. That
+  is what makes the links the WordPress URLs and the selection the sidebars,
+  locales and versions the configuration names; a build-time plugin necessarily
+  describes the Docusaurus site instead, and needs a build to have happened at
+  all. The markdown copy is taken in the middle of the render, just after links
+  have been pointed at the target and before the tree becomes blocks, so image
+  sources resolve to their uploaded copies the same way the image blocks do.
+
+  Configured under `llms`; `publish: false` keeps them local. A site without the
+  plugin refuses the metadata, and the run reports it as a warning rather than
+  failing — the pages matter more than the index. Multi-locale runs index the
+  primary locale and say so.
+
 ## 0.4.1
 
 ### Fixed

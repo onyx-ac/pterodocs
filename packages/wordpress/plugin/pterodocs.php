@@ -33,6 +33,7 @@ require_once PTERODOCS_DIR . 'inc/Markup.php';
 require_once PTERODOCS_DIR . 'inc/Prism.php';
 require_once PTERODOCS_DIR . 'inc/Assets.php';
 require_once PTERODOCS_DIR . 'inc/Render.php';
+require_once PTERODOCS_DIR . 'inc/Llms.php';
 
 /**
  * Wire the plugin up.
@@ -45,6 +46,12 @@ function bootstrap(): void {
 	Settings::init();
 	Assets::init();
 	Render::init();
+	Llms::init();
+
+	// Rewrite rules only exist once they have been flushed, and flushing is
+	// expensive enough that it belongs on activation rather than on every load.
+	register_activation_hook( PTERODOCS_FILE, array( Llms::class, 'activate' ) );
+	register_deactivation_hook( PTERODOCS_FILE, array( Llms::class, 'deactivate' ) );
 
 	add_action(
 		'init',

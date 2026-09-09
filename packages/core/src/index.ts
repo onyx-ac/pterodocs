@@ -25,6 +25,8 @@ export type { RunResult, RunSyncDeps } from './sync/run';
 export type { Plan, Action } from './sync/plan';
 export { purgeTree, findByPath } from './sync/purge';
 export type { PurgeReport, PurgeOptions } from './sync/purge';
+export { renderLlmsIndex, renderLlmsFull } from './sync/llms';
+export type { LlmsInput, LlmsPage } from './sync/llms';
 export * from './model/index';
 export * from './target/index';
 export { renderDoc, createTheme, composePage, DEFAULT_LAYOUT } from './render/index';

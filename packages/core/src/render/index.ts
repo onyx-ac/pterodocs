@@ -10,6 +10,7 @@ import { parseMarkdown, detectFormat, type MarkdownFormat } from './parse';
 import { resolveReferences } from './references';
 import { lowerMdx, type UnknownPolicy } from './mdx';
 import { rewriteLinks, type LinkResolver } from './links';
+import { toMarkdown } from './markdown';
 import { createRenderContext, renderBody, type RenderContext } from './renderers';
 import { createSlugger } from './slug';
 import { excerptFrom } from './excerpt';
@@ -32,6 +33,7 @@ export { renderInline } from './inline';
 export { headingIdFor, createSlugger } from './slug';
 export { resolveReferences } from './references';
 export { rewriteLinks, toInternalPath, isAbsoluteUrl } from './links';
+export { toMarkdown } from './markdown';
 export type { LinkResolver, ResolvedLink } from './links';
 export { DEFAULT_ADMONITION_KEYWORDS } from './admonitions';
 export { lowerMdx, isTranslatable, KNOWN_COMPONENTS } from './mdx';
@@ -68,6 +70,12 @@ export interface RenderDocInput {
   onUnknownJsx?: UnknownPolicy;
   /** Collector to record issues into; a fresh one is made when omitted. */
   issues?: IssueCollector;
+  /**
+   * Also return the document as markdown, with its links already pointing at
+   * the target. Off by default: it is a second serialisation of every
+   * document, and only `llms-full.txt` wants it.
+   */
+  emitMarkdown?: boolean;
 }
 
 /** A rendered document body and what was learned while rendering it. */
@@ -80,6 +88,8 @@ export interface RenderedDoc {
   firstParagraph: string;
   /** Everything worth telling the user about this document. */
   issues: IssueCollector;
+  /** The same document as markdown, when `emitMarkdown` asked for it. */
+  markdown?: string | undefined;
 }
 
 /**
@@ -107,6 +117,10 @@ export function renderDoc(input: RenderDocInput): RenderedDoc {
     ? rewriteLinks(root, input.permalink, input.resolveLink, issues)
     : new Set<string>();
 
+  // Taken here, not after rendering: the links have just been pointed at the
+  // target, and `renderBody` is free to consume the tree as it walks it.
+  const markdown = input.emitMarkdown ? toMarkdown(root, { media: input.media }) : undefined;
+
   const ctx: RenderContext = createRenderContext({
     theme: input.theme,
     slugger: createSlugger(),
@@ -123,7 +137,7 @@ export function renderDoc(input: RenderDocInput): RenderedDoc {
     dedupeTitle: input.dedupeTitle ?? true,
   });
 
-  return { body, links, firstParagraph, issues };
+  return { body, links, firstParagraph, issues, markdown };
 }
 
 /** Build an excerpt from a description, falling back to the opening paragraph. */

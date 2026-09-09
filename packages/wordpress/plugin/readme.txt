@@ -54,6 +54,24 @@ Tokens resolve through your theme's global styles first — palette, spacing
 scale, content width, root padding — so a theme change moves the documentation
 with it.
 
+= llms.txt =
+
+pterodocs builds an `llms.txt` and an `llms-full.txt` for the documentation it
+publishes and stores them on the documentation root page. This plugin serves
+them, from the documentation's own root:
+
+  https://example.com/docs/llms.txt
+  https://example.com/docs/llms-full.txt
+
+Not from the top of the domain. That file is meant to describe everything a site
+publishes, and the documentation is one part of a site — so serving a subtree
+from a path that promises the whole thing would be wrong, and would fight any
+SEO plugin that generates one. Documentation pages carry a link element pointing
+at the real location, and robots.txt gets a comment naming it.
+
+Nothing appears until a sync has run: the plugin serves what pterodocs stored,
+and 404s exactly as WordPress would otherwise when there is nothing there.
+
 = Settings =
 
 Settings, pterodocs. Every setting is a default that a single block can override
@@ -78,6 +96,13 @@ Yes. Set the same prefix under Settings, pterodocs. Nothing needs re-publishing.
 Because a fixed theme would fight the block's own colours. Token colours are
 derived from whatever the code block is painted, so they stay legible on a
 background you chose from your palette.
+
+= Where is my llms.txt? =
+
+At the documentation root, not the site root: /your-docs-path/llms.txt. It
+appears once pterodocs has synced with this plugin active — the sync stores it,
+the plugin serves it. If a sync reported that the site refused the metadata, the
+plugin was not active when it ran.
 
 = Does it work without JavaScript? =
 

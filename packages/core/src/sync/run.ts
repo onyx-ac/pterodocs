@@ -27,6 +27,14 @@ import type { MediaRef, RenderedPage, Target, TargetSession } from '../target/ta
 import type { ResolvedConfig } from '../config/load';
 import { summarise, type Action, type Plan } from './plan';
 import { writeArtifacts, type Artifacts, type ManifestEntry } from './artifacts';
+import {
+  renderLlmsIndex,
+  renderLlmsFull,
+  LLMS_META_INDEX,
+  LLMS_META_FULL,
+  type LlmsInput,
+  type LlmsPage,
+} from './llms';
 
 /** What a run needs beyond its configuration. */
 export interface RunSyncDeps {
@@ -57,6 +65,8 @@ interface PreparedPage {
   page: RenderedPage;
   locale: string;
   versionName: string;
+  /** The document as markdown, when `llms-full.txt` asked for it. */
+  markdown?: string | undefined;
 }
 
 /** Run the sync. */
@@ -69,12 +79,15 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
   let requests = 0;
   let mediaPending = 0;
   let docusaurusVersion: string | null = null;
+  let siteTitle = '';
+  let llms: Artifacts['llms'] = null;
 
   const locales = await selectLocales(config, deps.reader);
 
   for (const locale of locales) {
     const model = await deps.reader.read(locale);
     docusaurusVersion ??= model.docusaurusVersion;
+    siteTitle ||= model.siteTitle;
 
     const theme = createTheme({
       classPrefix: config.classPrefix,
@@ -88,6 +101,8 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
       deps.target && !deps.renderOnly && !config.offline
         ? await deps.target.open({ locale: model.locale, dryRun: config.dryRun })
         : undefined;
+
+    let rootId: number | null = null;
 
     for (const instance of model.instances) {
       for (const version of instance.versions) {
@@ -106,7 +121,16 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
         prepared.push(...result.prepared);
         mediaRecords.push(...result.media);
         mediaPending += result.mediaPending;
+        rootId ??= result.rootId;
       }
+    }
+
+    // Built at the end of the primary locale's turn, which is the first time
+    // every page it will describe has been rendered — and the last time this
+    // locale's session is still open to write it with.
+    if (locale === locales[0]) {
+      llms = buildLlms(config, prepared, locales, siteTitle, deps.target, issues);
+      await publishLlms(llms, config, session, rootId, issues);
     }
 
     if (session) requests += session.requestCount();
@@ -149,6 +173,7 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
     })) satisfies ManifestEntry[],
     media: mediaRecords,
     plan,
+    llms,
   };
 
   try {
@@ -158,6 +183,124 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
   }
 
   return { plan, artifacts };
+}
+
+/**
+ * Make a target path absolute, when the site's URL is known.
+ *
+ * `hrefFor` returns a path, because that is what a link inside a page needs.
+ * These files are fetched from outside the site, so they need the whole URL —
+ * and when no site URL is configured, the path is still better than nothing.
+ *
+ * @param siteUrl The target site's URL, or empty.
+ * @param href A path on that site.
+ */
+function absoluteHref(siteUrl: string, href: string): string {
+  if (!siteUrl) return href;
+  try {
+    return new URL(href, siteUrl).toString();
+  } catch {
+    return href;
+  }
+}
+
+/**
+ * Store the two files on the documentation root, for the target to serve.
+ *
+ * A write of its own rather than metadata carried by the root page, because
+ * the root page is written while the tree is still being rendered and neither
+ * file is known until every page is done.
+ *
+ * Never fails a run. A site without the pterodocs plugin has nothing
+ * registered to receive these, and the publish is worth more than the index.
+ *
+ * @param llms What was built, or null when neither file was asked for.
+ * @param config The resolved configuration.
+ * @param session The open session, when there is one.
+ * @param rootId Id of the documentation root page.
+ * @param issues Where a refusal is recorded.
+ */
+async function publishLlms(
+  llms: Artifacts['llms'],
+  config: ResolvedConfig,
+  session: TargetSession | undefined,
+  rootId: number | null,
+  issues: IssueCollector,
+): Promise<void> {
+  if (!llms || !config.llms.publish || !session || rootId === null) return;
+
+  const meta: Record<string, string> = {};
+  if (llms.index) meta[LLMS_META_INDEX] = llms.index;
+  if (llms.full) meta[LLMS_META_FULL] = llms.full;
+  if (Object.keys(meta).length === 0) return;
+
+  const { warnings } = await session.writeMeta(rootId, meta);
+  for (const warning of warnings) {
+    issues.add({ code: 'llms-not-stored', severity: 'warning', message: warning });
+  }
+}
+
+/**
+ * Build the two files an LLM reads instead of the site.
+ *
+ * @param config The resolved configuration.
+ * @param prepared Every page this run rendered.
+ * @param locales The locales published, primary first.
+ * @param siteTitle The site's own title, as a fallback heading.
+ * @param target The target, for turning tree paths into URLs.
+ * @param issues Where the multi-locale note is recorded.
+ */
+function buildLlms(
+  config: ResolvedConfig,
+  prepared: PreparedPage[],
+  locales: string[],
+  siteTitle: string,
+  target: Target | undefined,
+  issues: IssueCollector,
+): Artifacts['llms'] {
+  if (!config.llms.index && !config.llms.full) return null;
+
+  // There is one site root, so there is one llms.txt. When a run publishes
+  // several locales the index describes the primary one; interleaving three
+  // languages under one heading would serve nobody, and saying so out loud is
+  // better than dropping them quietly.
+  const primary = locales[0] ?? '';
+  if (locales.length > 1) {
+    issues.add({
+      code: 'llms-single-locale',
+      severity: 'info',
+      message: `llms.txt describes the "${primary}" documentation; the other ${locales.length - 1} locale(s) published are not indexed.`,
+    });
+  }
+
+  const pages: LlmsPage[] = prepared
+    .filter((entry) => entry.locale === primary)
+    .map((entry) => ({
+      path: entry.page.path,
+      title: entry.page.title,
+      description: entry.page.excerpt,
+      href: absoluteHref(
+        config.targetUrl,
+        target
+          ? target.hrefFor(entry.page.path, {
+              versionName: entry.versionName,
+              locale: entry.locale,
+            })
+          : entry.page.path,
+      ),
+      markdown: entry.markdown,
+    }));
+
+  const input: LlmsInput = {
+    title: config.llms.title || siteTitle || 'Documentation',
+    description: config.llms.description || pages.find((page) => page.path === '')?.description || '',
+    pages,
+  };
+
+  return {
+    index: config.llms.index ? renderLlmsIndex(input) : null,
+    full: config.llms.full ? renderLlmsFull(input) : null,
+  };
 }
 
 /** Which locales to publish. */
@@ -185,6 +328,8 @@ interface SyncVersionInput {
 async function syncVersion(input: SyncVersionInput): Promise<{
   actions: Action[];
   prepared: PreparedPage[];
+  /** Id of this version's documentation root, when the target has one. */
+  rootId: number | null;
   media: Artifacts['media'];
   mediaPending: number;
 }> {
@@ -283,7 +428,7 @@ async function syncVersion(input: SyncVersionInput): Promise<{
       : undefined;
 
   for (const node of nodes) {
-    const page = renderPageFor({
+    const { page, markdown } = renderPageFor({
       node,
       tree,
       config,
@@ -295,9 +440,10 @@ async function syncVersion(input: SyncVersionInput): Promise<{
       admonitionKeywords: input.instance.admonitionKeywords,
       media,
       issues,
+      emitMarkdown: config.llms.full,
       ...(banner ? { banner } : {}),
     });
-    prepared.push({ node, page, locale, versionName: version.name });
+    prepared.push({ node, page, locale, versionName: version.name, markdown });
 
     const id = ids.get(node.path);
     if (!session || id === null || id === undefined) continue;
@@ -379,11 +525,12 @@ async function syncVersion(input: SyncVersionInput): Promise<{
     }
   }
 
-  return { actions, prepared, media: mediaRecords, mediaPending };
+  return { actions, prepared, media: mediaRecords, mediaPending, rootId: navRootId };
 }
 
 /** Render one page, body and all. */
 function renderPageFor(input: {
+  emitMarkdown: boolean;
   node: PageNode;
   tree: PageTree;
   config: ResolvedConfig;
@@ -396,13 +543,14 @@ function renderPageFor(input: {
   media: Map<string, { id: number; url: string }>;
   issues: IssueCollector;
   banner?: string;
-}): RenderedPage {
+}): { page: RenderedPage; markdown: string | undefined } {
   const { node, tree, config, model, theme, issues } = input;
   const doc = node.doc;
 
   let body = '';
   let links = new Set<string>();
   let firstParagraph = '';
+  let llmsMarkdown: string | undefined;
 
   if (doc) {
     const markdown = readDocument(doc, issues);
@@ -420,10 +568,12 @@ function renderPageFor(input: {
         media: input.media,
         issues,
         resolveLink: makeLinkResolver(doc, tree, config, model, input.href),
+        emitMarkdown: input.emitMarkdown,
       });
       body = rendered.body;
       links = rendered.links;
       firstParagraph = rendered.firstParagraph;
+      llmsMarkdown = rendered.markdown;
     }
   }
 
@@ -444,15 +594,18 @@ function renderPageFor(input: {
   if (config.metaDescriptionKey && excerpt) meta[config.metaDescriptionKey] = excerpt;
 
   return {
-    path: node.path,
-    slug: node.slug,
-    title: node.title,
-    content,
-    excerpt,
-    menuOrder: node.menuOrder,
-    meta,
-    file: doc?.sourceRelativePath,
-    versionName: node.versionName,
+    page: {
+      path: node.path,
+      slug: node.slug,
+      title: node.title,
+      content,
+      excerpt,
+      menuOrder: node.menuOrder,
+      meta,
+      file: doc?.sourceRelativePath,
+      versionName: node.versionName,
+    },
+    markdown: llmsMarkdown,
   };
 }
 

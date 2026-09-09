@@ -291,3 +291,91 @@ test('the run writes a manifest and a plan that describe what happened', async (
   assert.ok(plan.requests > 0);
   await t.cleanup();
 });
+
+/* ---------------------------------------------------------------------- *
+ * llms.txt
+ * ---------------------------------------------------------------------- */
+
+test('the documentation root carries the files an LLM reads', async () => {
+  // The plugin serves what it finds here, so this is the whole delivery.
+  const t = await setup();
+  await t.run();
+
+  const docs = t.fake.pages.find((page) => page.slug === 'docs')!;
+  const index = docs.meta['_pterodocs_llms_index'] as string;
+
+  assert.ok(index, 'no index was stored');
+  assert.ok(index.startsWith('# '), index.slice(0, 40));
+  assert.ok(typeof docs.meta['_pterodocs_llms_full'] === 'string');
+  await t.cleanup();
+});
+
+test('the links in it are the target’s, not the source site’s', async () => {
+  // The reason this is generated rather than copied from a build.
+  const t = await setup();
+  await t.run();
+
+  const docs = t.fake.pages.find((page) => page.slug === 'docs')!;
+  const index = docs.meta['_pterodocs_llms_index'] as string;
+
+  for (const line of index.split('\n').filter((l) => l.includes(']('))) {
+    assert.ok(line.includes('/products/docstack/docs/'), line);
+  }
+  await t.cleanup();
+});
+
+test('nothing is stored on the site when publishing them is turned off', async () => {
+  const t = await setup({ llms: { index: true, full: true, publish: false, title: '', description: '' } });
+  await t.run();
+
+  const docs = t.fake.pages.find((page) => page.slug === 'docs')!;
+  assert.equal(docs.meta['_pterodocs_llms_index'], undefined);
+  await t.cleanup();
+});
+
+test('they are written to the output directory whether or not they are published', async () => {
+  const t = await setup({ llms: { index: true, full: true, publish: false, title: '', description: '' } });
+  await t.run();
+
+  const index = await fs.readFile(path.join(t.outDir, 'llms.txt'), 'utf8');
+  assert.ok(index.startsWith('# '), index.slice(0, 40));
+  await t.cleanup();
+});
+
+test('turning both off writes neither file and stores nothing', async () => {
+  const t = await setup({ llms: { index: false, full: false, publish: true, title: '', description: '' } });
+  await t.run();
+
+  await assert.rejects(() => fs.readFile(path.join(t.outDir, 'llms.txt'), 'utf8'));
+  const docs = t.fake.pages.find((page) => page.slug === 'docs')!;
+  assert.equal(docs.meta['_pterodocs_llms_index'], undefined);
+  await t.cleanup();
+});
+
+test('a site that refuses the metadata is warned about, not failed', async () => {
+  // Refusing it is what a site without the plugin does, and the pages matter
+  // more than the index.
+  const fake = createFakeWp();
+  const inner = fake.fetch;
+  fake.fetch = async (url: string | URL | Request, init?: RequestInit) => {
+    const body = typeof init?.body === 'string' ? init.body : '';
+    if (body.includes('_pterodocs_llms_index')) {
+      return new Response(JSON.stringify({ code: 'rest_invalid_param' }), {
+        status: 400,
+        headers: { 'content-type': 'application/json' },
+      });
+    }
+    return inner(url, init);
+  };
+
+  const t = await setup({}, fake);
+  const { plan } = await t.run();
+
+  assert.ok(
+    plan.issues.some((issue) => issue.code === 'llms-not-stored'),
+    JSON.stringify(plan.issues.map((i) => i.code)),
+  );
+  // The publish itself still happened.
+  assert.equal(plan.summary['create'], 6);
+  await t.cleanup();
+});

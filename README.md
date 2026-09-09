@@ -75,6 +75,43 @@ Anything Docusaurus already knows — the site URL, base URL, route base path, l
 markdown format, admonition keywords — is read from your Docusaurus config and is not
 repeated here.
 
+## llms.txt
+
+Every run writes `llms.txt` and `llms-full.txt` — the index and the full text described at
+[llmstxt.org](https://llmstxt.org) — into the output directory, and stores them on the
+documentation root page for the WordPress plugin to serve:
+
+```
+https://example.com/<root>/<base>/llms.txt
+https://example.com/<root>/<base>/llms-full.txt
+```
+
+They are built from what the run published rather than from the Docusaurus build, and that
+is the whole point of them: the links are the WordPress URLs, the selection is the sidebars,
+locales and versions your configuration names, and no `docusaurus build` has to have run.
+A build-time plugin writes a file describing the Docusaurus site, which is a different site.
+
+The files sit at the documentation root rather than at the top of the domain. The convention
+is `/llms.txt`, but that file is supposed to describe everything published at a domain, and
+pterodocs only knows about its own tree — so claiming it would mean promising the site and
+delivering a subtree, and would collide with any SEO plugin that generates one. The plugin
+advertises the real location from a `<link rel="alternate">` on documentation pages and a
+comment in `robots.txt`.
+
+Serving them needs the plugin, because WordPress serves nothing statically. Without it the
+files are still written to the output directory, and the run reports that the site refused
+to store them.
+
+```js
+llms: {
+  index: true,      // write llms.txt
+  full: true,       // write llms-full.txt
+  publish: true,    // store both on the site for the plugin to serve
+  title: '',        // heading; the site's own title by default
+  description: '',  // summary; the documentation root's description by default
+}
+```
+
 ## How it works
 
 Pages mirror your documentation URLs, so `/docs/guides/sync` on Docusaurus becomes
@@ -153,6 +190,17 @@ behaviour in a browser has not been through a release on a live site.
 
 Next, in the order they would help most:
 
+- **A page template the plugin provides.** `target.template` already names one,
+  and pterodocs assigns it to every page and reconciles it like any other field
+  — but the slug has to match a template the *theme* ships, so a site whose
+  theme offers nothing full width has nothing to point it at. The plugin could
+  carry its own: a template built for documentation, with no constrained
+  content column to escape from. That is where the awkward part of the
+  stylesheet comes from — `alignfull`, and then re-adding the page padding the
+  theme was already applying — and three of this cycle's layout bugs lived in
+  those two rules. Classic and block themes register templates by different
+  mechanisms, so it is two implementations behind one setting, and `doctor`
+  should report which one the site got.
 - **`pterodocs preview`.** Render, then write a browsable page showing the result
   at a phone width and a desktop one, with the navigation reconstructed — WordPress
   renders `core/page-list` server-side, so a rendered file has only its

@@ -31,6 +31,11 @@ export interface Artifacts {
   plan: Plan;
   /** The stylesheet the pages were rendered against. */
   stylesheet: string;
+  /**
+   * The two files an LLM reads instead of the site, when they were asked for.
+   * Either may be null on its own; the whole thing is null when neither was.
+   */
+  llms: { index: string | null; full: string | null } | null;
 }
 
 /** Where one page's rendered body is written. */
@@ -58,6 +63,15 @@ export async function writeArtifacts(
   // great deal cheaper. A site with fifty pages stores fifty copies otherwise.
   await fs.writeFile(path.join(outDir, 'docs.css'), `${artifacts.stylesheet}
 `, 'utf8');
+
+  // Written next to the stylesheet rather than into `pages/`: they describe
+  // the whole tree, not one page of it.
+  if (artifacts.llms?.index) {
+    await fs.writeFile(path.join(outDir, 'llms.txt'), artifacts.llms.index, 'utf8');
+  }
+  if (artifacts.llms?.full) {
+    await fs.writeFile(path.join(outDir, 'llms-full.txt'), artifacts.llms.full, 'utf8');
+  }
 
   if (options.writePages) {
     await fs.rm(path.join(outDir, 'pages'), { recursive: true, force: true });

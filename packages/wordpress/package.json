@@ -1,6 +1,6 @@
 {
   "name": "@pterodocs/wordpress",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "The WordPress REST target for pterodocs.",
   "type": "module",
   "main": "./lib/index.js",

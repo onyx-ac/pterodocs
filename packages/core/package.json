@@ -1,6 +1,6 @@
 {
   "name": "@pterodocs/core",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Rendering, the site model, the target contract and the reconciler behind pterodocs.",
   "type": "module",
   "main": "./lib/index.js",
@@ -35,6 +35,7 @@
     "remark-gfm": "^4.0.1",
     "remark-mdx": "^3.1.0",
     "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0"
   },

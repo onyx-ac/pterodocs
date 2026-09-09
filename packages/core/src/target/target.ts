@@ -119,6 +119,18 @@ export interface TargetSession {
   diffPage(remote: RemotePage, rendered: RenderedPage, parentId: number): string[];
   /** Write a rendered page, returning warnings for anything the target refused. */
   writePage(id: number, page: RenderedPage, parentId: number): Promise<{ warnings: string[] }>;
+  /**
+   * Write metadata on its own, without touching the page it belongs to.
+   *
+   * Needed for anything derived from the whole tree rather than from one
+   * document — `llms.txt` is the only such thing today. It cannot travel with
+   * the page write, because the page is written while the tree is still being
+   * rendered and the value is not known until every page is done.
+   *
+   * Returns warnings rather than throwing when the target refuses: metadata is
+   * never worth failing a publish over.
+   */
+  writeMeta(id: number, meta: Record<string, string>): Promise<{ warnings: string[] }>;
   /** Pages below a root that no rendered page accounts for, deepest first. */
   computePrune(index: RemotePage[], rootId: number, keepIds: Set<number>): RemotePage[];
   /** Remove a page. Never a permanent delete. */

@@ -1,6 +1,6 @@
 {
   "name": "pterodocs",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Publish a Docusaurus site to WordPress as a tree of Gutenberg pages.",
   "keywords": [
     "docusaurus",
@@ -45,9 +45,9 @@
     "test": "node ../../scripts/tests.mjs unit"
   },
   "dependencies": {
-    "@pterodocs/core": "0.4.1",
+    "@pterodocs/core": "0.4.2",
     "@pterodocs/docusaurus": "0.4.1",
-    "@pterodocs/wordpress": "0.4.1"
+    "@pterodocs/wordpress": "0.4.2"
   },
   "peerDependencies": {
     "@docusaurus/core": ">=3.6.0 <4.0.0"

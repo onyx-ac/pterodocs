@@ -241,6 +241,30 @@ export function createWordpressTarget(
           return { warnings };
         },
 
+        async writeMeta(id, meta): Promise<{ warnings: string[] }> {
+          if (Object.keys(meta).length === 0) return { warnings: [] };
+          if (dryRun) return { warnings: [] };
+
+          try {
+            await updatePage(client, id, { meta });
+          } catch (error) {
+            // Every key here is registered by the pterodocs plugin, so the
+            // usual reason to be refused is that it is not installed. That is
+            // a fact about the site, not a failure of the publish.
+            const status = (error as { status?: number }).status;
+            if (status === 400 || status === 403) {
+              return {
+                warnings: [
+                  'WordPress refused the llms.txt metadata. The pterodocs plugin registers it, so this usually means it is not installed or not active.',
+                ],
+              };
+            }
+            throw error;
+          }
+
+          return { warnings: [] };
+        },
+
         computePrune(pages, rootId, keepIds): RemotePage[] {
           return computePrune(pages, rootId, keepIds);
         },

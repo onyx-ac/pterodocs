@@ -133,6 +133,35 @@ export interface OutputConfig {
   pages?: boolean;
 }
 
+/**
+ * The files an LLM reads instead of the site.
+ *
+ * Both are described at https://llmstxt.org. They are built from what this run
+ * published and carry the target's URLs, so they describe the documentation as
+ * it exists on WordPress rather than as it exists in Docusaurus.
+ */
+export interface LlmsConfig {
+  /** Write `llms.txt`, an index of every published page. On by default. */
+  index?: boolean;
+  /**
+   * Write `llms-full.txt`, the same index with every document inlined. On by
+   * default; it costs one extra serialisation of each document.
+   */
+  full?: boolean;
+  /**
+   * Store them on the target as well as writing them to the output directory.
+   *
+   * On by default. The pterodocs WordPress plugin serves what it finds; without
+   * the plugin the write is refused and the run says so, having changed
+   * nothing.
+   */
+  publish?: boolean;
+  /** Heading for both files. The site's own title by default. */
+  title?: string;
+  /** Summary under the heading. The documentation root's description by default. */
+  description?: string;
+}
+
 /** A pterodocs configuration file. */
 export interface PterodocsConfig {
   site?: SiteConfig;
@@ -142,6 +171,7 @@ export interface PterodocsConfig {
   mdx?: MdxConfig;
   media?: MediaConfig;
   output?: OutputConfig;
+  llms?: LlmsConfig;
   /** With `--strict`, an issue at this severity or above fails the run. */
   strict?: Severity;
 }

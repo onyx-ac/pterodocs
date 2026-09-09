@@ -1,6 +1,6 @@
 {
   "name": "@pterodocs/wp-plugin",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "description": "The pterodocs WordPress plugin. Not published to npm; it ships as a plugin zip.",
   "type": "module",

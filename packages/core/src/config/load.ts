@@ -112,6 +112,8 @@ export interface ResolvedConfig {
 
   outDir: string;
   writePages: boolean;
+  /** What to write for LLM readers, and what to call it. */
+  llms: { index: boolean; full: boolean; publish: boolean; title: string; description: string };
 
   only: string;
   dryRun: boolean;
@@ -246,6 +248,7 @@ export function resolveConfig(input: {
   const render = file.render ?? {};
   const media = file.media ?? {};
   const output = file.output ?? {};
+  const llms = file.llms ?? {};
 
   const baseDir = input.fileDir ?? process.cwd();
   const siteDir = path.resolve(baseDir, pick(flags.siteDir, site.dir) ?? '.');
@@ -364,6 +367,13 @@ export function resolveConfig(input: {
 
     outDir,
     writePages: output.pages !== false,
+    llms: {
+      index: llms.index !== false,
+      full: llms.full !== false,
+      publish: llms.publish !== false,
+      title: llms.title ?? '',
+      description: llms.description ?? '',
+    },
 
     only: (flags.only ?? '').replace(/^\/+|\/+$/g, ''),
     dryRun: flags.dryRun === true || offline,
