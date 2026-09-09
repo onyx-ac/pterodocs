@@ -12,8 +12,8 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { loadModel } from '../../src/model';
-import { buildPageTree } from '@pterodoc/core/model';
-import { IssueCollector } from '@pterodoc/core/util';
+import { buildPageTree } from '@pterodocs/core/model';
+import { IssueCollector } from '@pterodocs/core/util';
 
 const siteDir = path.join(
   path.dirname(fileURLToPath(new URL('../fixtures/x', import.meta.url))),

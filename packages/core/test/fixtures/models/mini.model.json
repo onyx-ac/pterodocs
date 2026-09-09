@@ -1,6 +1,6 @@
 {
   "capture": 1,
-  "pterodoc": "0.1.0",
+  "pterodocs": "0.1.0",
   "capturedAt": "2026-01-01T00:00:00.000Z",
   "model": {
     "siteDir": "/site",

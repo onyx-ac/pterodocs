@@ -1,5 +1,5 @@
 /**
- * Removing documentation pterodoc published.
+ * Removing documentation pterodocs published.
  *
  * Not the same job as pruning, and deliberately not the same code path.
  *
@@ -7,14 +7,14 @@
  * and removes what is left over, so it needs the model, and it only ever looks
  * inside the tree currently being published.
  *
- * Purging is the opposite question: take away what pterodoc put at this path.
+ * Purging is the opposite question: take away what pterodocs put at this path.
  * It needs no model at all — which is the point, because the usual reason to
  * purge is that the documentation has moved somewhere else and the old location
  * is no longer part of any run. Asking Docusaurus to describe a site in order to
  * delete pages from a place that site no longer publishes to would be absurd,
  * and slow.
  *
- * Nothing is removed that pterodoc cannot recognise as its own, and nothing is
+ * Nothing is removed that pterodocs cannot recognise as its own, and nothing is
  * removed unless asked: the default is to report.
  */
 
@@ -25,9 +25,9 @@ import type { RemotePage, TargetSession } from '../target/target';
 export interface PurgeReport {
   /** The tree's root page, when there is one at that path. */
   root?: RemotePage;
-  /** Pages pterodoc recognises as its own, deepest first. */
+  /** Pages pterodocs recognises as its own, deepest first. */
   removed: RemotePage[];
-  /** Pages inside the tree that pterodoc did not write, and so did not touch. */
+  /** Pages inside the tree that pterodocs did not write, and so did not touch. */
   kept: RemotePage[];
   /** Whether the removals were actually applied. */
   applied: boolean;
@@ -99,7 +99,7 @@ export async function purgeTree(
 
     if (!isGeneratedPage(content, options.classPrefix)) {
       kept.push(full);
-      log(`kept ${page.link} — not written by pterodoc`);
+      log(`kept ${page.link} — not written by pterodocs`);
       continue;
     }
 

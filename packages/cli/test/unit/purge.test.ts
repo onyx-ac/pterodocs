@@ -8,8 +8,8 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { purgeTree, findByPath } from '@pterodoc/core';
-import { createWordpressTarget } from '@pterodoc/wordpress';
+import { purgeTree, findByPath } from '@pterodocs/core';
+import { createWordpressTarget } from '@pterodocs/wordpress';
 import { createFakeWp, type FakeWp } from '../../../wordpress/test/fixtures/fake-wp';
 
 const PREFIX = 'docstack';
@@ -65,7 +65,7 @@ async function open(fake: FakeWp) {
       status: 'publish',
       template: '',
       lang: '',
-      mediaSlugPrefix: 'pterodoc',
+      mediaSlugPrefix: 'pterodocs',
       methodOverride: false,
       retry: { attempts: 1, baseDelayMs: 0, maxDelayMs: 0 },
     },

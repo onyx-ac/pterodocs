@@ -1,5 +1,5 @@
 {
-  "name": "pterodoc-workspace",
+  "name": "pterodocs-workspace",
   "private": true,
   "type": "module",
   "description": "Workspace root for pterodoc. The published packages live in packages/.",

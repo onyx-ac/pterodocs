@@ -1,25 +1,25 @@
-=== pterodoc ===
+=== pterodocs ===
 Contributors: onyxac
 Tags: documentation, docusaurus, gutenberg, syntax highlighting, docs
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 0.3.0
+Stable tag: 0.4.0
 License: CC-BY-SA-4.0
 License URI: https://creativecommons.org/licenses/by-sa/4.0/
 
-Turns documentation published by pterodoc into a documentation experience: a
+Turns documentation published by pterodocs into a documentation experience: a
 collapsible sidebar, highlighted code with a copy button, scrolling tables and a
 full-width layout, all drawn from your theme's own palette.
 
 == Description ==
 
-[pterodoc](https://github.com/onyx-ac/pterodoc) publishes a Docusaurus site to
+[pterodocs](https://github.com/onyx-ac/pterodoc) publishes a Docusaurus site to
 WordPress as ordinary Gutenberg blocks. This plugin makes those pages look and
 behave like documentation.
 
 It registers **no block types**. Everything it does is layered over the core
-blocks pterodoc already writes, which has one consequence worth stating plainly:
+blocks pterodocs already writes, which has one consequence worth stating plainly:
 deactivate the plugin and your documentation is still there, still readable and
 still navigable. Nothing is stored in a format only this plugin understands.
 
@@ -56,22 +56,22 @@ with it.
 
 = Settings =
 
-Settings, pterodoc. Every setting is a default that a single block can override
+Settings, pterodocs. Every setting is a default that a single block can override
 from the block inspector.
 
 == Frequently Asked Questions ==
 
 = Do my per-block overrides survive a re-sync? =
 
-No, and this is worth understanding. pterodoc rewrites a page's content every
+No, and this is worth understanding. pterodocs rewrites a page's content every
 time it publishes, so an override set on a block in the WordPress editor is
 replaced on the next sync. The durable places for a setting are this plugin's
-settings page, which a sync never touches, and your pterodoc configuration,
+settings page, which a sync never touches, and your pterodocs configuration,
 which writes the value into the content itself.
 
-= I set a custom class prefix in pterodoc. Does this still work? =
+= I set a custom class prefix in pterodocs. Does this still work? =
 
-Yes. Set the same prefix under Settings, pterodoc. Nothing needs re-publishing.
+Yes. Set the same prefix under Settings, pterodocs. Nothing needs re-publishing.
 
 = Why is there no theme for the syntax highlighting? =
 
@@ -91,7 +91,7 @@ sheet's trigger is not shown at all unless the script is running.
 1. Upload the plugin folder to `/wp-content/plugins/`, or install the zip from
    Plugins, Add New, Upload Plugin.
 2. Activate it.
-3. Visit Settings, pterodoc if you want to change any default.
+3. Visit Settings, pterodocs if you want to change any default.
 
 == Build ==
 
@@ -105,5 +105,5 @@ step the plugin works and simply does not highlight.
 
 == Changelog ==
 
-= 0.3.0 =
+= 0.4.0 =
 * First release.

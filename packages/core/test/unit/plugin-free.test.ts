@@ -102,7 +102,7 @@ test('the stylesheet is written with the run’s own class prefix', () => {
 
   assert.ok(css.includes('.docstack-docs-nav'), css.slice(0, 200));
   assert.equal(css.includes('{p}'), false, 'a placeholder survived');
-  assert.equal(css.includes('.pterodoc-'), false, 'the default prefix leaked');
+  assert.equal(css.includes('.pterodocs-'), false, 'the default prefix leaked');
 });
 
 test('the stylesheet assumes neither a light theme nor a dark one', () => {

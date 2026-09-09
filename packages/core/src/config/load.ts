@@ -15,10 +15,17 @@ import { DEFAULT_LAYOUT, type PageLayout } from '../render/page';
 import { DEFAULT_STRINGS, type Strings } from '../render/theme';
 import type { Severity } from '../util/issues';
 import { toSlugSegments } from '../util/paths';
-import type { PterodocConfig } from './types';
+import type { PterodocsConfig } from './types';
 
 /** File names tried, in order, when no config is named. */
 export const CONFIG_NAMES = [
+  'pterodocs.config.mjs',
+  'pterodocs.config.js',
+  'pterodocs.config.cjs',
+  'pterodocs.config.ts',
+  'pterodocs.config.json',
+  // The name before the rename, still answered to so an existing project keeps
+  // working without being edited.
   'pterodoc.config.mjs',
   'pterodoc.config.js',
   'pterodoc.config.cjs',
@@ -137,19 +144,19 @@ export function discoverConfigFile(
 }
 
 /** Load a configuration file. */
-export async function readConfigFile(file: string): Promise<PterodocConfig> {
+export async function readConfigFile(file: string): Promise<PterodocsConfig> {
   if (file.endsWith('.json')) {
     try {
-      return JSON.parse(fs.readFileSync(file, 'utf8')) as PterodocConfig;
+      return JSON.parse(fs.readFileSync(file, 'utf8')) as PterodocsConfig;
     } catch (error) {
       throw new ConfigError(`${file} is not valid JSON: ${(error as Error).message}`);
     }
   }
   try {
     const module = (await import(pathToFileURL(file).href)) as {
-      default?: PterodocConfig;
+      default?: PterodocsConfig;
     };
-    const config = module.default ?? (module as unknown as PterodocConfig);
+    const config = module.default ?? (module as unknown as PterodocsConfig);
     if (!config || typeof config !== 'object') {
       throw new Error('the file exports no configuration object');
     }
@@ -158,7 +165,7 @@ export async function readConfigFile(file: string): Promise<PterodocConfig> {
     const message = (error as Error).message;
     if (file.endsWith('.ts')) {
       throw new ConfigError(
-        `Could not load ${file}: ${message}\nA TypeScript config needs Node 22 or newer, which reads it directly. On an older Node, use pterodoc.config.mjs.`,
+        `Could not load ${file}: ${message}\nA TypeScript config needs Node 22 or newer, which reads it directly. On an older Node, use pterodocs.config.mjs.`,
       );
     }
     throw new ConfigError(`Could not load ${file}: ${message}`);
@@ -181,14 +188,14 @@ function pick<T>(...candidates: (T | undefined)[]): T | undefined {
  * one still works but says so.
  */
 const RENAMED: Record<string, string> = {
-  WP_ROOT_PATH: 'PTERODOC_WP_ROOT',
-  WP_DOCS_BASE: 'PTERODOC_WP_BASE',
+  WP_ROOT_PATH: 'PTERODOCS_WP_ROOT',
+  WP_DOCS_BASE: 'PTERODOCS_WP_BASE',
 };
 
 /**
  * Read an environment value.
  *
- * `PTERODOC_`-prefixed names win; the plain names are equally supported except
+ * `PTERODOCS_`-prefixed names win; the plain names are equally supported except
  * where one was renamed, which is reported.
  */
 function fromEnv(
@@ -197,8 +204,16 @@ function fromEnv(
   aliases: string[],
   notices: string[],
 ): string | undefined {
-  const prefixed = env[`PTERODOC_${name}`];
+  const prefixed = env[`PTERODOCS_${name}`];
   if (prefixed) return prefixed;
+
+  // The tool was called pterodocs until 0.4.0, so its whole prefix still
+  // answers. Handled here rather than in the alias table, which is per-setting.
+  const former = env[`PTERODOC_${name}`];
+  if (former) {
+    notices.push(`Using PTERODOC_${name}; it is now called PTERODOCS_${name}.`);
+    return former;
+  }
   for (const alias of aliases) {
     const value = env[alias];
     if (!value) continue;
@@ -216,7 +231,7 @@ function fromEnv(
  */
 export function resolveConfig(input: {
   flags?: ConfigFlags;
-  file?: PterodocConfig;
+  file?: PterodocsConfig;
   fileDir?: string;
   env?: NodeJS.ProcessEnv;
   configFile?: string | undefined;
@@ -287,7 +302,7 @@ export function resolveConfig(input: {
 
   const outDir = path.resolve(
     baseDir,
-    pick(flags.out, fromEnv(env, 'OUT', [], notices), output.dir) ?? '.pterodoc',
+    pick(flags.out, fromEnv(env, 'OUT', [], notices), output.dir) ?? '.pterodocs',
   );
 
   return {
@@ -325,7 +340,7 @@ export function resolveConfig(input: {
     },
 
     layout,
-    classPrefix: render.classPrefix ?? 'pterodoc',
+    classPrefix: render.classPrefix ?? 'pterodocs',
     blocks: render.blocks === 'plugin' ? 'plugin' : 'core',
     styles: render.styles === 'none' ? 'none' : 'inline',
     highlight: render.highlight !== false,
@@ -341,6 +356,10 @@ export function resolveConfig(input: {
     uploadMedia: flags.noMedia === true ? false : media.upload !== false,
     uploadRemoteMedia: media.uploadRemote === true,
     mediaOnMissing: media.onMissing ?? 'warning',
+    // Deliberately not renamed with the rest. This string is the identity of
+    // every file already in a site's media library — the slug is
+    // `<prefix>-<content hash>` — so changing it would orphan every upload and
+    // send them all again. It is a key, not branding, and nobody sees it.
     mediaSlugPrefix: media.slugPrefix ?? 'pterodoc',
 
     outDir,
@@ -386,7 +405,7 @@ export async function loadConfig(
 
   // A named env file is read only when asked for, so a developer's own .env
   // can never leak into a test or a scripted run.
-  const envFile = flags.envFile ?? env['PTERODOC_ENV_FILE'];
+  const envFile = flags.envFile ?? env['PTERODOCS_ENV_FILE'] ?? env['PTERODOC_ENV_FILE'];
   const merged = envFile
     ? { ...dotenv.parse(fs.readFileSync(path.resolve(cwd(), envFile))), ...env }
     : env;

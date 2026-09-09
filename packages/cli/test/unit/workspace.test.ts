@@ -29,7 +29,7 @@ test('a dependency on a sibling asks for exactly the version in the tree', () =>
   const version = manifest('core').version;
   for (const name of NAMES) {
     for (const [dependency, range] of Object.entries(manifest(name).dependencies ?? {})) {
-      if (!dependency.startsWith('@pterodoc/')) continue;
+      if (!dependency.startsWith('@pterodocs/')) continue;
       assert.equal(range, version, `${name} wants ${dependency}@${range}, not ${version}`);
     }
   }
@@ -39,8 +39,8 @@ test('core depends on neither of the packages that depend on it', () => {
   // The whole point of the split: the dependency graph points inwards, and npm
   // rather than convention is what enforces it.
   const dependencies = Object.keys(manifest('core').dependencies ?? {});
-  assert.ok(!dependencies.includes('@pterodoc/docusaurus'));
-  assert.ok(!dependencies.includes('@pterodoc/wordpress'));
+  assert.ok(!dependencies.includes('@pterodocs/docusaurus'));
+  assert.ok(!dependencies.includes('@pterodocs/wordpress'));
 });
 
 test('the WordPress plugin agrees with its manifest about its own version', () => {
@@ -52,7 +52,7 @@ test('the WordPress plugin agrees with its manifest about its own version', () =
     fs.readFileSync(path.join(dir, 'package.json'), 'utf8'),
   ).version as string;
 
-  const php = fs.readFileSync(path.join(dir, 'pterodoc.php'), 'utf8');
+  const php = fs.readFileSync(path.join(dir, 'pterodocs.php'), 'utf8');
   const readme = fs.readFileSync(path.join(dir, 'readme.txt'), 'utf8');
 
   const header = /^ \* Version: +(.+)$/m.exec(php);

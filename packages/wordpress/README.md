@@ -1,10 +1,10 @@
-# @pterodoc/wordpress
+# @pterodocs/wordpress
 
-The WordPress REST target for [pterodoc](https://github.com/onyx-ac/pterodoc): pages
+The WordPress REST target for [pterodocs](https://github.com/onyx-ac/pterodoc): pages
 identified by parent and slug, media keyed by content hash, and pruning that trashes
 rather than deletes.
 
-You probably want the [`pterodoc`](https://www.npmjs.com/package/pterodoc) package
+You probably want the [`pterodocs`](https://www.npmjs.com/package/pterodocs) package
 instead.
 
 Licensed CC-BY-SA-4.0.

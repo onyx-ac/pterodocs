@@ -2,7 +2,7 @@
  * Build the installable plugin zip.
  *
  * What goes in is what WordPress runs: no tools, no node_modules, no lockfile.
- * The archive has a single `pterodoc/` directory at its root, which is what
+ * The archive has a single `pterodocs/` directory at its root, which is what
  * Plugins, Add New, Upload Plugin expects.
  *
  * The archive is written here rather than shelled out to, for two reasons.
@@ -24,7 +24,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, '..');
 
 /** What ships. Everything else is tooling. */
-const INCLUDE = ['pterodoc.php', 'uninstall.php', 'readme.txt', 'LICENCE.md', 'inc', 'assets', 'languages'];
+const INCLUDE = ['pterodocs.php', 'uninstall.php', 'readme.txt', 'LICENCE.md', 'inc', 'assets', 'languages'];
 
 /* -------------------------------------------------------------------------
  * Zip
@@ -174,7 +174,7 @@ for (const name of INCLUDE) {
     missing.push(name);
     continue;
   }
-  entries.push(...collect(from, `pterodoc/${name}`));
+  entries.push(...collect(from, `pterodocs/${name}`));
 }
 
 entries.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
@@ -186,7 +186,7 @@ if (missing.length > 0) {
   process.stdout.write(`note: not present, so not packaged: ${missing.join(', ')}\n`);
 }
 
-const output = path.join(root, 'pterodoc.zip');
+const output = path.join(root, 'pterodocs.zip');
 writeZip(output, entries);
 
 const size = (fs.statSync(output).size / 1024).toFixed(0);

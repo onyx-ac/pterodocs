@@ -6,17 +6,17 @@
  * extra, because a build has already loaded everything the model needs.
  */
 
-import { toSiteModel } from '@pterodoc/docusaurus';
-import type { LoadedSite } from '@pterodoc/docusaurus';
-import { createMemoryReader } from '@pterodoc/core/model';
-import { loadConfig } from '@pterodoc/core';
+import { toSiteModel } from '@pterodocs/docusaurus';
+import type { LoadedSite } from '@pterodocs/docusaurus';
+import { createMemoryReader } from '@pterodocs/core/model';
+import { loadConfig } from '@pterodocs/core';
 import { resolveTarget } from '../target';
-import type { Target } from '@pterodoc/core/target';
-import { runSync } from '@pterodoc/core';
+import type { Target } from '@pterodocs/core/target';
+import { runSync } from '@pterodocs/core';
 
 /** Options the plugin accepts in `docusaurus.config`. */
-export interface PterodocPluginOptions {
-  /** Path to the pterodoc config; discovered beside the site when unset. */
+export interface PterodocsPluginOptions {
+  /** Path to the pterodocs config; discovered beside the site when unset. */
   config?: string;
   /**
    * Publish at the end of `docusaurus build`.
@@ -52,12 +52,12 @@ interface ContextLike {
  * @param context The Docusaurus load context.
  * @param options Plugin options from `docusaurus.config`.
  */
-export default function pterodocPlugin(
+export default function pterodocsPlugin(
   context: ContextLike,
-  options: PterodocPluginOptions = {},
+  options: PterodocsPluginOptions = {},
 ): PluginLike {
   return {
-    name: 'pterodoc',
+    name: 'pterodocs',
 
     async postBuild(props): Promise<void> {
       if (options.runOnBuild !== true) return;
@@ -88,9 +88,9 @@ export default function pterodocPlugin(
       const counts = Object.entries(plan.summary)
         .map(([op, count]) => `${count} ${op}`)
         .join(', ');
-      process.stdout.write(`[pterodoc] ${counts || 'nothing to do'}\n`);
+      process.stdout.write(`[pterodocs] ${counts || 'nothing to do'}\n`);
       for (const issue of plan.issues.filter((entry) => entry.severity !== 'info')) {
-        process.stdout.write(`[pterodoc] ${issue.severity}: ${issue.message}\n`);
+        process.stdout.write(`[pterodocs] ${issue.severity}: ${issue.message}\n`);
       }
     },
   };

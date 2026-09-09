@@ -17,13 +17,13 @@ export type {
   SidebarItem,
   SidebarLinkItem,
   SiteModel,
-} from '@pterodoc/core/model';
-export { buildPageTree } from '@pterodoc/core/model';
-export type { BuildPageTreeInput, PageKind, PageNode, PageTree } from '@pterodoc/core/model';
-export { createCaptureReader, readCapture, writeCapture, serializeModel } from '@pterodoc/core/model';
-export type { CapturedModel } from '@pterodoc/core/model';
-export { createMemoryReader } from '@pterodoc/core/model';
-export type { SourceReader } from '@pterodoc/core/model';
+} from '@pterodocs/core/model';
+export { buildPageTree } from '@pterodocs/core/model';
+export type { BuildPageTreeInput, PageKind, PageNode, PageTree } from '@pterodocs/core/model';
+export { createCaptureReader, readCapture, writeCapture, serializeModel } from '@pterodocs/core/model';
+export type { CapturedModel } from '@pterodocs/core/model';
+export { createMemoryReader } from '@pterodocs/core/model';
+export type { SourceReader } from '@pterodocs/core/model';
 export { loadModel, toSiteModel } from './model';
 export type { LoadModelOptions } from './model';
 export { loadDocusaurusServer, SUPPORTED_RANGE } from './server';

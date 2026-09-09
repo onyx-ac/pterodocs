@@ -67,10 +67,10 @@ export interface RenderConfig {
    * Which block vocabulary to emit.
    *
    * `core` is the default and emits core blocks only. `plugin` additionally
-   * carries instructions the pterodoc WordPress plugin understands — chiefly
+   * carries instructions the pterodocs WordPress plugin understands — chiefly
    * highlighted line ranges, which core blocks cannot express at all — in block
    * comments rather than in markup, so WordPress stores the same content either
-   * way. Set it once the plugin is installed; `pterodoc doctor` says whether it
+   * way. Set it once the plugin is installed; `pterodocs doctor` says whether it
    * is.
    */
   blocks?: 'core' | 'plugin';
@@ -133,8 +133,8 @@ export interface OutputConfig {
   pages?: boolean;
 }
 
-/** A pterodoc configuration file. */
-export interface PterodocConfig {
+/** A pterodocs configuration file. */
+export interface PterodocsConfig {
   site?: SiteConfig;
   target?: TargetConfig;
   layout?: Partial<PageLayout>;
@@ -151,6 +151,6 @@ export interface PterodocConfig {
  *
  * @param config The configuration.
  */
-export function defineConfig(config: PterodocConfig): PterodocConfig {
+export function defineConfig(config: PterodocsConfig): PterodocsConfig {
   return config;
 }

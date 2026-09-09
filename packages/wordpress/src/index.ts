@@ -1,6 +1,6 @@
 /** The WordPress target. */
 
-import { renderNavigationStub } from '@pterodoc/core/render';
+import { renderNavigationStub } from '@pterodocs/core/render';
 import type {
   EnsureRequest,
   EnsureResult,
@@ -11,8 +11,8 @@ import type {
   Target,
   TargetCapabilities,
   TargetSession,
-} from '@pterodoc/core/target';
-import { TargetError, titleCase } from '@pterodoc/core/util';
+} from '@pterodocs/core/target';
+import { TargetError, titleCase } from '@pterodocs/core/util';
 import { DEFAULT_RETRY, WpClient, type RetryPolicy } from './client';
 import { loadMediaIndex, uploadMedia } from './media';
 import {

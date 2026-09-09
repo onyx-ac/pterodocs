@@ -1,8 +1,8 @@
 /** Command line parsing and the usage text. */
 
 import { parseArgs } from 'node:util';
-import { ConfigError } from '@pterodoc/core';
-import type { ConfigFlags } from '@pterodoc/core';
+import { ConfigError } from '@pterodocs/core';
+import type { ConfigFlags } from '@pterodocs/core';
 
 /** Commands the CLI accepts. */
 export const COMMANDS = ['sync', 'render', 'doctor', 'capture', 'purge', 'init'] as const;
@@ -13,20 +13,20 @@ export type Command = (typeof COMMANDS)[number];
 /** The help text. */
 export const USAGE = `Publish a Docusaurus site to WordPress as a tree of pages.
 
-Usage: pterodoc <command> [options]
+Usage: pterodocs <command> [options]
 
 Commands
   sync        Reconcile the target with the site. The default.
   render      Render every page to the output directory; contacts nothing.
   doctor      Check the configuration, the credentials and the target.
   capture     Write the loaded site model to a JSON file.
-  purge       Remove the documentation pterodoc published at a path. Needs no
+  purge       Remove the documentation pterodocs published at a path. Needs no
               site: use it to clean up a location the docs have moved away from.
-  init        Write a starter pterodoc.config.mjs.
+  init        Write a starter pterodocs.config.mjs.
 
 Source
   --site-dir <dir>            Docusaurus site directory (default: the working directory).
-  --config <file>             pterodoc config file.
+  --config <file>             pterodocs config file.
   --docusaurus-config <file>  Explicit docusaurus.config.* path.
   --model <file>              Use a captured model; Docusaurus is never loaded.
   --instance <id>             Docs plugin instance. Repeatable.
@@ -47,7 +47,7 @@ Target
   --no-media                  Skip uploads; leave image URLs as written.
 
 Output
-  --out <dir>                 Output directory (default <site-dir>/.pterodoc).
+  --out <dir>                 Output directory (default <site-dir>/.pterodocs).
   --capture <file>            Also write the site model to <file>.
   --env-file <file>           Read this .env file. None is read otherwise.
   --strict                    Fail when an issue reaches the configured severity.

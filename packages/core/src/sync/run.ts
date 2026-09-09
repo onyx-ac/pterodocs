@@ -115,7 +115,7 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
   const rootPath = deps.target?.rootPath ?? '/';
   const plan: Plan = {
     generatedAt: new Date().toISOString(),
-    versions: { pterodoc: VERSION, docusaurus: docusaurusVersion, node: process.version },
+    versions: { pterodocs: VERSION, docusaurus: docusaurusVersion, node: process.version },
     dryRun: config.dryRun,
     offline: config.offline,
     site: config.targetUrl || null,
@@ -352,13 +352,13 @@ async function syncVersion(input: SyncVersionInput): Promise<{
       for (const page of session.computePrune(index, navRootId, keep)) {
         // Position inside the tree is not ownership. Somebody may have added a
         // page under the documentation root, and trashing it because this run
-        // did not account for it would be pterodoc deleting someone else's work.
+        // did not account for it would be pterodocs deleting someone else's work.
         const full = await session.fetchPage(page.id);
         if (!isGeneratedPage(full.content ?? '', config.classPrefix)) {
           issues.add({
             code: 'prune-skipped-foreign',
             severity: 'info',
-            message: `${page.link} sits under the documentation root but was not written by pterodoc, so it was left alone.`,
+            message: `${page.link} sits under the documentation root but was not written by pterodocs, so it was left alone.`,
           });
           continue;
         }

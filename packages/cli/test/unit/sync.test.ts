@@ -6,12 +6,12 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readCapture } from '@pterodoc/core/model';
-import { createMemoryReader } from '@pterodoc/core/model';
-import { resolveConfig, type ResolvedConfig } from '@pterodoc/core';
-import { createWordpressTarget } from '@pterodoc/wordpress';
-import { runSync } from '@pterodoc/core';
-import type { SiteModel } from '@pterodoc/core/model';
+import { readCapture } from '@pterodocs/core/model';
+import { createMemoryReader } from '@pterodocs/core/model';
+import { resolveConfig, type ResolvedConfig } from '@pterodocs/core';
+import { createWordpressTarget } from '@pterodocs/wordpress';
+import { runSync } from '@pterodocs/core';
+import type { SiteModel } from '@pterodocs/core/model';
 import { createFakeWp, type FakeWp } from '../../../wordpress/test/fixtures/fake-wp';
 
 // Captured models are a core artefact and live with core's fixtures.
@@ -22,7 +22,7 @@ const fixtures = path.dirname(
 /** A site whose documents exist on disk, so bodies can actually be read. */
 async function siteOnDisk(): Promise<{ model: SiteModel; dir: string }> {
   const model = await readCapture(path.join(fixtures, 'models', 'mini.model.json'));
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'pterodoc-site-'));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'pterodocs-site-'));
 
   const version = model.instances[0]!.versions[0]!;
   for (const doc of version.docs) {
@@ -71,7 +71,7 @@ function targetFor(config: ResolvedConfig, fake: FakeWp) {
 
 /** Set up a run: a site on disk, a fake WordPress, and somewhere to write. */
 async function setup(overrides: Partial<ResolvedConfig> = {}, fake = createFakeWp()) {
-  const outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'pterodoc-out-'));
+  const outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'pterodocs-out-'));
   const { model, dir } = await siteOnDisk();
   const config = configFor(outDir, overrides);
   const reader = createMemoryReader(model);
@@ -286,7 +286,7 @@ test('the run writes a manifest and a plan that describe what happened', async (
   assert.equal(manifest.find((entry) => entry.path === 'beta/child')!.href, '/products/docstack/docs/beta/child/');
   assert.equal(manifest[0]!.locale, 'en');
 
-  assert.equal(plan.versions.pterodoc.length > 0, true);
+  assert.equal(plan.versions.pterodocs.length > 0, true);
   assert.equal(plan.artifactError, null);
   assert.ok(plan.requests > 0);
   await t.cleanup();

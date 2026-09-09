@@ -7,12 +7,12 @@
  * is a string concatenation, and safe because the block's own markup is
  * untouched — or is added by the front-end script.
  *
- * @package pterodoc
+ * @package pterodocs
  */
 
 declare( strict_types = 1 );
 
-namespace Pterodoc;
+namespace Pterodocs;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -62,7 +62,7 @@ final class Markup {
 	/**
 	 * Whether a parsed block declares a class in its attributes.
 	 *
-	 * Cheaper than parsing the markup, and it is how pterodoc marks the blocks it
+	 * Cheaper than parsing the markup, and it is how pterodocs marks the blocks it
 	 * generated: `className` is part of the block comment.
 	 *
 	 * @param array<string, mixed> $block A parsed block.

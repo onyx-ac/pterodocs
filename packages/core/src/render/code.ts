@@ -79,7 +79,7 @@ export function renderCode(
 
   const attributes: Record<string, unknown> = {};
   if (className) attributes['className'] = className;
-  if (carried) attributes['pterodocHighlight'] = meta.highlight;
+  if (carried) attributes['pterodocsHighlight'] = meta.highlight;
 
   // Highlighted here rather than in the browser, because a site running no
   // plugin has no browser-side highlighter. What lands in the content is
@@ -98,7 +98,7 @@ export function renderCode(
     issues?.add({
       code: 'code-highlight-dropped',
       severity: 'info',
-      message: `Highlighted lines {${meta.highlight}} have no WordPress equivalent and were not carried over. Install the pterodoc WordPress plugin and set render.blocks to 'plugin' to keep them.`,
+      message: `Highlighted lines {${meta.highlight}} have no WordPress equivalent and were not carried over. Install the pterodocs WordPress plugin and set render.blocks to 'plugin' to keep them.`,
       file,
       line: node.position?.start.line,
     });

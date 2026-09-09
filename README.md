@@ -1,6 +1,6 @@
 <div align="center">
 
-# pterodoc
+# pterodocs
 
 **Your documentation, where people actually find it.**
 
@@ -28,11 +28,11 @@ that builds your site.
 ## Install
 
 ```console
-npm install --save-dev pterodoc
+npm install --save-dev pterodocs
 ```
 
-pterodoc runs inside a Docusaurus project and expects `@docusaurus/core` to be present.
-It pulls in `@pterodoc/core`, `@pterodoc/docusaurus` and `@pterodoc/wordpress`, which are
+pterodocs runs inside a Docusaurus project and expects `@docusaurus/core` to be present.
+It pulls in `@pterodocs/core`, `@pterodocs/docusaurus` and `@pterodocs/wordpress`, which are
 published in lockstep with it.
 
 Installing from a git URL is not supported: the repository is an npm workspace, and a git
@@ -41,11 +41,11 @@ install would pack only its private root.
 ## Usage
 
 ```console
-npx pterodoc render                 # render every page locally; contacts nothing
-npx pterodoc sync --dry-run         # say what would change on the site
-npx pterodoc sync                   # create and update
-npx pterodoc sync --prune           # also trash pages whose document is gone
-npx pterodoc doctor                 # check config, credentials and permissions
+npx pterodocs render                 # render every page locally; contacts nothing
+npx pterodocs sync --dry-run         # say what would change on the site
+npx pterodocs sync                   # create and update
+npx pterodocs sync --prune           # also trash pages whose document is gone
+npx pterodocs doctor                 # check config, credentials and permissions
 ```
 
 Credentials come from the environment, never from the config file:
@@ -60,10 +60,10 @@ Without them every command still renders, and reports what it would have done.
 
 ## Configuration
 
-`pterodoc.config.mjs` beside your Docusaurus config:
+`pterodocs.config.mjs` beside your Docusaurus config:
 
 ```js
-import { defineConfig } from 'pterodoc';
+import { defineConfig } from 'pterodocs';
 
 export default defineConfig({
   site: { sidebars: ['docs'], versions: 'last', locales: 'default' },
@@ -84,7 +84,7 @@ rewrites what actually differs, and a second run reports everything as unchanged
 
 ## How it looks
 
-WordPress renders core blocks with almost no opinion, so pterodoc publishes a
+WordPress renders core blocks with almost no opinion, so pterodocs publishes a
 stylesheet with them: the navigation loses its list markers and becomes a sticky
 column that scrolls on its own, code gets a frame and a monospace face, tables
 scroll instead of overflowing, and the layout runs full width. Fences are
@@ -110,7 +110,7 @@ render: {
 
 ## The WordPress plugin
 
-Optional, and worth installing. pterodoc writes ordinary core blocks, which are
+Optional, and worth installing. pterodocs writes ordinary core blocks, which are
 correct but plain: no syntax highlighting, tables that overflow, a sidebar that
 is a bare expanded list. The plugin in `packages/wordpress/plugin` styles them.
 
@@ -119,19 +119,19 @@ it. Deactivate it and the documentation is still there, still readable, still
 navigable.
 
 ```console
-npm run --workspace @pterodoc/wp-plugin build   # writes pterodoc.zip
+npm run --workspace @pterodocs/wp-plugin build   # writes pterodocs.zip
 ```
 
 Upload that under Plugins, Add New, Upload Plugin. Defaults live at Settings,
-pterodoc; any single block can override them from the block inspector.
+pterodocs; any single block can override them from the block inspector.
 
 Two things to know. Its class prefix must match `render.classPrefix` — set it on
-the settings page, which needs no re-publishing; `pterodoc doctor` says whether
+the settings page, which needs no re-publishing; `pterodocs doctor` says whether
 the two agree. And because a sync rewrites a page's content, an override set on a
 block in the WordPress editor is replaced the next time that page is published:
 the settings page is the durable place for a preference.
 
-Once it is installed, `render.blocks: 'plugin'` lets pterodoc carry instructions
+Once it is installed, `render.blocks: 'plugin'` lets pterodocs carry instructions
 core blocks cannot express — chiefly a fence's highlighted line range, which is
 otherwise reported as dropped. It travels in the block comment rather than in
 markup, so WordPress stores the same content either way.
@@ -142,7 +142,7 @@ Working, and published.
 
 The publisher has been verified against a real 47-page documentation set: rendering
 matches the script it was extracted from on 42 of those pages, and every one of the
-remaining five differs only where pterodoc is now correct.
+remaining five differs only where pterodocs is now correct.
 
 Not yet exercised against a site that uses them: versions, locales, and the Docusaurus
 build plugin. The WordPress plugin is newer still — its PHP and JavaScript are checked in
@@ -153,7 +153,7 @@ behaviour in a browser has not been through a release on a live site.
 
 Next, in the order they would help most:
 
-- **`pterodoc preview`.** Render, then write a browsable page showing the result
+- **`pterodocs preview`.** Render, then write a browsable page showing the result
   at a phone width and a desktop one, with the navigation reconstructed — WordPress
   renders `core/page-list` server-side, so a rendered file has only its
   placeholder and the sidebar cannot otherwise be seen. Built by hand three

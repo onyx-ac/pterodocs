@@ -85,7 +85,7 @@ export function createTheme(options: {
   styles?: StylePolicy;
   highlight?: boolean;
 } = {}): Theme {
-  const classPrefix = options.classPrefix ?? 'pterodoc';
+  const classPrefix = options.classPrefix ?? 'pterodocs';
   const strings: Strings = { ...DEFAULT_STRINGS, ...options.strings };
   return {
     classPrefix,

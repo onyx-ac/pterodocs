@@ -249,7 +249,7 @@ export function renderBlock(node: RootContent, ctx: RenderContext): string {
         column: node.position?.start.column,
       });
       return ctx.onUnknownJsx === 'placeholder'
-        ? serializeBlock('html', undefined, `<!-- pterodoc: <${element.name ?? 'fragment'}> omitted -->`)
+        ? serializeBlock('html', undefined, `<!-- pterodocs: <${element.name ?? 'fragment'}> omitted -->`)
         : '';
     }
 

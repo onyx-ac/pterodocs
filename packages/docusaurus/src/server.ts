@@ -9,7 +9,7 @@
 
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { ConfigError } from '@pterodoc/core/util';
+import { ConfigError } from '@pterodocs/core/util';
 
 /** Docusaurus versions this tool has been checked against. */
 export const SUPPORTED_RANGE = { min: 3, maxExclusive: 4 };
@@ -59,7 +59,7 @@ export interface DocusaurusServer {
 
 /**
  * Find and load Docusaurus's site loader, resolving it from the site rather
- * than from pterodoc so a hoisted or a nested install both work.
+ * than from pterodocs so a hoisted or a nested install both work.
  *
  * @param siteDir Absolute path of the Docusaurus site directory.
  * @param warn Called with a message when the version is outside the tested range.
@@ -75,7 +75,7 @@ export function loadDocusaurusServer(
     corePackagePath = requireFromSite.resolve('@docusaurus/core/package.json');
   } catch {
     throw new ConfigError(
-      `Could not find @docusaurus/core from ${siteDir}. pterodoc reads a Docusaurus site using Docusaurus itself, so it has to run inside the site's own project. Use --site-dir to point at it, or --model to render from a captured model instead.`,
+      `Could not find @docusaurus/core from ${siteDir}. pterodocs reads a Docusaurus site using Docusaurus itself, so it has to run inside the site's own project. Use --site-dir to point at it, or --model to render from a captured model instead.`,
     );
   }
 
@@ -84,7 +84,7 @@ export function loadDocusaurusServer(
   const major = Number.parseInt(version.split('.')[0] ?? '0', 10);
   if (major < SUPPORTED_RANGE.min || major >= SUPPORTED_RANGE.maxExclusive) {
     warn(
-      `This is Docusaurus ${version}; pterodoc has been checked against ${SUPPORTED_RANGE.min}.x. Continuing, but the site model may not load.`,
+      `This is Docusaurus ${version}; pterodocs has been checked against ${SUPPORTED_RANGE.min}.x. Continuing, but the site model may not load.`,
     );
   }
 
@@ -104,8 +104,8 @@ export function loadDocusaurusServer(
   }
 
   throw new ConfigError(
-    `Docusaurus ${version} is installed but its site loader was not where pterodoc expected it.\n` +
+    `Docusaurus ${version} is installed but its site loader was not where pterodocs expected it.\n` +
       `Tried:\n${tried.map((entry) => `  ${entry}`).join('\n')}\n` +
-      'This usually means a Docusaurus release moved it. Capture a model on a working version with `pterodoc capture`, then render from it with `--model`, and please report the version.',
+      'This usually means a Docusaurus release moved it. Capture a model on a working version with `pterodocs capture`, then render from it with `--model`, and please report the version.',
   );
 }

@@ -13,7 +13,7 @@
 	tab-size: 2;
 }
 
-/* Mark the generated layout, so it is obvious which blocks pterodoc owns. */
+/* Mark the generated layout, so it is obvious which blocks pterodocs owns. */
 .editor-styles-wrapper [class*="-docs-nav"]::before {
 	content: attr(data-pd-editor-label);
 }

@@ -1,14 +1,14 @@
 /**
- * Finding out whether the pterodoc WordPress plugin is installed.
+ * Finding out whether the pterodocs WordPress plugin is installed.
  *
  * The plugin registers one option and exposes it over REST, so asking for the
  * site's settings answers both questions at once: whether it is there, and what
  * it is configured with. That second half matters, because the plugin styles a
- * site by class prefix and a prefix that disagrees with the one pterodoc writes
+ * site by class prefix and a prefix that disagrees with the one pterodocs writes
  * is a setup that looks broken for no visible reason.
  */
 
-import { TargetError } from '@pterodoc/core/util';
+import { TargetError } from '@pterodocs/core/util';
 import type { WpClient } from './client';
 
 /** What the site said about the plugin. */
@@ -29,7 +29,7 @@ export interface PluginStatus {
 
 /** The shape of the site settings this reads. */
 interface SiteSettings {
-  pterodoc_settings?: { classPrefix?: string };
+  pterodocs_settings?: { classPrefix?: string };
 }
 
 /**
@@ -43,7 +43,7 @@ interface SiteSettings {
 export async function detectPlugin(client: WpClient): Promise<PluginStatus> {
   try {
     const { data } = await client.request<SiteSettings>('GET', '/settings');
-    const settings = data.pterodoc_settings;
+    const settings = data.pterodocs_settings;
 
     if (!settings) return { installed: false };
 

@@ -14,4 +14,4 @@ packages/cli/CHANGELOG.md
 
 # The WordPress plugin: Prism is copied from npm, and the zip is a build output.
 packages/wordpress/plugin/assets/vendor/
-packages/wordpress/plugin/pterodoc.zip
+packages/wordpress/plugin/pterodocs.zip

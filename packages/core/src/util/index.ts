@@ -5,7 +5,7 @@
  * them to import it.
  */
 
-export { EXIT, PterodocError, ConfigError, TargetError, UnsupportedContentError } from '../errors';
+export { EXIT, PterodocsError, ConfigError, TargetError, UnsupportedContentError } from '../errors';
 export { VERSION, USER_AGENT } from '../version';
 export { contentHash } from './hash';
 export { compareSeverity, formatIssue, IssueCollector } from './issues';

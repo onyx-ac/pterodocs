@@ -177,6 +177,6 @@ ${css}`;
  * `inline` stores it with each page, which is the only place a site that has
  * installed nothing can read it from. `none` writes no styles at all, for a
  * site whose theme already dresses these class names, or one running the
- * pterodoc WordPress plugin, which brings its own and a good deal more.
+ * pterodocs WordPress plugin, which brings its own and a good deal more.
  */
 export type StylePolicy = 'inline' | 'none';

@@ -5,10 +5,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { collectImages, resolveImage } from '@pterodoc/core/render';
+import { collectImages, resolveImage } from '@pterodocs/core/render';
 import { loadMediaIndex, uploadMedia } from '../../src/media';
 import { WpClient } from '../../src/client';
-import { contentHash } from '@pterodoc/core/util';
+import { contentHash } from '@pterodocs/core/util';
 import { createFakeWp } from '../fixtures/fake-wp';
 
 // Every fixture path is resolved rather than written out: an absolute path is
@@ -97,11 +97,11 @@ test('an uploaded file is identified by its content, and set as its slug', async
   const uploaded = await uploadMedia(
     client,
     { bytes, filename: 'diagram.png', hash, mime: 'image/png', alt: 'A diagram', title: 'Diagram' },
-    'pterodoc',
+    'pterodocs',
   );
 
   assert.equal(uploaded.hash, hash);
-  assert.equal(fake.media[0]!.slug, `pterodoc-${hash}`, 'the slug carries the identity');
+  assert.equal(fake.media[0]!.slug, `pterodocs-${hash}`, 'the slug carries the identity');
   assert.equal(fake.media[0]!.alt_text, 'A diagram');
   // Two requests: WordPress derives a slug from the filename, so it is set after.
   assert.equal(fake.calls.filter((call) => call.path.startsWith('/media')).length, 2);
@@ -110,7 +110,7 @@ test('an uploaded file is identified by its content, and set as its slug', async
 test('what was uploaded before is found again by its hash', async () => {
   const fake = createFakeWp({
     media: [
-      { id: 5, slug: 'pterodoc-0123456789abcdef', source_url: 'https://example.test/a.png', mime_type: 'image/png' },
+      { id: 5, slug: 'pterodocs-0123456789abcdef', source_url: 'https://example.test/a.png', mime_type: 'image/png' },
       { id: 6, slug: 'something-else', source_url: 'https://example.test/b.png', mime_type: 'image/png' },
     ],
   });
@@ -122,7 +122,7 @@ test('what was uploaded before is found again by its hash', async () => {
     sleep: async () => {},
   });
 
-  const index = await loadMediaIndex(client, 'pterodoc');
+  const index = await loadMediaIndex(client, 'pterodocs');
   assert.equal(index.size, 1, 'only files this tool uploaded are ours to reuse');
   assert.equal(index.get('0123456789abcdef')!.id, 5);
 });
@@ -150,14 +150,14 @@ test('an SVG refusal is explained rather than reported as a mystery', async () =
           alt: '',
           title: '',
         },
-        'pterodoc',
+        'pterodocs',
       ),
     /blocks image\/svg\+xml uploads/,
   );
 });
 
 test('a real file on disk hashes the same however it is read', async () => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'pterodoc-media-'));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'pterodocs-media-'));
   const file = path.join(dir, 'a.bin');
   await fs.writeFile(file, 'contents');
   assert.equal(contentHash(await fs.readFile(file)), contentHash('contents'));

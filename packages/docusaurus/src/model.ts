@@ -7,11 +7,11 @@
  */
 
 import path from 'node:path';
-import { detectFormat, type MarkdownFormat } from '@pterodoc/core/render';
-import { relativeToPrefix, resolveAliasedPath, toPosix } from '@pterodoc/core/util';
-import { DEFAULT_ADMONITION_KEYWORDS } from '@pterodoc/core/render';
+import { detectFormat, type MarkdownFormat } from '@pterodocs/core/render';
+import { relativeToPrefix, resolveAliasedPath, toPosix } from '@pterodocs/core/util';
+import { DEFAULT_ADMONITION_KEYWORDS } from '@pterodocs/core/render';
 import { loadDocusaurusServer, type LoadedSite } from './server';
-import type { Doc, DocsInstance, DocsVersion, SidebarItem, SiteModel } from '@pterodoc/core/model';
+import type { Doc, DocsInstance, DocsVersion, SidebarItem, SiteModel } from '@pterodocs/core/model';
 
 /** Name Docusaurus gives the docs plugin. */
 const DOCS_PLUGIN = 'docusaurus-plugin-content-docs';

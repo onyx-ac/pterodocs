@@ -16,8 +16,8 @@ import type { SourceReader } from './reader';
 export interface CapturedModel {
   /** Format version of this file. */
   capture: 1;
-  /** Version of pterodoc that wrote it. */
-  pterodoc: string;
+  /** Version of pterodocs that wrote it. */
+  pterodocs: string;
   /** When it was written. */
   capturedAt: string;
   /** The model itself. */
@@ -28,7 +28,7 @@ export interface CapturedModel {
 export function serializeModel(model: SiteModel): string {
   const captured: CapturedModel = {
     capture: 1,
-    pterodoc: VERSION,
+    pterodocs: VERSION,
     capturedAt: new Date().toISOString(),
     model,
   };
@@ -63,7 +63,7 @@ export async function readCapture(file: string): Promise<SiteModel> {
 
   if (parsed.capture !== 1 || !parsed.model) {
     throw new ConfigError(
-      `${file} is not a pterodoc model capture. Produce one with \`pterodoc capture\`.`,
+      `${file} is not a pterodocs model capture. Produce one with \`pterodocs capture\`.`,
     );
   }
   return parsed.model;

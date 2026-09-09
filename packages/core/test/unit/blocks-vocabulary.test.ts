@@ -28,7 +28,7 @@ const FENCE = '```ts {1,3-5}\nconst a = 1;\nconst b = 2;\nconst c = 3;\n```\n';
 
 test('core blocks are what the renderer emits unless the plugin is asked for', () => {
   const { body } = render(FENCE, 'core');
-  assert.equal(body.includes('pterodocHighlight'), false, body);
+  assert.equal(body.includes('pterodocsHighlight'), false, body);
   assert.ok(body.includes('<!-- wp:code {"className":"language-ts"} -->'), body);
 });
 
@@ -42,7 +42,7 @@ test('a highlighted range is reported when nothing can render it', () => {
 test('a highlighted range is carried rather than dropped when the plugin can render it', () => {
   const { body, issues } = render(FENCE, 'plugin');
 
-  assert.ok(body.includes('"pterodocHighlight":"1,3-5"'), body);
+  assert.ok(body.includes('"pterodocsHighlight":"1,3-5"'), body);
   assert.equal(
     issues.issues.filter((issue) => issue.code === 'code-highlight-dropped').length,
     0,

@@ -14,13 +14,13 @@ const CREDENTIALS = {
 test('flags win over the environment, which wins over the file', () => {
   const config = resolveConfig({
     flags: { root: '/from-flag' },
-    env: { ...CREDENTIALS, PTERODOC_WP_ROOT: '/from-env' },
+    env: { ...CREDENTIALS, PTERODOCS_WP_ROOT: '/from-env' },
     file: { target: { root: '/from-file' } },
   });
   assert.deepEqual(config.rootSegments, ['from-flag']);
 
   const withoutFlag = resolveConfig({
-    env: { ...CREDENTIALS, PTERODOC_WP_ROOT: '/from-env' },
+    env: { ...CREDENTIALS, PTERODOCS_WP_ROOT: '/from-env' },
     file: { target: { root: '/from-file' } },
   });
   assert.deepEqual(withoutFlag.rootSegments, ['from-env']);
@@ -107,9 +107,9 @@ test('--no-media turns uploads off whatever the file says', () => {
 
 test('a configuration file is discovered by name, in order', () => {
   const siteDir = path.resolve('/site');
-  const found = path.join(siteDir, 'pterodoc.config.js');
+  const found = path.join(siteDir, 'pterodocs.config.js');
   const present = new Set([found]);
   assert.equal(discoverConfigFile(siteDir, { existsSync: (file) => present.has(file) }), found);
   assert.equal(discoverConfigFile(siteDir, { existsSync: () => false }), undefined);
-  assert.equal(CONFIG_NAMES[0], 'pterodoc.config.mjs');
+  assert.equal(CONFIG_NAMES[0], 'pterodocs.config.mjs');
 });

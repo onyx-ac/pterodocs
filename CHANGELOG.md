@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.4.0
+
+### Changed
+
+- Renamed to **pterodocs**. The plural reads as what it is — a documentation
+  publisher — where the singular read as one document. The packages are
+  `pterodocs`, `@pterodocs/core`, `@pterodocs/docusaurus` and
+  `@pterodocs/wordpress`; the command is `pterodocs`; the WordPress plugin's
+  slug, text domain and option key follow.
+
+  Two things deliberately did not follow.
+
+  The default media slug prefix stays `pterodoc`. That string is the identity of
+  every file already in a site's media library — a slug is `<prefix>-<content
+  hash>` — so renaming it would orphan every upload and send them all again. It
+  is a key rather than branding, and nobody sees it. Set `media.slugPrefix` if
+  you want it to match.
+
+  And the old names still answer. `pterodoc.config.*` is still discovered, and
+  every `PTERODOC_*` environment variable still works, each with a notice
+  saying what it is called now. An existing project needs no edits beyond the
+  dependency itself.
+
+- Earlier versions are published as `pterodoc` and stop at 0.3.0.
+
 ## 0.3.0
 
 ### Added

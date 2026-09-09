@@ -10,18 +10,18 @@
     "declarationMap": false,
     "emitDeclarationOnly": false,
     "baseUrl": ".",
-    // Listed one by one on purpose: a `@pterodoc/core/*` wildcard maps to a
+    // Listed one by one on purpose: a `@pterodocs/core/*` wildcard maps to a
     // directory, and neither Node nor tsx does directory-index resolution for
     // a mapped path.
     "paths": {
-      "@pterodoc/core": ["packages/core/src/index.ts"],
-      "@pterodoc/core/model": ["packages/core/src/model/index.ts"],
-      "@pterodoc/core/render": ["packages/core/src/render/index.ts"],
-      "@pterodoc/core/target": ["packages/core/src/target/index.ts"],
-      "@pterodoc/core/util": ["packages/core/src/util/index.ts"],
-      "@pterodoc/docusaurus": ["packages/docusaurus/src/index.ts"],
-      "@pterodoc/wordpress": ["packages/wordpress/src/index.ts"],
-      "pterodoc": ["packages/cli/src/index.ts"]
+      "@pterodocs/core": ["packages/core/src/index.ts"],
+      "@pterodocs/core/model": ["packages/core/src/model/index.ts"],
+      "@pterodocs/core/render": ["packages/core/src/render/index.ts"],
+      "@pterodocs/core/target": ["packages/core/src/target/index.ts"],
+      "@pterodocs/core/util": ["packages/core/src/util/index.ts"],
+      "@pterodocs/docusaurus": ["packages/docusaurus/src/index.ts"],
+      "@pterodocs/wordpress": ["packages/wordpress/src/index.ts"],
+      "pterodocs": ["packages/cli/src/index.ts"]
     }
   },
   "include": ["packages/*/src", "packages/*/test", "scripts"]

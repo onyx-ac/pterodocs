@@ -7,17 +7,17 @@
 
 import path from 'node:path';
 import fs from 'node:fs/promises';
-import { EXIT, ConfigError, PterodocError, TargetError } from '@pterodoc/core';
-import { VERSION } from '@pterodoc/core';
-import { compareSeverity } from '@pterodoc/core/util';
-import { loadConfig, type ResolvedConfig } from '@pterodoc/core';
-import { createDocusaurusReader } from '@pterodoc/docusaurus';
-import { createCaptureReader, writeCapture } from '@pterodoc/core/model';
-import type { SourceReader } from '@pterodoc/core/model';
+import { EXIT, ConfigError, PterodocsError, TargetError } from '@pterodocs/core';
+import { VERSION } from '@pterodocs/core';
+import { compareSeverity } from '@pterodocs/core/util';
+import { loadConfig, type ResolvedConfig } from '@pterodocs/core';
+import { createDocusaurusReader } from '@pterodocs/docusaurus';
+import { createCaptureReader, writeCapture } from '@pterodocs/core/model';
+import type { SourceReader } from '@pterodocs/core/model';
 import { resolveTarget } from '../target';
-import { detectPlugin, WpClient, DEFAULT_RETRY } from '@pterodoc/wordpress';
-import { purgeTree } from '@pterodoc/core';
-import { runSync } from '@pterodoc/core';
+import { detectPlugin, WpClient, DEFAULT_RETRY } from '@pterodocs/wordpress';
+import { purgeTree } from '@pterodocs/core';
+import { runSync } from '@pterodocs/core';
 import { parseCliArgs, USAGE, type ParsedArgs } from './args';
 import { createReporter, type Reporter } from './reporter';
 
@@ -202,7 +202,7 @@ async function commandDoctor(config: ResolvedConfig, reporter: Reporter): Promis
   reporter.info(`\nReached the target: ${index.length} page(s) exist.`);
 
   const media = await session.loadMediaIndex();
-  reporter.info(`${media.size} file(s) previously uploaded by pterodoc.`);
+  reporter.info(`${media.size} file(s) previously uploaded by pterodocs.`);
 
   await reportPlugin(config, reporter);
   return EXIT.ok;
@@ -227,13 +227,13 @@ async function reportPlugin(config: ResolvedConfig, reporter: Reporter): Promise
 
   if (status.unknown) {
     reporter.info('');
-    reporter.info(`The pterodoc plugin: ${status.unknown}.`);
+    reporter.info(`The pterodocs plugin: ${status.unknown}.`);
     return;
   }
 
   if (!status.installed) {
     reporter.info('');
-    reporter.info('The pterodoc WordPress plugin is not installed.');
+    reporter.info('The pterodocs WordPress plugin is not installed.');
     if (config.blocks === 'plugin') {
       reporter.issue({
         code: 'plugin-missing',
@@ -246,18 +246,18 @@ async function reportPlugin(config: ResolvedConfig, reporter: Reporter): Promise
   }
 
   reporter.info('');
-  reporter.info('The pterodoc WordPress plugin is installed.');
+  reporter.info('The pterodocs WordPress plugin is installed.');
 
   if (config.blocks !== 'plugin') {
     reporter.info("Set render.blocks to 'plugin' to let it render what core blocks cannot.");
   }
 
-  const prefix = status.classPrefix ?? 'pterodoc';
+  const prefix = status.classPrefix ?? 'pterodocs';
   if (prefix !== config.classPrefix) {
     reporter.issue({
       code: 'plugin-prefix-mismatch',
       severity: 'warning',
-      message: `The plugin is styling "${prefix}" but pterodoc writes "${config.classPrefix}". Set them the same, on the plugin's settings page or in render.classPrefix; nothing needs re-publishing.`,
+      message: `The plugin is styling "${prefix}" but pterodocs writes "${config.classPrefix}". Set them the same, on the plugin's settings page or in render.classPrefix; nothing needs re-publishing.`,
     });
   }
 }
@@ -305,7 +305,7 @@ async function commandPurge(
     reporter.issue({
       code: 'purge-skipped-foreign',
       severity: 'warning',
-      message: `${page.link} was left alone: pterodoc did not write it.`,
+      message: `${page.link} was left alone: pterodocs did not write it.`,
     });
   }
 
@@ -324,7 +324,7 @@ async function commandPurge(
 
 /** `init`. */
 async function commandInit(config: ResolvedConfig, reporter: Reporter): Promise<number> {
-  const file = path.join(config.siteDir, 'pterodoc.config.mjs');
+  const file = path.join(config.siteDir, 'pterodocs.config.mjs');
   try {
     await fs.access(file);
     throw new ConfigError(`${file} already exists.`);
@@ -334,7 +334,7 @@ async function commandInit(config: ResolvedConfig, reporter: Reporter): Promise<
 
   await fs.writeFile(
     file,
-    `import { defineConfig } from 'pterodoc';
+    `import { defineConfig } from 'pterodocs';
 
 export default defineConfig({
   site: {
@@ -370,7 +370,7 @@ function report(error: unknown): number {
     if (error.bodySnippet) process.stderr.write(`  body: ${error.bodySnippet}\n`);
     return error.exitCode;
   }
-  if (error instanceof PterodocError) {
+  if (error instanceof PterodocsError) {
     process.stderr.write(`\n${error.message}\n`);
     return error.exitCode;
   }

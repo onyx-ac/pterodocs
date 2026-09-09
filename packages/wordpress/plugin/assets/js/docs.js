@@ -1,5 +1,5 @@
 /**
- * pterodoc front-end behaviour.
+ * pterodocs front-end behaviour.
  *
  * Everything here is an enhancement of markup that already works. The server
  * has decided which branches of the sidebar are open, so the first paint is

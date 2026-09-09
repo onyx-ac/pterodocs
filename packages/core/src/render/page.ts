@@ -334,16 +334,16 @@ export function composePage(input: ComposePageInput): string {
 }
 
 /**
- * Whether a page's stored content is something pterodoc composed.
+ * Whether a page's stored content is something pterodocs composed.
  *
  * There is no marker to look for, and deliberately so: a marker would have to
  * live in post metadata, which WordPress will not accept over REST unless a
  * plugin registered it first, and requiring a plugin to be able to clean up
- * after yourself is the wrong trade. What pterodoc does leave on every page it
+ * after yourself is the wrong trade. What pterodocs does leave on every page it
  * composes is its own class prefix, so that is the signature.
  *
  * Wrong in the safe direction. A page it wrote but cannot recognise is left
- * alone; only a page carrying pterodoc's own classes is ever a candidate for
+ * alone; only a page carrying pterodocs's own classes is ever a candidate for
  * removal, so a page somebody else wrote is never one.
  *
  * @param content The page's stored content.

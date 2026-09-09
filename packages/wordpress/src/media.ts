@@ -7,8 +7,8 @@
  * uploading everything again.
  */
 
-import { TargetError, isBlockedByDefault } from '@pterodoc/core/util';
-import type { MediaRef, MediaUpload } from '@pterodoc/core/target';
+import { TargetError, isBlockedByDefault } from '@pterodocs/core/util';
+import type { MediaRef, MediaUpload } from '@pterodocs/core/target';
 import type { WpClient } from './client';
 
 /** WordPress's media shape, narrowed to what is read. */
@@ -19,7 +19,7 @@ interface WpMedia {
   mime_type: string;
 }
 
-/** The slug that identifies a file uploaded by pterodoc. */
+/** The slug that identifies a file uploaded by pterodocs. */
 export function mediaSlug(prefix: string, hash: string): string {
   return `${prefix}-${hash}`;
 }
@@ -33,7 +33,7 @@ export function hashFromSlug(prefix: string, slug: string): string | undefined {
 }
 
 /**
- * Everything pterodoc has already uploaded to this site, by content hash.
+ * Everything pterodocs has already uploaded to this site, by content hash.
  */
 export async function loadMediaIndex(
   client: WpClient,

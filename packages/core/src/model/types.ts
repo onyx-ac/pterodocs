@@ -1,5 +1,5 @@
 /**
- * The site model: what the rest of pterodoc knows about a Docusaurus site.
+ * The site model: what the rest of pterodocs knows about a Docusaurus site.
  *
  * Every field here is derived from Docusaurus's own loaded state rather than
  * re-read from disk, so ordering, permalinks, versions and locales are the
@@ -136,7 +136,7 @@ export interface DocsInstance {
   versions: DocsVersion[];
 }
 
-/** Everything pterodoc knows about a site, for one locale. */
+/** Everything pterodocs knows about a site, for one locale. */
 export interface SiteModel {
   /** Absolute path of the Docusaurus site directory. */
   siteDir: string;

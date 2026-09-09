@@ -5,8 +5,8 @@
  * something readable.
  */
 
-import { formatIssue, type Issue, type Severity } from '@pterodoc/core/util';
-import type { Plan } from '@pterodoc/core';
+import { formatIssue, type Issue, type Severity } from '@pterodocs/core/util';
+import type { Plan } from '@pterodocs/core';
 
 /** How output is presented. */
 export interface Reporter {

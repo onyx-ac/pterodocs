@@ -7,12 +7,12 @@
  * filter is running has already missed `wp_head`, and the page flashes
  * unstyled before it arrives.
  *
- * @package pterodoc
+ * @package pterodocs
  */
 
 declare( strict_types = 1 );
 
-namespace Pterodoc;
+namespace Pterodocs;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -50,9 +50,9 @@ final class Assets {
 	}
 
 	/**
-	 * Whether this request is showing a page pterodoc published.
+	 * Whether this request is showing a page pterodocs published.
 	 *
-	 * Documentation is recognised by the class pterodoc puts on the layout it
+	 * Documentation is recognised by the class pterodocs puts on the layout it
 	 * generates. Nothing loads anywhere else on the site.
 	 */
 	public static function should_load(): bool {
@@ -69,7 +69,7 @@ final class Assets {
 		}
 
 		$prefix = Settings::get( 'classPrefix' );
-		$prefix = is_string( $prefix ) && '' !== $prefix ? $prefix : 'pterodoc';
+		$prefix = is_string( $prefix ) && '' !== $prefix ? $prefix : 'pterodocs';
 
 		self::$should_load = str_contains( $content, $prefix . '-docs' );
 
@@ -84,11 +84,11 @@ final class Assets {
 			return;
 		}
 
-		wp_enqueue_style( 'pterodoc', PTERODOC_URL . 'assets/css/docs.css', array(), VERSION );
-		wp_add_inline_style( 'pterodoc', self::custom_properties() );
+		wp_enqueue_style( 'pterodocs', PTERODOCS_URL . 'assets/css/docs.css', array(), VERSION );
+		wp_add_inline_style( 'pterodocs', self::custom_properties() );
 
-		wp_enqueue_script( 'pterodoc', PTERODOC_URL . 'assets/js/docs.js', array(), VERSION, true );
-		wp_set_script_translations( 'pterodoc', 'pterodoc', PTERODOC_DIR . 'languages' );
+		wp_enqueue_script( 'pterodocs', PTERODOCS_URL . 'assets/js/docs.js', array(), VERSION, true );
+		wp_set_script_translations( 'pterodocs', 'pterodocs', PTERODOCS_DIR . 'languages' );
 
 		Prism::enqueue( self::content() );
 	}
@@ -128,7 +128,7 @@ final class Assets {
 	}
 
 	/**
-	 * Extend the core blocks pterodoc uses with the plugin's own settings.
+	 * Extend the core blocks pterodocs uses with the plugin's own settings.
 	 *
 	 * No block type is registered: this adds attributes and an inspector panel
 	 * to blocks WordPress already has, which is what keeps the stored content
@@ -136,14 +136,14 @@ final class Assets {
 	 */
 	public static function editor(): void {
 		wp_enqueue_script(
-			'pterodoc-editor',
-			PTERODOC_URL . 'assets/js/editor.js',
+			'pterodocs-editor',
+			PTERODOCS_URL . 'assets/js/editor.js',
 			array( 'wp-blocks', 'wp-hooks', 'wp-element', 'wp-components', 'wp-block-editor', 'wp-compose', 'wp-core-data', 'wp-i18n' ),
 			VERSION,
 			true
 		);
-		wp_set_script_translations( 'pterodoc-editor', 'pterodoc', PTERODOC_DIR . 'languages' );
+		wp_set_script_translations( 'pterodocs-editor', 'pterodocs', PTERODOCS_DIR . 'languages' );
 
-		wp_enqueue_style( 'pterodoc-editor', PTERODOC_URL . 'assets/css/editor.css', array(), VERSION );
+		wp_enqueue_style( 'pterodocs-editor', PTERODOCS_URL . 'assets/css/editor.css', array(), VERSION );
 	}
 }

@@ -5,8 +5,8 @@
  * rewrite only what actually differs.
  */
 
-import { TargetError } from '@pterodoc/core/util';
-import type { RemotePage, RenderedPage } from '@pterodoc/core/target';
+import { TargetError } from '@pterodocs/core/util';
+import type { RemotePage, RenderedPage } from '@pterodocs/core/target';
 import { FULL_PAGE_FIELDS, PAGE_FIELDS, type WpClient } from './client';
 
 /** WordPress's own page shape, narrowed to what is read. */
@@ -140,7 +140,7 @@ const normalise = (value: unknown): string =>
  * Which fields of an existing page differ from the rendered one.
  *
  * @param remote The page as WordPress holds it.
- * @param rendered The page as pterodoc would publish it.
+ * @param rendered The page as pterodocs would publish it.
  * @param context The expected parent, slug, status and template.
  */
 export function diffPage(

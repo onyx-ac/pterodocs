@@ -34,7 +34,7 @@ export interface Plan {
   /** When the run started. */
   generatedAt: string;
   /** Versions involved, for reproducing a report. */
-  versions: { pterodoc: string; docusaurus: string | null; node: string };
+  versions: { pterodocs: string; docusaurus: string | null; node: string };
   /** True when nothing was written. */
   dryRun: boolean;
   /** True when nothing was even read from the target. */
