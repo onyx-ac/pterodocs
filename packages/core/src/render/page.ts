@@ -49,6 +49,8 @@ export interface PageLayout {
   pagination: boolean;
   /** When to list child pages: automatically, always, or never. */
   childIndex: 'auto' | 'always' | 'never';
+  /** Offer a control that opens the navigation on a small screen. */
+  navToggle: boolean;
 }
 
 /** The layout used when a site configures none. */
@@ -61,6 +63,7 @@ export const DEFAULT_LAYOUT: PageLayout = {
   breadcrumb: true,
   pagination: true,
   childIndex: 'auto',
+  navToggle: true,
 };
 
 /** Everything needed to compose one page. */
@@ -222,16 +225,59 @@ export function renderChildIndex(input: ComposePageInput, heading: string): stri
  * else to read it from. A theme that already dresses these class names, or a
  * site running the WordPress plugin, should turn this off.
  */
-function renderStyles(theme: Theme): string {
+function renderStyles(theme: Theme, layout: PageLayout): string {
   if (theme.styles === 'none') return '';
 
-  return serializeBlock('html', undefined, `<style>${stylesheetFor(theme)}</style>`);
+  const css = stylesheetFor(theme, { navWidth: layout.navWidth });
+
+  return serializeBlock('html', undefined, `<style>${css}</style>`);
 }
 
 /** The navigation column's contents. */
 function renderNavigation(input: ComposePageInput): string {
   if (input.layout.nav === 'none') return '';
+
   return serializeVoidBlock('page-list', { parentPageID: input.navRootId ?? 0 });
+}
+
+
+/**
+ * The row above the document: where the reader is, and the way into the
+ * navigation.
+ *
+ * The two travel together because on a small screen they share one fixed row.
+ * The control is a checkbox and a label, so opening and closing the navigation
+ * needs no script: a label toggles its own checkbox both ways, and a second
+ * label laid over the page closes it from outside. Which of them the navigation
+ * listens to is settled in CSS with `:has()`, so the control does not have to
+ * be a sibling of the list it opens — it is in the other column entirely.
+ */
+function renderDocsBar(input: ComposePageInput): string {
+  const { theme, layout } = input;
+  const breadcrumb = layout.breadcrumb ? renderBreadcrumb(input) : '';
+
+  if (layout.nav === 'none' || layout.navToggle === false) return breadcrumb;
+
+  // Fixed rather than generated: there is one navigation to a page, and an id
+  // that changed between runs would make every page differ from itself.
+  const id = theme.cls('docs-nav-toggle');
+  const control = serializeBlock(
+    'html',
+    undefined,
+    `<input type="checkbox" id="${id}" class="${theme.cls('docs-toggle')}">` +
+      `<label class="${theme.cls('docs-toggle-label')}" for="${id}">` +
+      `<span class="${theme.cls('docs-toggle-icon')}" aria-hidden="true"></span>` +
+      `<span class="${theme.cls('docs-toggle-text')}">${escapeText(theme.text('navToggle'))}</span>` +
+      `</label>` +
+      `<label class="${theme.cls('docs-scrim')}" for="${id}" aria-hidden="true"></label>`,
+  );
+
+  const className = theme.cls('docs-bar');
+  return serializeBlock(
+    'group',
+    { className },
+    `<div class="wp-block-group ${className}">${joinBlocks([control, breadcrumb])}</div>`,
+  );
 }
 
 /** Compose the stored content of one page. */
@@ -250,14 +296,14 @@ export function composePage(input: ComposePageInput): string {
 
   const main = joinBlocks([
     input.banner ?? '',
-    layout.breadcrumb ? renderBreadcrumb(input) : '',
+    renderDocsBar(input),
     input.body,
     index,
     layout.pagination ? renderPagination(input) : '',
   ]);
 
   if (layout.kind === 'single' || layout.nav === 'none') {
-    return joinBlocks([renderStyles(theme), main]);
+    return joinBlocks([renderStyles(theme, layout), main]);
   }
 
   const navClass = theme.cls('docs-nav');
@@ -284,7 +330,7 @@ export function composePage(input: ComposePageInput): string {
     `<div class="wp-block-columns${alignClass} ${columnsClass}">${navColumn}\n\n${mainColumn}</div>`,
   );
 
-  return joinBlocks([renderStyles(theme), columns]);
+  return joinBlocks([renderStyles(theme, layout), columns]);
 }
 
 /**

@@ -29,15 +29,22 @@ import type { Theme } from './theme';
  * is a kilobyte times the size of the documentation.
  */
 const TEMPLATE = `
-:where(.{p}-docs){--{p}-gutter:clamp(1rem,4vw,2rem);--{p}-measure:var(--wp--style--global--content-size,46rem);--{p}-rule:color-mix(in oklab,currentColor 14%,transparent);--{p}-muted:color-mix(in oklab,currentColor 62%,transparent);--{p}-surface:color-mix(in oklab,currentColor 5%,transparent);--{p}-radius:8px}
-:where(.{p}-docs){display:flex;gap:clamp(1.5rem,4vw,3rem);align-items:flex-start}
-:where(.{p}-docs-main){min-width:0;flex:1 1 auto}
+:where(.{p}-docs){--{p}-gutter:clamp(1rem,4vw,2rem);--{p}-measure:var(--wp--style--global--content-size,46rem);--{p}-rule:color-mix(in oklab,currentColor 14%,transparent);--{p}-muted:color-mix(in oklab,currentColor 62%,transparent);--{p}-surface:color-mix(in oklab,currentColor 5%,transparent);--{p}-surface-solid:var(--wp--preset--color--base,Canvas);--{p}-radius:8px}
+.wp-block-columns.{p}-docs{display:grid;grid-template-columns:minmax(0,min(var(--{p}-nav-width,25%),20rem)) minmax(0,1fr);gap:clamp(1.5rem,4vw,3rem);align-items:start;padding-inline:var(--wp--style--root--padding-left,var(--{p}-gutter)) var(--wp--style--root--padding-right,var(--{p}-gutter))}
+:where(.{p}-docs-main){min-width:0}
 :where(.{p}-docs-main)>*{max-width:var(--{p}-measure)}
 :where(.{p}-docs-main)>.wp-block-code,:where(.{p}-docs-main)>.wp-block-table,:where(.{p}-docs-main)>figure{max-width:none}
 
+/* The control that opens the navigation. Off-screen rather than display:none,
+   so it stays reachable from a keyboard, and never shown on a wide screen where
+   the navigation is always open. */
+:where(.{p}-docs-toggle){position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+:where(.{p}-docs-toggle-label),:where(.{p}-docs-scrim){display:none}
+:where(.{p}-docs-bar)>*{margin-block:0}
+
 /* Navigation. The list markers and the cramped column are the two things that
    make an unstyled docs page unreadable. */
-:where(.{p}-docs-nav){flex:0 0 auto;min-width:0;max-width:20rem;position:sticky;top:2rem;max-height:calc(100vh - 4rem);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+:where(.{p}-docs-nav){min-width:0;position:sticky;top:2rem;max-height:calc(100vh - 4rem);max-height:calc(100dvh - 4rem);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
 :where(.{p}-docs-nav) ul{list-style:none;margin:0;padding-inline-start:0}
 :where(.{p}-docs-nav) li{margin:0}
 :where(.{p}-docs-nav) ul ul{margin-inline-start:.75em;padding-inline-start:.75em;border-inline-start:1px solid var(--{p}-rule)}
@@ -90,10 +97,58 @@ const TEMPLATE = `
 
 :where(.{p}-version-banner){padding:.75rem 1rem;border:1px solid var(--{p}-rule);border-radius:var(--{p}-radius);background:var(--{p}-surface);font-size:.9375em}
 
-/* One column once there is no room for two. */
+/* One column once there is no room for two.
+ *
+ * Everything below is behind :has(), and deliberately. A browser without it
+ * matches none of these rules, so the navigation simply renders in the flow
+ * where it already is: smaller, but never broken. It is also what lets the
+ * control live in the other column from the list it opens.
+ */
 @media (max-width:781.98px){
-:where(.{p}-docs){display:block}
-:where(.{p}-docs-nav){position:static;max-height:none;overflow:visible;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--{p}-rule)}
+.wp-block-columns.{p}-docs{display:block}
+
+/* The bar: where you are, and the way in. Fixed, so both stay reachable. */
+.{p}-docs:has(.{p}-docs-toggle) .{p}-docs-bar{position:sticky;top:0;z-index:30;margin-inline:calc(-1 * var(--{p}-gutter));display:flex;align-items:center;gap:.75rem;min-height:3.25rem;padding:.5rem clamp(.75rem,4vw,1.25rem);background:var(--{p}-surface-solid,Canvas);border-bottom:1px solid var(--{p}-rule)}
+.{p}-docs:has(.{p}-docs-toggle) .{p}-docs-bar .{p}-docs-breadcrumb{min-width:0;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;white-space:nowrap}
+.{p}-docs:has(.{p}-docs-toggle) .{p}-docs-bar .{p}-docs-breadcrumb::-webkit-scrollbar{display:none}
+
+.{p}-docs-toggle-label{display:inline-flex;align-items:center;gap:.5rem;flex:0 0 auto;padding:.4rem .75rem;border:1px solid var(--{p}-rule);border-radius:999px;font-size:.9375em;cursor:pointer;user-select:none}
+.{p}-docs-toggle:focus-visible+.{p}-docs-toggle-label{outline:2px solid currentColor;outline-offset:2px}
+
+/* Three bars, and they stay three bars. Morphing them into a cross would be
+   telling the reader how to close something they can no longer see: the sheet
+   is tall, and the pill is behind it. The close affordance belongs on the
+   backdrop, where the dismissing interaction already lives. */
+.{p}-docs-toggle-icon{position:relative;display:inline-block;width:1rem;height:.75rem;background:linear-gradient(currentColor,currentColor) center/100% 2px no-repeat}
+.{p}-docs-toggle-icon::before,.{p}-docs-toggle-icon::after{content:"";position:absolute;inset-inline:0;height:2px;background:currentColor}
+.{p}-docs-toggle-icon::before{top:0}
+.{p}-docs-toggle-icon::after{top:calc(100% - 2px)}
+
+/* The pill still answers to being touched. */
+.{p}-docs-toggle-label{transition:background-color .15s,border-color .15s}
+.{p}-docs-toggle-label:hover{background:var(--{p}-surface);border-color:var(--{p}-rule)}
+.{p}-docs-toggle-label:active{background:color-mix(in oklab,currentColor 12%,transparent)}
+.{p}-docs-toggle:checked+.{p}-docs-toggle-label{background:var(--{p}-surface)}
+
+/* The sheet. It covers rather than pushes, so the document keeps its place. */
+.{p}-docs:has(.{p}-docs-toggle) .{p}-docs-nav{position:fixed;inset-inline:0;top:auto;bottom:0;z-index:40;max-width:none;max-height:min(88vh,52rem);max-height:min(88dvh,52rem);margin:0;padding:1rem clamp(.75rem,4vw,1.25rem) calc(1rem + env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;background:var(--{p}-surface-solid,Canvas);border-top:1px solid var(--{p}-rule);border-radius:1rem 1rem 0 0;box-shadow:0 -8px 40px color-mix(in oklab,currentColor 22%,transparent);transform:translateY(101%);visibility:hidden;transition:transform .22s cubic-bezier(.2,0,0,1),visibility 0s linear .22s}
+.{p}-docs:has(.{p}-docs-toggle:checked) .{p}-docs-nav{transform:none;visibility:visible;transition-delay:0s}
+
+/* A grab handle, so it reads as a sheet. */
+.{p}-docs:has(.{p}-docs-toggle) .{p}-docs-nav::before{content:"";display:block;width:2.5rem;height:.25rem;margin:-.25rem auto .75rem;border-radius:999px;background:var(--{p}-rule)}
+
+/* Closing from outside: a second label over the page, for the same checkbox. */
+/* A dark veil rather than one mixed from the text colour, so the cross drawn on
+   it is legible whichever way the theme runs. */
+.{p}-docs:has(.{p}-docs-toggle:checked) .{p}-docs-scrim{display:block;position:fixed;inset:0;z-index:35;background:color-mix(in oklab,#000 45%,transparent);cursor:pointer}
+.{p}-docs-scrim::before,.{p}-docs-scrim::after{content:"";position:absolute;top:1.5rem;inset-inline-end:1.5rem;width:1.5rem;height:2px;border-radius:2px;background:#fff;opacity:.9}
+.{p}-docs-scrim::before{transform:rotate(45deg)}
+.{p}-docs-scrim::after{transform:rotate(-45deg)}
+
+@media (prefers-reduced-motion:reduce){
+.{p}-docs:has(.{p}-docs-toggle) .{p}-docs-nav{transition:none}
+.{p}-docs-toggle-label{transition:none}
+}
 }
 `;
 
@@ -103,8 +158,17 @@ const TEMPLATE = `
  * @param theme The class prefix and strings in force.
  * @returns CSS, with the run's own class prefix substituted in.
  */
-export function stylesheetFor(theme: Theme): string {
-  return TEMPLATE.replace(/\{p\}/g, theme.classPrefix).trim();
+export function stylesheetFor(theme: Theme, options: { navWidth?: string } = {}): string {
+  const css = TEMPLATE.replace(/\{p\}/g, theme.classPrefix).trim();
+
+  // The columns carry the configured width as an inline `flex-basis`, which a
+  // grid ignores. Handing it over as a custom property is what keeps the
+  // setting meaningful.
+  const width = options.navWidth;
+  if (!width || !/^[0-9a-zA-Z%.()\s+*/-]+$/.test(width)) return css;
+
+  return `:where(.${theme.classPrefix}-docs){--${theme.classPrefix}-nav-width:${width}}
+${css}`;
 }
 
 /**

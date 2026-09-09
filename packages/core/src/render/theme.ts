@@ -11,6 +11,8 @@ export interface Strings {
   indexHeading: string;
   /** Separator between breadcrumb entries. */
   breadcrumbSeparator: string;
+  /** Label on the control that opens the navigation on a small screen. */
+  navToggle: string;
   /** Link to the previous page; `{title}` is the page's title. */
   previous: string;
   /** Link to the next page; `{title}` is the page's title. */
@@ -31,6 +33,7 @@ export interface Strings {
 export const DEFAULT_STRINGS: Strings = {
   indexHeading: 'In this section',
   breadcrumbSeparator: ' › ',
+  navToggle: 'Menu',
   previous: '← {title}',
   next: '{title} →',
   documentation: 'Documentation',

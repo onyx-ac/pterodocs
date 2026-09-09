@@ -133,6 +133,7 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
   const artifacts: Artifacts = {
     stylesheet: stylesheetFor(
       createTheme({ classPrefix: config.classPrefix, styles: config.styles, highlight: config.highlight }),
+      { navWidth: config.layout.navWidth },
     ),
     pages: prepared.map(({ page, locale, versionName }) => ({ page, locale, versionName })),
     manifest: prepared.map(({ node, page, locale, versionName }) => ({

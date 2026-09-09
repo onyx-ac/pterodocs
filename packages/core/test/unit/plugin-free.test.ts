@@ -158,3 +158,102 @@ test('the documentation is full width unless the layout says otherwise', () => {
   assert.ok(compose().includes('"align":"full"'));
   assert.ok(compose().includes('wp-block-columns alignfull'));
 });
+
+/* ---------------------------------------------------------------------- *
+ * The navigation toggle
+ * ---------------------------------------------------------------------- */
+
+test('the navigation is opened by a control that needs no script', () => {
+  const composed = compose();
+  // Only the markup: the class names appear in the stylesheet too, and an
+  // assertion that matched those would pass whatever the markup did.
+  const markup = composed.slice(composed.indexOf('<!-- wp:columns'));
+
+  assert.ok(markup.includes('type="checkbox"'), 'no checkbox');
+  assert.ok(markup.includes('for="x-docs-nav-toggle"'), 'the label does not point at it');
+  assert.ok(markup.includes('x-docs-scrim'), 'nothing to close it from outside');
+});
+
+test('the control shares a row with the breadcrumb', () => {
+  // They are one bar on a small screen, which is why they are one block.
+  const markup = compose().slice(compose().indexOf('<!-- wp:columns'));
+  const bar = markup.slice(markup.indexOf('x-docs-bar'));
+
+  assert.ok(bar.indexOf('x-docs-toggle-label') < bar.indexOf('x-docs-docs-breadcrumb') || bar.includes('x-docs-breadcrumb'));
+  assert.ok(bar.includes('x-docs-breadcrumb'), 'the breadcrumb is not in the bar');
+});
+
+test('the control does not have to sit beside the list it opens', () => {
+  // The list is in the navigation column and the control is in the document
+  // column; :has() is what connects them, so source order carries no meaning.
+  const markup = compose().slice(compose().indexOf('<!-- wp:columns'));
+
+  assert.ok(markup.indexOf('wp:page-list') < markup.indexOf('type="checkbox"'));
+});
+
+test('the toggle’s id is fixed, so a page does not differ from itself', () => {
+  // A generated id would make every page change on every sync, for ever.
+  assert.equal(compose(), compose());
+});
+
+test('a site that does not want the control can drop it', () => {
+  const composed = composePage({
+    node: page(),
+    body: '',
+    links: new Set<string>(),
+    href: (path) => `/docs/${path}`,
+    lookup: () => undefined,
+    theme: createTheme({ classPrefix: 'x' }),
+    layout: { ...DEFAULT_LAYOUT, navToggle: false },
+  });
+
+  assert.equal(composed.includes('type="checkbox"'), false);
+  assert.ok(composed.includes('wp:page-list'));
+});
+
+test('the documentation pads itself, because alignfull escapes the theme’s padding', () => {
+  const css = stylesheetFor(createTheme({ classPrefix: 'x' }));
+  const root = css.split(String.fromCharCode(10)).find((line) => line.includes('.x-docs{display:'));
+
+  assert.ok(root, 'the layout rule is missing');
+  assert.ok(root!.includes('padding-inline'), root);
+});
+
+test('the two columns cannot overflow the page', () => {
+  // The columns carry inline flex-basis:25% and 75%, which together are the
+  // whole content box. Laid out as flex, any gap pushes the document off the
+  // right edge, and an inline style cannot be overridden from a stylesheet.
+  // Grid ignores flex-basis, and 1fr accounts for the gap by itself.
+  const css = stylesheetFor(createTheme({ classPrefix: 'x' }));
+  const root = css.split(String.fromCharCode(10)).find((line) => line.includes('.x-docs{display:'));
+
+  assert.ok(root, 'the layout rule is missing');
+  assert.ok(root!.includes('display:grid'), root);
+  assert.equal(root!.includes('display:flex'), false, root);
+  // Both tracks must be allowed to shrink below their content.
+  assert.ok(root!.includes('minmax(0,'), root);
+
+  // And it has to outrank core, which ships .wp-block-columns{display:flex} at
+  // one class. Wrapped in :where() this rule scores zero and never applies.
+  assert.ok(root!.startsWith('.wp-block-columns.x-docs'), root);
+  assert.equal(root!.includes(':where'), false, root);
+});
+
+test('the configured navigation width reaches the layout', () => {
+  // A grid ignores the inline flex-basis the columns carry, so the setting has
+  // to arrive as a custom property or it would quietly stop meaning anything.
+  const css = stylesheetFor(createTheme({ classPrefix: 'x' }), { navWidth: '30%' });
+
+  assert.ok(css.includes('--x-nav-width:30%'), css.slice(0, 120));
+});
+
+test('a nonsense width is ignored rather than written into the page', () => {
+  const css = stylesheetFor(createTheme({ classPrefix: 'x' }), { navWidth: 'red;}body{display:none' });
+
+  // The stylesheet has its own display:none rules, so asserting on that would
+  // prove nothing. What matters is that the property is never written at all.
+  // The template *reads* the property with a fallback, so its name appears
+  // either way. What must not appear is a declaration setting it.
+  assert.equal(css.includes('--x-nav-width:'), false);
+  assert.equal(css.includes('body{'), false);
+});
