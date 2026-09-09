@@ -1,7 +1,7 @@
 {
-  "name": "@pterodoc/wordpress",
-  "version": "0.1.0",
-  "description": "The WordPress REST target for pterodoc.",
+  "name": "@pterodocs/wordpress",
+  "version": "0.4.1",
+  "description": "The WordPress REST target for pterodocs.",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -16,9 +16,9 @@
     "test": "node ../../scripts/tests.mjs unit"
   },
   "dependencies": {
-    "@pterodoc/core": "0.1.0"
+    "@pterodocs/core": "0.4.1"
   },
-  "repository": { "type": "git", "url": "git+https://github.com/onyx-ac/pterodoc.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/onyx-ac/pterodocs.git" },
   "license": "CC-BY-SA-4.0",
   "publishConfig": { "access": "public" }
 }

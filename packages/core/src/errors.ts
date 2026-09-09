@@ -19,7 +19,7 @@ export const EXIT = {
 } as const;
 
 /** Base class for every error this tool raises deliberately. */
-export class PterodocError extends Error {
+export class PterodocsError extends Error {
   /** Exit code the CLI should use. */
   readonly exitCode: number;
 
@@ -31,14 +31,14 @@ export class PterodocError extends Error {
 }
 
 /** A user-fixable problem with the configuration, the flags or the environment. */
-export class ConfigError extends PterodocError {
+export class ConfigError extends PterodocsError {
   constructor(message: string) {
     super(message, EXIT.config);
   }
 }
 
 /** The target rejected a request, or could not be reached. */
-export class TargetError extends PterodocError {
+export class TargetError extends PterodocsError {
   /** HTTP status, or 0 when the request never completed. */
   readonly status: number;
   /** Machine-readable code the target supplied, when it supplied one. */
@@ -70,7 +70,7 @@ export class TargetError extends PterodocError {
 }
 
 /** Content that this tool cannot represent in the target, when configured to fail on it. */
-export class UnsupportedContentError extends PterodocError {
+export class UnsupportedContentError extends PterodocsError {
   constructor(message: string) {
     super(message, EXIT.strict);
   }

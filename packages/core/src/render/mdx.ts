@@ -93,7 +93,7 @@ export function lowerMdx(
       column: node.position?.start.column,
     });
     if (ctx.onUnknown !== 'placeholder') return undefined;
-    return { type: 'html', value: `<!-- pterodoc: ${message} -->` } as RootContent;
+    return { type: 'html', value: `<!-- pterodocs: ${message} -->` } as RootContent;
   };
 
   const replacements: { parent: { children: RootContent[] }; index: number; with: RootContent | undefined }[] = [];
@@ -170,7 +170,7 @@ export function lowerMdx(
   return { imports };
 }
 
-/** True for an element name pterodoc can translate into blocks. */
+/** True for an element name pterodocs can translate into blocks. */
 export function isTranslatable(name: string): boolean {
   return KNOWN_COMPONENTS.has(name) || HTML_ELEMENTS.has(name);
 }

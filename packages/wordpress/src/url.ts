@@ -6,7 +6,7 @@
  * install, or publishes versions under their own segment.
  */
 
-import { joinPath, segments, slugify } from '@pterodoc/core/util';
+import { joinPath, segments, slugify } from '@pterodocs/core/util';
 
 /** How a WordPress site's documentation tree is addressed. */
 export interface WordpressUrlPolicy {

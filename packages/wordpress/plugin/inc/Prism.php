@@ -2,7 +2,7 @@
 /**
  * Syntax highlighting.
  *
- * pterodoc already writes `class="language-xxx"` on every fence, which is
+ * pterodocs already writes `class="language-xxx"` on every fence, which is
  * exactly what Prism reads, so highlighting needs no change to stored content.
  *
  * The grammars a page needs are worked out here, on the server, and only those
@@ -14,12 +14,12 @@
  * stylesheet in terms of the block's own resolved colours, so a code block given
  * a background from the palette gets syntax colours that follow it.
  *
- * @package pterodoc
+ * @package pterodocs
  */
 
 declare( strict_types = 1 );
 
-namespace Pterodoc;
+namespace Pterodocs;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -155,7 +155,7 @@ final class Prism {
 	 * rather than to a page of 404s.
 	 */
 	public static function available(): bool {
-		return file_exists( PTERODOC_DIR . self::VENDOR . 'prism.js' );
+		return file_exists( PTERODOCS_DIR . self::VENDOR . 'prism.js' );
 	}
 
 	/**
@@ -201,34 +201,34 @@ final class Prism {
 			return;
 		}
 
-		wp_enqueue_script( 'prism', PTERODOC_URL . self::VENDOR . 'prism.js', array(), VERSION, true );
+		wp_enqueue_script( 'prism', PTERODOCS_URL . self::VENDOR . 'prism.js', array(), VERSION, true );
 
 		$previous = 'prism';
 		foreach ( self::resolve( $languages ) as $grammar ) {
 			$file = self::VENDOR . 'components/prism-' . $grammar . '.min.js';
-			if ( ! file_exists( PTERODOC_DIR . $file ) ) {
+			if ( ! file_exists( PTERODOCS_DIR . $file ) ) {
 				continue;
 			}
 
 			$handle = 'prism-' . $grammar;
-			wp_enqueue_script( $handle, PTERODOC_URL . $file, array( $previous ), VERSION, true );
+			wp_enqueue_script( $handle, PTERODOCS_URL . $file, array( $previous ), VERSION, true );
 			$previous = $handle;
 		}
 
 		if ( self::wants_line_numbers( $content ) ) {
 			$file = self::VENDOR . 'plugins/line-numbers/prism-line-numbers.min.js';
-			if ( file_exists( PTERODOC_DIR . $file ) ) {
-				wp_enqueue_script( 'prism-line-numbers', PTERODOC_URL . $file, array( $previous ), VERSION, true );
+			if ( file_exists( PTERODOCS_DIR . $file ) ) {
+				wp_enqueue_script( 'prism-line-numbers', PTERODOCS_URL . $file, array( $previous ), VERSION, true );
 				$previous = 'prism-line-numbers';
 			}
 		}
 
-		// Only when a fence on this page actually carries a range: pterodoc
+		// Only when a fence on this page actually carries a range: pterodocs
 		// writes them into the block comment, which is what is being searched.
-		if ( str_contains( $content, 'pterodocHighlight' ) ) {
+		if ( str_contains( $content, 'pterodocsHighlight' ) ) {
 			$file = self::VENDOR . 'plugins/line-highlight/prism-line-highlight.min.js';
-			if ( file_exists( PTERODOC_DIR . $file ) ) {
-				wp_enqueue_script( 'prism-line-highlight', PTERODOC_URL . $file, array( $previous ), VERSION, true );
+			if ( file_exists( PTERODOCS_DIR . $file ) ) {
+				wp_enqueue_script( 'prism-line-highlight', PTERODOCS_URL . $file, array( $previous ), VERSION, true );
 			}
 		}
 	}
@@ -249,7 +249,7 @@ final class Prism {
 		}
 
 		$prefix = Settings::get( 'classPrefix' );
-		$prefix = is_string( $prefix ) && '' !== $prefix ? $prefix : 'pterodoc';
+		$prefix = is_string( $prefix ) && '' !== $prefix ? $prefix : 'pterodocs';
 
 		return str_contains( $content, $prefix . '-line-numbers' );
 	}

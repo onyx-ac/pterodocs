@@ -1,8 +1,8 @@
 {
-  "name": "@pterodoc/wp-plugin",
-  "version": "0.1.0",
+  "name": "@pterodocs/wp-plugin",
+  "version": "0.4.1",
   "private": true,
-  "description": "The pterodoc WordPress plugin. Not published to npm; it ships as a plugin zip.",
+  "description": "The pterodocs WordPress plugin. Not published to npm; it ships as a plugin zip.",
   "type": "module",
   "scripts": {
     "vendor": "node tools/vendor-prism.mjs",

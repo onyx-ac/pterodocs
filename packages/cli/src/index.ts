@@ -1,37 +1,37 @@
 /**
  * Public API.
  *
- * Importing pterodoc as a library is supported for two things: authoring a
+ * Importing pterodocs as a library is supported for two things: authoring a
  * configuration with type checking, and driving a sync from your own script.
  *
- * The implementation lives in `@pterodoc/core`, `@pterodoc/docusaurus` and
- * `@pterodoc/wordpress`; this package is where they are wired together, and
+ * The implementation lives in `@pterodocs/core`, `@pterodocs/docusaurus` and
+ * `@pterodocs/wordpress`; this package is where they are wired together, and
  * this barrel is the surface that wiring exposes.
  */
 
-export { EXIT, PterodocError, ConfigError, TargetError, UnsupportedContentError } from '@pterodoc/core';
-export { VERSION } from '@pterodoc/core';
-export { defineConfig } from '@pterodoc/core';
+export { EXIT, PterodocsError, ConfigError, TargetError, UnsupportedContentError } from '@pterodocs/core';
+export { VERSION } from '@pterodocs/core';
+export { defineConfig } from '@pterodocs/core';
 export type {
-  PterodocConfig,
+  PterodocsConfig,
   SiteConfig,
   TargetConfig,
   RenderConfig,
   MdxConfig,
   MediaConfig,
   OutputConfig,
-} from '@pterodoc/core';
-export { loadConfig, resolveConfig } from '@pterodoc/core';
-export type { ResolvedConfig, ConfigFlags } from '@pterodoc/core';
-export { runSync } from '@pterodoc/core';
-export type { RunResult, RunSyncDeps, Plan, Action } from '@pterodoc/core';
-export { buildPageTree, createCaptureReader, createMemoryReader } from '@pterodoc/core/model';
-export type { SiteModel, Doc, DocsVersion, PageNode, PageTree, SourceReader } from '@pterodoc/core/model';
-export { loadModel, toSiteModel, createDocusaurusReader } from '@pterodoc/docusaurus';
-export { createWordpressTarget } from '@pterodoc/wordpress';
-export type { Target, TargetSession, RenderedPage, RemotePage } from '@pterodoc/core/target';
-export { renderDoc, createTheme, composePage, DEFAULT_LAYOUT } from '@pterodoc/core/render';
-export type { RenderedDoc, Theme, Strings, PageLayout } from '@pterodoc/core/render';
-export { IssueCollector, formatIssue, compareSeverity } from '@pterodoc/core/util';
-export type { Issue, Severity } from '@pterodoc/core/util';
+} from '@pterodocs/core';
+export { loadConfig, resolveConfig } from '@pterodocs/core';
+export type { ResolvedConfig, ConfigFlags } from '@pterodocs/core';
+export { runSync } from '@pterodocs/core';
+export type { RunResult, RunSyncDeps, Plan, Action } from '@pterodocs/core';
+export { buildPageTree, createCaptureReader, createMemoryReader } from '@pterodocs/core/model';
+export type { SiteModel, Doc, DocsVersion, PageNode, PageTree, SourceReader } from '@pterodocs/core/model';
+export { loadModel, toSiteModel, createDocusaurusReader } from '@pterodocs/docusaurus';
+export { createWordpressTarget } from '@pterodocs/wordpress';
+export type { Target, TargetSession, RenderedPage, RemotePage } from '@pterodocs/core/target';
+export { renderDoc, createTheme, composePage, DEFAULT_LAYOUT } from '@pterodocs/core/render';
+export type { RenderedDoc, Theme, Strings, PageLayout } from '@pterodocs/core/render';
+export { IssueCollector, formatIssue, compareSeverity } from '@pterodocs/core/util';
+export type { Issue, Severity } from '@pterodocs/core/util';
 export { resolveTarget } from './target';

@@ -6,8 +6,8 @@
  * already, the copies drifted apart in how they spelled the URL policy.
  */
 
-import type { ResolvedConfig, Target } from '@pterodoc/core';
-import { createWordpressTarget } from '@pterodoc/wordpress';
+import type { ResolvedConfig, Target } from '@pterodocs/core';
+import { createWordpressTarget } from '@pterodocs/wordpress';
 
 /**
  * Build the configured target.

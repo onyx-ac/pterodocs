@@ -1,7 +1,7 @@
 {
-  "name": "@pterodoc/docusaurus",
-  "version": "0.1.0",
-  "description": "Reads a pterodoc site model out of Docusaurus, using Docusaurus's own site loader.",
+  "name": "@pterodocs/docusaurus",
+  "version": "0.4.1",
+  "description": "Reads a pterodocs site model out of Docusaurus, using Docusaurus's own site loader.",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -16,7 +16,7 @@
     "test": "node ../../scripts/tests.mjs integration"
   },
   "dependencies": {
-    "@pterodoc/core": "0.1.0"
+    "@pterodocs/core": "0.4.1"
   },
   "peerDependencies": {
     "@docusaurus/core": ">=3.6.0 <4.0.0"
@@ -31,7 +31,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
-  "repository": { "type": "git", "url": "git+https://github.com/onyx-ac/pterodoc.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/onyx-ac/pterodocs.git" },
   "license": "CC-BY-SA-4.0",
   "publishConfig": { "access": "public" }
 }

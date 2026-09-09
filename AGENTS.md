@@ -2,7 +2,7 @@
 
 ## Purpose
 
-How automated coding assistants should work in this repository. pterodoc publishes a
+How automated coding assistants should work in this repository. pterodocs publishes a
 Docusaurus site to WordPress; it is a small, single-purpose tool and should stay one.
 
 ## Layout
@@ -12,18 +12,18 @@ and `npm ls` rather than convention is what enforces it.
 
 | Package | Responsibility |
 | :--- | :--- |
-| `@pterodoc/core` | Everything that knows neither the source nor the target. See below. |
-| `@pterodoc/docusaurus` | Everything that knows Docusaurus exists. Produces a `SiteModel`. |
-| `@pterodoc/wordpress` | The WordPress REST target, and the WordPress plugin under `plugin/`. |
-| `pterodoc` | The command line, the Docusaurus build plugin, and the public barrel. Depends on all three. |
+| `@pterodocs/core` | Everything that knows neither the source nor the target. See below. |
+| `@pterodocs/docusaurus` | Everything that knows Docusaurus exists. Produces a `SiteModel`. |
+| `@pterodocs/wordpress` | The WordPress REST target, and the WordPress plugin under `plugin/`. |
+| `pterodocs` | The command line, the Docusaurus build plugin, and the public barrel. Depends on all three. |
 
 ```
-@pterodoc/core  <-  @pterodoc/docusaurus  <-  pterodoc
-                <-  @pterodoc/wordpress   <-
+@pterodocs/core  <-  @pterodocs/docusaurus  <-  pterodocs
+                <-  @pterodocs/wordpress   <-
 ```
 
-`@pterodoc/core` must never import `@pterodoc/docusaurus` or `@pterodoc/wordpress`.
-Wiring the three together is what the `pterodoc` package is for, and it is the only one
+`@pterodocs/core` must never import `@pterodocs/docusaurus` or `@pterodocs/wordpress`.
+Wiring the three together is what the `pterodocs` package is for, and it is the only one
 allowed to name a concrete source or target.
 
 Inside `packages/core/src`:
@@ -39,7 +39,7 @@ Inside `packages/core/src`:
 
 `render/` must never import from `model/`; URL policy belongs to the target. Each of
 `model`, `render`, `target` and `util` has a barrel that is also a published subpath
-(`@pterodoc/core/render` and so on), so a cross-directory import goes through the barrel
+(`@pterodocs/core/render` and so on), so a cross-directory import goes through the barrel
 and a cross-package one is a mechanical rename away.
 
 ## Building and testing
@@ -59,7 +59,7 @@ The four packages are versioned in lockstep
 the file that ships is the file that was written. Four rules hold it together.
 
 - **It registers no block types.** Everything is `render_block` filters over the
-  core blocks pterodoc already emits. The test of any change is: deactivate the
+  core blocks pterodocs already emits. The test of any change is: deactivate the
   plugin, and the documentation must still read.
 - **Build on the block supports, never fight them.** Tokens resolve through
   `--wp--preset--*` and `--wp--style--*` first; colours are derived with
@@ -73,7 +73,7 @@ the file that ships is the file that was written. Four rules hold it together.
   branches are open is settled in PHP, so the first paint is right and there is
   no flash of an expanded tree.
 
-Anything pterodoc emits for the plugin travels in block-comment attributes, never
+Anything pterodocs emits for the plugin travels in block-comment attributes, never
 in markup. WordPress re-runs a block's save function on edit and compares, so
 markup core would not have written is markup the editor refuses.
 

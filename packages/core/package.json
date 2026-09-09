@@ -1,7 +1,7 @@
 {
-  "name": "@pterodoc/core",
-  "version": "0.1.0",
-  "description": "Rendering, the site model, the target contract and the reconciler behind pterodoc.",
+  "name": "@pterodocs/core",
+  "version": "0.4.1",
+  "description": "Rendering, the site model, the target contract and the reconciler behind pterodocs.",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -29,6 +29,7 @@
     "hast-util-to-html": "^9.0.5",
     "mdast-util-to-hast": "^13.2.0",
     "mdast-util-to-string": "^4.0.0",
+    "prismjs": "^1.30.0",
     "remark-directive": "^3.0.1",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",
@@ -37,7 +38,7 @@
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0"
   },
-  "repository": { "type": "git", "url": "git+https://github.com/onyx-ac/pterodoc.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/onyx-ac/pterodocs.git" },
   "license": "CC-BY-SA-4.0",
   "publishConfig": { "access": "public" }
 }

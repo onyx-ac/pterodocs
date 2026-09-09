@@ -67,13 +67,32 @@ export interface RenderConfig {
    * Which block vocabulary to emit.
    *
    * `core` is the default and emits core blocks only. `plugin` additionally
-   * carries instructions the pterodoc WordPress plugin understands — chiefly
+   * carries instructions the pterodocs WordPress plugin understands — chiefly
    * highlighted line ranges, which core blocks cannot express at all — in block
    * comments rather than in markup, so WordPress stores the same content either
-   * way. Set it once the plugin is installed; `pterodoc doctor` says whether it
+   * way. Set it once the plugin is installed; `pterodocs doctor` says whether it
    * is.
    */
   blocks?: 'core' | 'plugin';
+  /**
+   * Whether a stylesheet is published with the pages.
+   *
+   * `inline` is the default and stores one with each page, because a site that
+   * has installed nothing has nowhere else to read it from: WordPress renders
+   * core blocks with almost no opinion, and documentation that arrives with
+   * none of its own looks like an unstyled outline. Set `none` when the theme
+   * already dresses these class names, or when the WordPress plugin is
+   * installed and bringing its own.
+   */
+  styles?: 'inline' | 'none';
+  /**
+   * Tokenise fences at publish time.
+   *
+   * On by default. What is stored is Prism's classes, never colours, so the
+   * palette stays in the stylesheet and restyling code never means publishing
+   * every page again.
+   */
+  highlight?: boolean;
   /** Drop a leading H1 that repeats the page title. */
   dedupeTitle?: boolean;
   /** Where links to unpublished documents point: the site, or nowhere. */
@@ -114,8 +133,8 @@ export interface OutputConfig {
   pages?: boolean;
 }
 
-/** A pterodoc configuration file. */
-export interface PterodocConfig {
+/** A pterodocs configuration file. */
+export interface PterodocsConfig {
   site?: SiteConfig;
   target?: TargetConfig;
   layout?: Partial<PageLayout>;
@@ -132,6 +151,6 @@ export interface PterodocConfig {
  *
  * @param config The configuration.
  */
-export function defineConfig(config: PterodocConfig): PterodocConfig {
+export function defineConfig(config: PterodocsConfig): PterodocsConfig {
   return config;
 }

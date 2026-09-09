@@ -7,12 +7,12 @@
  * attribute. The resolution order everywhere is: block attribute, then this,
  * then the built-in default.
  *
- * @package pterodoc
+ * @package pterodocs
  */
 
 declare( strict_types = 1 );
 
-namespace Pterodoc;
+namespace Pterodocs;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,12 +22,12 @@ defined( 'ABSPATH' ) || exit;
 final class Settings {
 
 	/** Option name. */
-	public const OPTION = 'pterodoc_settings';
+	public const OPTION = 'pterodocs_settings';
 
 	/**
 	 * The built-in defaults.
 	 *
-	 * `classPrefix` matters more than it looks: pterodoc's own `render.classPrefix`
+	 * `classPrefix` matters more than it looks: pterodocs's own `render.classPrefix`
 	 * is configurable, so a site synced with a different prefix is styled by
 	 * changing this rather than by re-syncing every page.
 	 *
@@ -35,7 +35,7 @@ final class Settings {
 	 */
 	public static function defaults(): array {
 		return array(
-			'classPrefix'          => 'pterodoc',
+			'classPrefix'          => 'pterodocs',
 
 			'width'                => 'full',
 			'gutter'               => '',
@@ -175,15 +175,15 @@ final class Settings {
 	 */
 	public static function menu(): void {
 		add_options_page(
-			__( 'pterodoc', 'pterodoc' ),
-			__( 'pterodoc', 'pterodoc' ),
+			__( 'pterodocs', 'pterodocs' ),
+			__( 'pterodocs', 'pterodocs' ),
 			'manage_options',
-			'pterodoc',
+			'pterodocs',
 			static function (): void {
 				if ( ! current_user_can( 'manage_options' ) ) {
 					return;
 				}
-				echo '<div class="wrap"><div id="pterodoc-settings"></div></div>';
+				echo '<div class="wrap"><div id="pterodocs-settings"></div></div>';
 			}
 		);
 	}
@@ -199,13 +199,13 @@ final class Settings {
 		}
 
 		wp_enqueue_script(
-			'pterodoc-settings',
-			PTERODOC_URL . 'assets/js/settings.js',
+			'pterodocs-settings',
+			PTERODOCS_URL . 'assets/js/settings.js',
 			array( 'wp-element', 'wp-components', 'wp-core-data', 'wp-data', 'wp-api-fetch', 'wp-i18n' ),
 			VERSION,
 			true
 		);
-		wp_set_script_translations( 'pterodoc-settings', 'pterodoc', PTERODOC_DIR . 'languages' );
+		wp_set_script_translations( 'pterodocs-settings', 'pterodocs', PTERODOCS_DIR . 'languages' );
 		wp_enqueue_style( 'wp-components' );
 	}
 }

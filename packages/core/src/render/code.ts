@@ -11,6 +11,7 @@
 import type { Code } from 'mdast';
 import { escapeCode, joinBlocks, serializeBlock } from './blocks';
 import type { Theme } from './theme';
+import { highlightCode } from './highlight';
 import type { IssueCollector } from '../util/issues';
 
 /** What a fence's metastring asked for. */
@@ -78,19 +79,26 @@ export function renderCode(
 
   const attributes: Record<string, unknown> = {};
   if (className) attributes['className'] = className;
-  if (carried) attributes['pterodocHighlight'] = meta.highlight;
+  if (carried) attributes['pterodocsHighlight'] = meta.highlight;
+
+  // Highlighted here rather than in the browser, because a site running no
+  // plugin has no browser-side highlighter. What lands in the content is
+  // classes, never colours: the palette belongs to the stylesheet, so changing
+  // it is a CSS edit and not a re-publication of every page.
+  const highlighted = theme.highlight && lang ? highlightCode(node.value, lang) : undefined;
+  const body = highlighted ?? escapeCode(node.value);
 
   const code = serializeBlock(
     'code',
     Object.keys(attributes).length > 0 ? attributes : undefined,
-    `<pre class="${preClasses}"><code>${escapeCode(node.value)}</code></pre>`,
+    `<pre class="${preClasses}"><code>${body}</code></pre>`,
   );
 
   if (meta.highlight && !carried) {
     issues?.add({
       code: 'code-highlight-dropped',
       severity: 'info',
-      message: `Highlighted lines {${meta.highlight}} have no WordPress equivalent and were not carried over. Install the pterodoc WordPress plugin and set render.blocks to 'plugin' to keep them.`,
+      message: `Highlighted lines {${meta.highlight}} have no WordPress equivalent and were not carried over. Install the pterodocs WordPress plugin and set render.blocks to 'plugin' to keep them.`,
       file,
       line: node.position?.start.line,
     });

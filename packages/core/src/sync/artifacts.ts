@@ -29,6 +29,8 @@ export interface Artifacts {
   manifest: ManifestEntry[];
   media: { hash: string; file: string; url: string | null; uploaded: boolean }[];
   plan: Plan;
+  /** The stylesheet the pages were rendered against. */
+  stylesheet: string;
 }
 
 /** Where one page's rendered body is written. */
@@ -50,6 +52,12 @@ export async function writeArtifacts(
   options: { writePages: boolean },
 ): Promise<void> {
   await fs.mkdir(outDir, { recursive: true });
+
+  // Written whether or not the pages carry it, because the alternative to
+  // storing it on every page is pasting it into the site once — and that is a
+  // great deal cheaper. A site with fifty pages stores fifty copies otherwise.
+  await fs.writeFile(path.join(outDir, 'docs.css'), `${artifacts.stylesheet}
+`, 'utf8');
 
   if (options.writePages) {
     await fs.rm(path.join(outDir, 'pages'), { recursive: true, force: true });

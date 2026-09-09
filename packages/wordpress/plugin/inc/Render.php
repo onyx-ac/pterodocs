@@ -1,17 +1,17 @@
 <?php
 /**
- * What the plugin does to the markup pterodoc wrote.
+ * What the plugin does to the markup pterodocs wrote.
  *
  * Every filter here is additive. It adds classes, attributes and wrappers; it
  * never restructures a block and never rewrites stored content. Turn the plugin
  * off and the pages are the ordinary core blocks they always were.
  *
- * @package pterodoc
+ * @package pterodocs
  */
 
 declare( strict_types = 1 );
 
-namespace Pterodoc;
+namespace Pterodocs;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -36,19 +36,19 @@ final class Render {
 		register_block_style(
 			'core/table',
 			array(
-				'name'  => 'pterodoc-scroll',
-				'label' => __( 'Scrolls sideways', 'pterodoc' ),
+				'name'  => 'pterodocs-scroll',
+				'label' => __( 'Scrolls sideways', 'pterodocs' ),
 			)
 		);
 	}
 
 	/**
-	 * The class prefix pterodoc was configured with.
+	 * The class prefix pterodocs was configured with.
 	 */
 	private static function prefix(): string {
 		$prefix = Settings::get( 'classPrefix' );
 
-		return is_string( $prefix ) && '' !== $prefix ? $prefix : 'pterodoc';
+		return is_string( $prefix ) && '' !== $prefix ? $prefix : 'pterodocs';
 	}
 
 	/**
@@ -125,7 +125,7 @@ final class Render {
 	 */
 	private static function docs_root( string $content, array $block ): string {
 		$attrs = self::attrs( $block );
-		$width = Settings::resolve( $attrs, 'pterodocWidth', 'width' );
+		$width = Settings::resolve( $attrs, 'pterodocsWidth', 'width' );
 		$width = is_string( $width ) ? $width : 'full';
 
 		$classes = array( 'pd-docs' );
@@ -135,7 +135,7 @@ final class Render {
 			$classes[] = 'alignwide';
 		}
 
-		$scroll = Settings::resolve( $attrs, 'pterodocScrollModel', 'scrollModel' );
+		$scroll = Settings::resolve( $attrs, 'pterodocsScrollModel', 'scrollModel' );
 		$scheme = Settings::get( 'colorScheme' );
 
 		return Markup::decorate(
@@ -162,9 +162,9 @@ final class Render {
 	private static function nav_column( string $content, array $block ): string {
 		$attrs = self::attrs( $block );
 
-		$mobile    = Settings::resolve( $attrs, 'pterodocSidebarMobile', 'sidebarMobile' );
-		$animation = Settings::resolve( $attrs, 'pterodocSidebarAnimation', 'sidebarAnimation' );
-		$sticky    = (bool) Settings::resolve( $attrs, 'pterodocSidebarSticky', 'sidebarSticky' );
+		$mobile    = Settings::resolve( $attrs, 'pterodocsSidebarMobile', 'sidebarMobile' );
+		$animation = Settings::resolve( $attrs, 'pterodocsSidebarAnimation', 'sidebarAnimation' );
+		$sticky    = (bool) Settings::resolve( $attrs, 'pterodocsSidebarSticky', 'sidebarSticky' );
 
 		$mobile    = is_string( $mobile ) ? $mobile : 'bottom-sheet';
 		$animation = is_string( $animation ) ? $animation : 'slide';
@@ -192,7 +192,7 @@ final class Render {
 
 		$trigger = sprintf(
 			'<button type="button" class="pd-sheet-trigger" aria-expanded="false" aria-controls="pd-nav-sheet" hidden><span class="pd-sheet-trigger__icon" aria-hidden="true"></span>%s</button>',
-			esc_html__( 'Documentation menu', 'pterodoc' )
+			esc_html__( 'Documentation menu', 'pterodocs' )
 		);
 
 		return $trigger . '<div class="pd-sheet-scrim" hidden></div>' . $content;
@@ -212,8 +212,8 @@ final class Render {
 	private static function page_list( string $content, array $block ): string {
 		$attrs = self::attrs( $block );
 
-		$collapsible = (bool) Settings::resolve( $attrs, 'pterodocSidebarCollapsible', 'sidebarCollapsible' );
-		$depth       = (int) Settings::resolve( $attrs, 'pterodocSidebarCollapsedDepth', 'sidebarCollapsedDepth' );
+		$collapsible = (bool) Settings::resolve( $attrs, 'pterodocsSidebarCollapsible', 'sidebarCollapsible' );
+		$depth       = (int) Settings::resolve( $attrs, 'pterodocsSidebarCollapsedDepth', 'sidebarCollapsedDepth' );
 		$depth       = max( 0, $depth );
 
 		// core/page-list already marks the page being read, its ancestors and every
@@ -267,7 +267,7 @@ final class Render {
 	/**
 	 * The breadcrumb.
 	 *
-	 * pterodoc bakes the separator into the stored paragraph, so changing it
+	 * pterodocs bakes the separator into the stored paragraph, so changing it
 	 * would otherwise mean re-syncing every page. Swapping it at render time
 	 * makes it a setting.
 	 *
@@ -277,7 +277,7 @@ final class Render {
 	 */
 	private static function breadcrumb( string $content, array $block ): string {
 		$attrs     = self::attrs( $block );
-		$separator = Settings::resolve( $attrs, 'pterodocBreadcrumbSeparator', 'breadcrumbSeparator' );
+		$separator = Settings::resolve( $attrs, 'pterodocsBreadcrumbSeparator', 'breadcrumbSeparator' );
 
 		if ( is_string( $separator ) && '' !== trim( $separator ) ) {
 			$content = self::swap_separator( $content, $separator );
@@ -288,7 +288,7 @@ final class Render {
 			array( 'pd-breadcrumb' ),
 			array(
 				'role'       => 'navigation',
-				'aria-label' => __( 'Breadcrumb', 'pterodoc' ),
+				'aria-label' => __( 'Breadcrumb', 'pterodocs' ),
 			)
 		);
 	}
@@ -305,7 +305,7 @@ final class Render {
 	 * @return string The rewritten breadcrumb.
 	 */
 	private static function swap_separator( string $html, string $separator ): string {
-		// With render.blocks set to 'plugin', pterodoc wrapped each separator in
+		// With render.blocks set to 'plugin', pterodocs wrapped each separator in
 		// a span of its own, so there is nothing to infer.
 		$marker = self::prefix() . '-breadcrumb-separator';
 
@@ -346,9 +346,9 @@ final class Render {
 	 */
 	private static function table( string $content, array $block ): string {
 		$attrs = self::attrs( $block );
-		$on    = (bool) Settings::resolve( $attrs, 'pterodocTableScroll', 'tableScroll' );
+		$on    = (bool) Settings::resolve( $attrs, 'pterodocsTableScroll', 'tableScroll' );
 
-		if ( ! $on && ! Markup::block_has_class( $block, 'is-style-pterodoc-scroll' ) ) {
+		if ( ! $on && ! Markup::block_has_class( $block, 'is-style-pterodocs-scroll' ) ) {
 			return $content;
 		}
 
@@ -359,7 +359,7 @@ final class Render {
 				'class'      => 'pd-scroll',
 				'tabindex'   => '0',
 				'role'       => 'region',
-				'aria-label' => __( 'Table, scrolls sideways', 'pterodoc' ),
+				'aria-label' => __( 'Table, scrolls sideways', 'pterodocs' ),
 			)
 		);
 	}
@@ -378,14 +378,14 @@ final class Render {
 	private static function code( string $content, array $block ): string {
 		$attrs = self::attrs( $block );
 
-		$copy    = (bool) Settings::resolve( $attrs, 'pterodocCodeCopy', 'codeCopy' );
-		$wrap    = (bool) Settings::resolve( $attrs, 'pterodocCodeWrap', 'codeWrap' );
-		$numbers = Settings::resolve( $attrs, 'pterodocCodeLineNumbers', 'codeLineNumbers' );
+		$copy    = (bool) Settings::resolve( $attrs, 'pterodocsCodeCopy', 'codeCopy' );
+		$wrap    = (bool) Settings::resolve( $attrs, 'pterodocsCodeWrap', 'codeWrap' );
+		$numbers = Settings::resolve( $attrs, 'pterodocsCodeLineNumbers', 'codeLineNumbers' );
 		$numbers = is_string( $numbers ) ? $numbers : 'auto';
 
 		$language = Prism::language_of( $content );
 
-		// pterodoc marks a fence that asked for line numbers with its own class.
+		// pterodocs marks a fence that asked for line numbers with its own class.
 		$requested = Markup::has_class( $content, self::prefix() . '-line-numbers' );
 		$numbered  = 'always' === $numbers || ( 'auto' === $numbers && $requested );
 
@@ -397,12 +397,12 @@ final class Render {
 			$classes[] = 'line-numbers';
 		}
 
-		// pterodoc carries a fence's highlighted range in the block comment,
+		// pterodocs carries a fence's highlighted range in the block comment,
 		// because core's code block has nowhere to put it and markup core would
 		// not have written is markup the editor refuses. Turning it into the
 		// attribute Prism reads is this plugin's job, at render time.
 		$attributes = array();
-		$highlight  = $attrs['pterodocHighlight'] ?? null;
+		$highlight  = $attrs['pterodocsHighlight'] ?? null;
 
 		if ( is_string( $highlight ) && 1 === preg_match( '/^[0-9,\s-]+$/', $highlight ) ) {
 			$attributes['data-line'] = trim( $highlight );
@@ -412,8 +412,8 @@ final class Render {
 		if ( $copy ) {
 			$button = sprintf(
 				'<button type="button" class="pd-copy" data-pd-copy><span class="pd-copy__label">%s</span><span class="pd-copy__done" aria-hidden="true">%s</span></button>',
-				esc_html__( 'Copy', 'pterodoc' ),
-				esc_html__( 'Copied', 'pterodoc' )
+				esc_html__( 'Copy', 'pterodocs' ),
+				esc_html__( 'Copied', 'pterodocs' )
 			);
 		}
 

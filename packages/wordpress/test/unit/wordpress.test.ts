@@ -2,7 +2,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { TargetError } from '@pterodoc/core/util';
+import { TargetError } from '@pterodocs/core/util';
 import { WpClient } from '../../src/client';
 import {
   computePrune,
@@ -15,7 +15,7 @@ import {
 import { hrefFor, prefixSegments, splitOwnership } from '../../src/url';
 import { hashFromSlug, mediaSlug } from '../../src/media';
 import { createFakeWp, type FakeWp } from '../fixtures/fake-wp';
-import type { RemotePage, RenderedPage } from '@pterodoc/core/target';
+import type { RemotePage, RenderedPage } from '@pterodocs/core/target';
 
 function client(fake: FakeWp, options: Partial<ConstructorParameters<typeof WpClient>[0]> = {}) {
   return new WpClient({
@@ -49,7 +49,7 @@ test('requests carry Basic auth, a user agent, and ask only for the fields used'
   const headers = call.init.headers as Record<string, string>;
   // The spaces WordPress shows in an Application Password are decoration.
   assert.equal(headers['Authorization'], `Basic ${Buffer.from('someone:abcd').toString('base64')}`);
-  assert.match(headers['User-Agent']!, /^pterodoc\//);
+  assert.match(headers['User-Agent']!, /^pterodocs\//);
   assert.equal(call.init.redirect, 'error');
   assert.equal(call.url.searchParams.get('status'), 'any');
   assert.equal(call.url.searchParams.get('context'), 'edit');
@@ -239,8 +239,8 @@ test('the last segment owns the tree and everything above it is only a stub', ()
 });
 
 test('a media slug carries the content hash both ways', () => {
-  assert.equal(mediaSlug('pterodoc', 'abc123'), 'pterodoc-abc123');
-  assert.equal(hashFromSlug('pterodoc', 'pterodoc-0123456789abcdef'), '0123456789abcdef');
-  assert.equal(hashFromSlug('pterodoc', 'something-else'), undefined);
-  assert.equal(hashFromSlug('pterodoc', 'pterodoc-short'), undefined);
+  assert.equal(mediaSlug('pterodocs', 'abc123'), 'pterodocs-abc123');
+  assert.equal(hashFromSlug('pterodocs', 'pterodocs-0123456789abcdef'), '0123456789abcdef');
+  assert.equal(hashFromSlug('pterodocs', 'something-else'), undefined);
+  assert.equal(hashFromSlug('pterodocs', 'pterodocs-short'), undefined);
 });

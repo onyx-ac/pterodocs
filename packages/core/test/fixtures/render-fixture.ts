@@ -25,8 +25,10 @@ export function renderFixture(name: (typeof FIXTURES)[number]): RenderedDoc {
     file,
     permalink: `/docstack/docs/${name}`,
     // The DocStack prefix, so the output can be compared with the tool this
-    // package was extracted from.
-    theme: createTheme({ classPrefix: 'docstack' }),
+    // package was extracted from — which did not highlight, so neither does
+    // this. These goldens exist to prove that parity has not moved; what
+    // highlighting emits is covered by its own tests.
+    theme: createTheme({ classPrefix: 'docstack', highlight: false }),
     resolveLink: (href) =>
       href === './other.md' ? { href: '/docstack/docs/other/', path: 'other' } : { href },
   });

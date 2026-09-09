@@ -18,8 +18,9 @@ import { buildPageTree, type PageNode, type PageTree } from '../model/tree';
 import type { Doc, DocsVersion, SiteModel } from '../model/types';
 import type { SourceReader } from '../model/reader';
 import { renderDoc, excerptFor } from '../render/index';
-import { composePage, renderVersionBanner, type PageLayout } from '../render/page';
+import { composePage, isGeneratedPage, renderVersionBanner, type PageLayout } from '../render/page';
 import { createTheme, type Theme } from '../render/theme';
+import { stylesheetFor } from '../render/stylesheet';
 import { collectImages, resolveImage } from '../render/images';
 import type { LinkResolver } from '../render/links';
 import type { MediaRef, RenderedPage, Target, TargetSession } from '../target/target';
@@ -78,6 +79,8 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
     const theme = createTheme({
       classPrefix: config.classPrefix,
       blocks: config.blocks,
+      styles: config.styles,
+      highlight: config.highlight,
       strings: { ...config.strings, ...config.localeStrings[model.locale] },
     });
 
@@ -112,7 +115,7 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
   const rootPath = deps.target?.rootPath ?? '/';
   const plan: Plan = {
     generatedAt: new Date().toISOString(),
-    versions: { pterodoc: VERSION, docusaurus: docusaurusVersion, node: process.version },
+    versions: { pterodocs: VERSION, docusaurus: docusaurusVersion, node: process.version },
     dryRun: config.dryRun,
     offline: config.offline,
     site: config.targetUrl || null,
@@ -128,6 +131,10 @@ export async function runSync(config: ResolvedConfig, deps: RunSyncDeps): Promis
   };
 
   const artifacts: Artifacts = {
+    stylesheet: stylesheetFor(
+      createTheme({ classPrefix: config.classPrefix, styles: config.styles, highlight: config.highlight }),
+      { navWidth: config.layout.navWidth },
+    ),
     pages: prepared.map(({ page, locale, versionName }) => ({ page, locale, versionName })),
     manifest: prepared.map(({ node, page, locale, versionName }) => ({
       path: page.path,
@@ -343,6 +350,19 @@ async function syncVersion(input: SyncVersionInput): Promise<{
       const keep = new Set<number>();
       for (const id of ids.values()) if (typeof id === 'number') keep.add(id);
       for (const page of session.computePrune(index, navRootId, keep)) {
+        // Position inside the tree is not ownership. Somebody may have added a
+        // page under the documentation root, and trashing it because this run
+        // did not account for it would be pterodocs deleting someone else's work.
+        const full = await session.fetchPage(page.id);
+        if (!isGeneratedPage(full.content ?? '', config.classPrefix)) {
+          issues.add({
+            code: 'prune-skipped-foreign',
+            severity: 'info',
+            message: `${page.link} sits under the documentation root but was not written by pterodocs, so it was left alone.`,
+          });
+          continue;
+        }
+
         actions.push({
           op: 'prune',
           path: page.slug,

@@ -9,7 +9,7 @@ import replace from '@rollup/plugin-replace';
  *
  * Nothing is bundled from node_modules: this is a Node CLI, not a browser
  * artefact, and inlining the remark ecosystem would only make stack traces
- * worse. Sibling `@pterodoc/*` packages are external for free, because they are
+ * worse. Sibling `@pterodocs/*` packages are external for free, because they are
  * ordinary entries in the package's own dependencies.
  *
  * Every path is absolutised against the calling config, because rollup resolves
@@ -68,7 +68,7 @@ export function nodePackage(configUrl, entries) {
       // rewrite that declaration into a syntax error. By now it is gone.
       replace({
         preventAssignment: true,
-        values: { __PTERODOC_VERSION__: JSON.stringify(pkg.version) },
+        values: { __PTERODOCS_VERSION__: JSON.stringify(pkg.version) },
       }),
     ],
   };

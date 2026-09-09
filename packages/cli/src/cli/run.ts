@@ -7,16 +7,17 @@
 
 import path from 'node:path';
 import fs from 'node:fs/promises';
-import { EXIT, ConfigError, PterodocError, TargetError } from '@pterodoc/core';
-import { VERSION } from '@pterodoc/core';
-import { compareSeverity } from '@pterodoc/core/util';
-import { loadConfig, type ResolvedConfig } from '@pterodoc/core';
-import { createDocusaurusReader } from '@pterodoc/docusaurus';
-import { createCaptureReader, writeCapture } from '@pterodoc/core/model';
-import type { SourceReader } from '@pterodoc/core/model';
+import { EXIT, ConfigError, PterodocsError, TargetError } from '@pterodocs/core';
+import { VERSION } from '@pterodocs/core';
+import { compareSeverity } from '@pterodocs/core/util';
+import { loadConfig, type ResolvedConfig } from '@pterodocs/core';
+import { createDocusaurusReader } from '@pterodocs/docusaurus';
+import { createCaptureReader, writeCapture } from '@pterodocs/core/model';
+import type { SourceReader } from '@pterodocs/core/model';
 import { resolveTarget } from '../target';
-import { detectPlugin, WpClient, DEFAULT_RETRY } from '@pterodoc/wordpress';
-import { runSync } from '@pterodoc/core';
+import { detectPlugin, WpClient, DEFAULT_RETRY } from '@pterodocs/wordpress';
+import { purgeTree } from '@pterodocs/core';
+import { runSync } from '@pterodocs/core';
 import { parseCliArgs, USAGE, type ParsedArgs } from './args';
 import { createReporter, type Reporter } from './reporter';
 
@@ -53,6 +54,8 @@ export async function main(argv: string[]): Promise<number> {
         return await commandInit(config, reporter);
       case 'capture':
         return await commandCapture(config, parsed, reporter);
+      case 'purge':
+        return await commandPurge(config, parsed, reporter);
       case 'doctor':
         return await commandDoctor(config, reporter);
       case 'render':
@@ -128,7 +131,17 @@ async function commandSync(
       message: `The run finished but its output could not be written: ${plan.artifactError}`,
     });
   } else {
-    reporter.info(`Rendered pages and plan.json written to ${path.relative(process.cwd(), config.outDir) || config.outDir}/`);
+    const where = path.relative(process.cwd(), config.outDir) || config.outDir;
+    reporter.info(`Rendered pages and plan.json written to ${where}/`);
+
+    // Storing the stylesheet on every page is what makes an unstyled site look
+    // right with nothing installed, but it is the same few kilobytes over and
+    // over. Say so once, and say what the alternative is.
+    if (config.styles === 'inline') {
+      reporter.info(
+        `Each page carries the stylesheet. To store it once instead, paste ${where}/docs.css into Appearance, Customise, Additional CSS and set render.styles to 'none'.`,
+      );
+    }
   }
   if (config.dryRun && !config.offline) reporter.info('Dry run: the site was not modified.');
 
@@ -189,7 +202,7 @@ async function commandDoctor(config: ResolvedConfig, reporter: Reporter): Promis
   reporter.info(`\nReached the target: ${index.length} page(s) exist.`);
 
   const media = await session.loadMediaIndex();
-  reporter.info(`${media.size} file(s) previously uploaded by pterodoc.`);
+  reporter.info(`${media.size} file(s) previously uploaded by pterodocs.`);
 
   await reportPlugin(config, reporter);
   return EXIT.ok;
@@ -214,13 +227,13 @@ async function reportPlugin(config: ResolvedConfig, reporter: Reporter): Promise
 
   if (status.unknown) {
     reporter.info('');
-    reporter.info(`The pterodoc plugin: ${status.unknown}.`);
+    reporter.info(`The pterodocs plugin: ${status.unknown}.`);
     return;
   }
 
   if (!status.installed) {
     reporter.info('');
-    reporter.info('The pterodoc WordPress plugin is not installed.');
+    reporter.info('The pterodocs WordPress plugin is not installed.');
     if (config.blocks === 'plugin') {
       reporter.issue({
         code: 'plugin-missing',
@@ -233,25 +246,85 @@ async function reportPlugin(config: ResolvedConfig, reporter: Reporter): Promise
   }
 
   reporter.info('');
-  reporter.info('The pterodoc WordPress plugin is installed.');
+  reporter.info('The pterodocs WordPress plugin is installed.');
 
   if (config.blocks !== 'plugin') {
     reporter.info("Set render.blocks to 'plugin' to let it render what core blocks cannot.");
   }
 
-  const prefix = status.classPrefix ?? 'pterodoc';
+  const prefix = status.classPrefix ?? 'pterodocs';
   if (prefix !== config.classPrefix) {
     reporter.issue({
       code: 'plugin-prefix-mismatch',
       severity: 'warning',
-      message: `The plugin is styling "${prefix}" but pterodoc writes "${config.classPrefix}". Set them the same, on the plugin's settings page or in render.classPrefix; nothing needs re-publishing.`,
+      message: `The plugin is styling "${prefix}" but pterodocs writes "${config.classPrefix}". Set them the same, on the plugin's settings page or in render.classPrefix; nothing needs re-publishing.`,
     });
   }
 }
 
+/**
+ * `purge`.
+ *
+ * Deliberately does not load the site. Purging is what you do to a location the
+ * documentation has moved away from, and asking Docusaurus to describe a site
+ * in order to delete pages it no longer publishes to would be beside the point.
+ */
+async function commandPurge(
+  config: ResolvedConfig,
+  parsed: ParsedArgs,
+  reporter: Reporter,
+): Promise<number> {
+  const segments = [...config.rootSegments, ...config.baseSegments];
+  const where = `/${segments.join('/')}/`;
+
+  if (config.offline) {
+    throw new ConfigError(`No credentials, so ${where} cannot be read. Purging needs them.`);
+  }
+
+  const apply = parsed.flags.apply === true;
+  reporter.info(
+    apply
+      ? `Removing the documentation at ${config.targetUrl}${where}.`
+      : `Checking what would be removed at ${config.targetUrl}${where}. Nothing is written without --apply.`,
+  );
+
+  const session = await resolveTarget(config).open({ locale: '', dryRun: !apply });
+  const report = await purgeTree(session, {
+    segments,
+    classPrefix: config.classPrefix,
+    apply,
+    log: (message) => reporter.detail(message),
+  });
+
+  if (!report.root) {
+    reporter.info('Nothing is published there.');
+    return EXIT.ok;
+  }
+
+  for (const page of report.kept) {
+    reporter.issue({
+      code: 'purge-skipped-foreign',
+      severity: 'warning',
+      message: `${page.link} was left alone: pterodocs did not write it.`,
+    });
+  }
+
+  reporter.info('');
+  reporter.info(
+    apply
+      ? `Trashed ${report.removed.length} page(s); left ${report.kept.length} alone.`
+      : `Would trash ${report.removed.length} page(s); would leave ${report.kept.length} alone. Re-run with --apply.`,
+  );
+  if (apply) {
+    reporter.info('They are in the trash, not deleted.');
+  }
+
+  return EXIT.ok;
+}
+
 /** `init`. */
 async function commandInit(config: ResolvedConfig, reporter: Reporter): Promise<number> {
-  const file = path.join(config.siteDir, 'pterodoc.config.mjs');
+  const file = path.join(config.siteDir, 'pterodocs.config.mjs');
   try {
     await fs.access(file);
     throw new ConfigError(`${file} already exists.`);
@@ -261,7 +334,7 @@ async function commandInit(config: ResolvedConfig, reporter: Reporter): Promise<
 
   await fs.writeFile(
     file,
-    `import { defineConfig } from 'pterodoc';
+    `import { defineConfig } from 'pterodocs';
 
 export default defineConfig({
   site: {
@@ -297,7 +370,7 @@ function report(error: unknown): number {
     if (error.bodySnippet) process.stderr.write(`  body: ${error.bodySnippet}\n`);
     return error.exitCode;
   }
-  if (error instanceof PterodocError) {
+  if (error instanceof PterodocsError) {
     process.stderr.write(`\n${error.message}\n`);
     return error.exitCode;
   }

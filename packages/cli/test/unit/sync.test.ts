@@ -6,12 +6,12 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readCapture } from '@pterodoc/core/model';
-import { createMemoryReader } from '@pterodoc/core/model';
-import { resolveConfig, type ResolvedConfig } from '@pterodoc/core';
-import { createWordpressTarget } from '@pterodoc/wordpress';
-import { runSync } from '@pterodoc/core';
-import type { SiteModel } from '@pterodoc/core/model';
+import { readCapture } from '@pterodocs/core/model';
+import { createMemoryReader } from '@pterodocs/core/model';
+import { resolveConfig, type ResolvedConfig } from '@pterodocs/core';
+import { createWordpressTarget } from '@pterodocs/wordpress';
+import { runSync } from '@pterodocs/core';
+import type { SiteModel } from '@pterodocs/core/model';
 import { createFakeWp, type FakeWp } from '../../../wordpress/test/fixtures/fake-wp';
 
 // Captured models are a core artefact and live with core's fixtures.
@@ -22,7 +22,7 @@ const fixtures = path.dirname(
 /** A site whose documents exist on disk, so bodies can actually be read. */
 async function siteOnDisk(): Promise<{ model: SiteModel; dir: string }> {
   const model = await readCapture(path.join(fixtures, 'models', 'mini.model.json'));
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'pterodoc-site-'));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'pterodocs-site-'));
 
   const version = model.instances[0]!.versions[0]!;
   for (const doc of version.docs) {
@@ -71,7 +71,7 @@ function targetFor(config: ResolvedConfig, fake: FakeWp) {
 
 /** Set up a run: a site on disk, a fake WordPress, and somewhere to write. */
 async function setup(overrides: Partial<ResolvedConfig> = {}, fake = createFakeWp()) {
-  const outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'pterodoc-out-'));
+  const outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'pterodocs-out-'));
   const { model, dir } = await siteOnDisk();
   const config = configFor(outDir, overrides);
   const reader = createMemoryReader(model);
@@ -187,24 +187,30 @@ test('pages along the root path are created once and never edited again', async 
   await t.cleanup();
 });
 
-test('a page with no source document is reported, and only trashed when asked', async () => {
-  const t = await setup();
-  await t.run();
-
+/** Add a page under the documentation root that no document accounts for. */
+function orphan(t: Awaited<ReturnType<typeof setup>>, id: number, content: string): void {
   const docs = t.fake.pages.find((page) => page.slug === 'docs')!;
   t.fake.pages.push({
-    id: 999,
+    id,
     parent: docs.id,
-    slug: 'removed',
+    slug: `orphan-${id}`,
     status: 'publish',
-    link: 'https://example.test/removed/',
-    title: { raw: 'Removed', rendered: 'Removed' },
-    content: { raw: '' },
+    link: `https://example.test/orphan-${id}/`,
+    title: { raw: 'Orphan', rendered: 'Orphan' },
+    content: { raw: content },
     excerpt: { raw: '' },
     menu_order: 0,
     template: '',
     meta: {},
   });
+}
+
+test('a page with no source document is reported, and only trashed when asked', async () => {
+  const t = await setup();
+  await t.run();
+
+  // Written by pterodocs: it carries the class prefix pterodocs composes with.
+  orphan(t, 999, `<!-- wp:columns {"className":"${t.config.classPrefix}-docs"} --><div></div><!-- /wp:columns -->`);
 
   const reported = await t.run();
   const prune = reported.plan.actions.find((action) => action.op === 'prune')!;
@@ -215,6 +221,23 @@ test('a page with no source document is reported, and only trashed when asked', 
   const pruning = { ...t.config, prune: true };
   await runSync(pruning, { reader: t.reader, target: targetFor(pruning, t.fake) });
   assert.equal(t.fake.pages.find((page) => page.id === 999)!.status, 'trash');
+  await t.cleanup();
+});
+
+test('a page somebody else put under the documentation root is never trashed', async () => {
+  // Position inside the tree is not ownership. Pruning by position alone would
+  // make pterodocs delete work it did not do.
+  const t = await setup();
+  await t.run();
+
+  orphan(t, 998, '<!-- wp:paragraph --><p>Written by a person.</p><!-- /wp:paragraph -->');
+
+  const pruning = { ...t.config, prune: true };
+  const { plan } = await runSync(pruning, { reader: t.reader, target: targetFor(pruning, t.fake) });
+
+  assert.equal(t.fake.pages.find((page) => page.id === 998)!.status, 'publish');
+  assert.equal(plan.actions.some((action) => action.op === 'prune' && action.id === 998), false);
+  assert.ok(plan.issues.some((issue) => issue.code === 'prune-skipped-foreign'));
   await t.cleanup();
 });
 
@@ -263,7 +286,7 @@ test('the run writes a manifest and a plan that describe what happened', async (
   assert.equal(manifest.find((entry) => entry.path === 'beta/child')!.href, '/products/docstack/docs/beta/child/');
   assert.equal(manifest[0]!.locale, 'en');
 
-  assert.equal(plan.versions.pterodoc.length > 0, true);
+  assert.equal(plan.versions.pterodocs.length > 0, true);
   assert.equal(plan.artifactError, null);
   assert.ok(plan.requests > 0);
   await t.cleanup();

@@ -7,6 +7,7 @@
  */
 
 import { escapeText, joinBlocks, serializeBlock, serializeVoidBlock } from './blocks';
+import { stylesheetFor } from './stylesheet';
 import { excerptFrom } from './excerpt';
 import type { Theme } from './theme';
 
@@ -48,6 +49,8 @@ export interface PageLayout {
   pagination: boolean;
   /** When to list child pages: automatically, always, or never. */
   childIndex: 'auto' | 'always' | 'never';
+  /** Offer a control that opens the navigation on a small screen. */
+  navToggle: boolean;
 }
 
 /** The layout used when a site configures none. */
@@ -55,11 +58,12 @@ export const DEFAULT_LAYOUT: PageLayout = {
   kind: 'two-column',
   navWidth: '25%',
   mainWidth: '75%',
-  align: '',
+  align: 'full',
   nav: 'page-list',
   breadcrumb: true,
   pagination: true,
   childIndex: 'auto',
+  navToggle: true,
 };
 
 /** Everything needed to compose one page. */
@@ -214,10 +218,66 @@ export function renderChildIndex(input: ComposePageInput, heading: string): stri
   return joinBlocks(parts);
 }
 
+/**
+ * The stylesheet, as a block.
+ *
+ * Stored with the page because a site that has installed nothing has nowhere
+ * else to read it from. A theme that already dresses these class names, or a
+ * site running the WordPress plugin, should turn this off.
+ */
+function renderStyles(theme: Theme, layout: PageLayout): string {
+  if (theme.styles === 'none') return '';
+
+  const css = stylesheetFor(theme, { navWidth: layout.navWidth });
+
+  return serializeBlock('html', undefined, `<style>${css}</style>`);
+}
+
 /** The navigation column's contents. */
 function renderNavigation(input: ComposePageInput): string {
   if (input.layout.nav === 'none') return '';
+
   return serializeVoidBlock('page-list', { parentPageID: input.navRootId ?? 0 });
+}
+
+
+/**
+ * The row above the document: where the reader is, and the way into the
+ * navigation.
+ *
+ * The two travel together because on a small screen they share one fixed row.
+ * The control is a checkbox and a label, so opening and closing the navigation
+ * needs no script: a label toggles its own checkbox both ways, and a second
+ * label laid over the page closes it from outside. Which of them the navigation
+ * listens to is settled in CSS with `:has()`, so the control does not have to
+ * be a sibling of the list it opens — it is in the other column entirely.
+ */
+function renderDocsBar(input: ComposePageInput): string {
+  const { theme, layout } = input;
+  const breadcrumb = layout.breadcrumb ? renderBreadcrumb(input) : '';
+
+  if (layout.nav === 'none' || layout.navToggle === false) return breadcrumb;
+
+  // Fixed rather than generated: there is one navigation to a page, and an id
+  // that changed between runs would make every page differ from itself.
+  const id = theme.cls('docs-nav-toggle');
+  const control = serializeBlock(
+    'html',
+    undefined,
+    `<input type="checkbox" id="${id}" class="${theme.cls('docs-toggle')}">` +
+      `<label class="${theme.cls('docs-toggle-label')}" for="${id}">` +
+      `<span class="${theme.cls('docs-toggle-icon')}" aria-hidden="true"></span>` +
+      `<span class="${theme.cls('docs-toggle-text')}">${escapeText(theme.text('navToggle'))}</span>` +
+      `</label>` +
+      `<label class="${theme.cls('docs-scrim')}" for="${id}" aria-hidden="true"></label>`,
+  );
+
+  const className = theme.cls('docs-bar');
+  return serializeBlock(
+    'group',
+    { className },
+    `<div class="wp-block-group ${className}">${joinBlocks([control, breadcrumb])}</div>`,
+  );
 }
 
 /** Compose the stored content of one page. */
@@ -236,13 +296,15 @@ export function composePage(input: ComposePageInput): string {
 
   const main = joinBlocks([
     input.banner ?? '',
-    layout.breadcrumb ? renderBreadcrumb(input) : '',
+    renderDocsBar(input),
     input.body,
     index,
     layout.pagination ? renderPagination(input) : '',
   ]);
 
-  if (layout.kind === 'single' || layout.nav === 'none') return main;
+  if (layout.kind === 'single' || layout.nav === 'none') {
+    return joinBlocks([renderStyles(theme, layout), main]);
+  }
 
   const navClass = theme.cls('docs-nav');
   const mainClass = theme.cls('docs-main');
@@ -262,11 +324,33 @@ export function composePage(input: ComposePageInput): string {
   if (layout.align) attributes['align'] = layout.align;
   const alignClass = layout.align ? ` align${layout.align}` : '';
 
-  return serializeBlock(
+  const columns = serializeBlock(
     'columns',
     attributes,
     `<div class="wp-block-columns${alignClass} ${columnsClass}">${navColumn}\n\n${mainColumn}</div>`,
   );
+
+  return joinBlocks([renderStyles(theme, layout), columns]);
+}
+
+/**
+ * Whether a page's stored content is something pterodocs composed.
+ *
+ * There is no marker to look for, and deliberately so: a marker would have to
+ * live in post metadata, which WordPress will not accept over REST unless a
+ * plugin registered it first, and requiring a plugin to be able to clean up
+ * after yourself is the wrong trade. What pterodocs does leave on every page it
+ * composes is its own class prefix, so that is the signature.
+ *
+ * Wrong in the safe direction. A page it wrote but cannot recognise is left
+ * alone; only a page carrying pterodocs's own classes is ever a candidate for
+ * removal, so a page somebody else wrote is never one.
+ *
+ * @param content The page's stored content.
+ * @param classPrefix The prefix this site was published with.
+ */
+export function isGeneratedPage(content: string, classPrefix: string): boolean {
+  return content.includes(`${classPrefix}-docs`);
 }
 
 /** Body for a path segment that exists only so the documentation has a parent. */

@@ -1,11 +1,11 @@
 /** Command line parsing and the usage text. */
 
 import { parseArgs } from 'node:util';
-import { ConfigError } from '@pterodoc/core';
-import type { ConfigFlags } from '@pterodoc/core';
+import { ConfigError } from '@pterodocs/core';
+import type { ConfigFlags } from '@pterodocs/core';
 
 /** Commands the CLI accepts. */
-export const COMMANDS = ['sync', 'render', 'doctor', 'capture', 'init'] as const;
+export const COMMANDS = ['sync', 'render', 'doctor', 'capture', 'purge', 'init'] as const;
 
 /** One of the commands. */
 export type Command = (typeof COMMANDS)[number];
@@ -13,18 +13,20 @@ export type Command = (typeof COMMANDS)[number];
 /** The help text. */
 export const USAGE = `Publish a Docusaurus site to WordPress as a tree of pages.
 
-Usage: pterodoc <command> [options]
+Usage: pterodocs <command> [options]
 
 Commands
   sync        Reconcile the target with the site. The default.
   render      Render every page to the output directory; contacts nothing.
   doctor      Check the configuration, the credentials and the target.
   capture     Write the loaded site model to a JSON file.
-  init        Write a starter pterodoc.config.mjs.
+  purge       Remove the documentation pterodocs published at a path. Needs no
+              site: use it to clean up a location the docs have moved away from.
+  init        Write a starter pterodocs.config.mjs.
 
 Source
   --site-dir <dir>            Docusaurus site directory (default: the working directory).
-  --config <file>             pterodoc config file.
+  --config <file>             pterodocs config file.
   --docusaurus-config <file>  Explicit docusaurus.config.* path.
   --model <file>              Use a captured model; Docusaurus is never loaded.
   --instance <id>             Docs plugin instance. Repeatable.
@@ -40,11 +42,12 @@ Target
   --only <prefix>             Restrict writes to pages under <prefix>.
   --dry-run                   Plan and render, change nothing.
   --prune                     Trash pages with no source document.
+  --apply                     With purge, actually remove; otherwise it only reports.
   --offline                   Render only; never open a session.
   --no-media                  Skip uploads; leave image URLs as written.
 
 Output
-  --out <dir>                 Output directory (default <site-dir>/.pterodoc).
+  --out <dir>                 Output directory (default <site-dir>/.pterodocs).
   --capture <file>            Also write the site model to <file>.
   --env-file <file>           Read this .env file. None is read otherwise.
   --strict                    Fail when an issue reaches the configured severity.
@@ -98,6 +101,7 @@ export function parseCliArgs(argv: string[]): ParsedArgs {
         only: { type: 'string' },
         'dry-run': { type: 'boolean' },
         prune: { type: 'boolean' },
+        apply: { type: 'boolean' },
         offline: { type: 'boolean' },
         'no-media': { type: 'boolean' },
         out: { type: 'string' },
@@ -140,6 +144,7 @@ export function parseCliArgs(argv: string[]): ParsedArgs {
     out: values['out'] as string | undefined,
     dryRun: values['dry-run'] as boolean | undefined,
     prune: values['prune'] as boolean | undefined,
+    apply: values['apply'] as boolean | undefined,
     offline: values['offline'] as boolean | undefined,
     noMedia: values['no-media'] as boolean | undefined,
     strict: values['strict'] as boolean | undefined,

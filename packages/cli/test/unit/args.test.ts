@@ -2,7 +2,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ConfigError } from '@pterodoc/core';
+import { ConfigError } from '@pterodocs/core';
 import { parseCliArgs } from '../../src/cli/args';
 
 test('the command line parses into flags, and an unknown one explains itself', () => {

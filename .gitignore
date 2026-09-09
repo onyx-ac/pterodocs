@@ -1,6 +1,9 @@
 node_modules/
 lib/
 *.tsbuildinfo
+.pterodocs/
+# The output directory before the rename; still ignored so an existing
+# checkout does not suddenly show it as untracked.
 .pterodoc/
 .env
 
@@ -14,4 +17,4 @@ packages/cli/CHANGELOG.md
 
 # The WordPress plugin: Prism is copied from npm, and the zip is a build output.
 packages/wordpress/plugin/assets/vendor/
-packages/wordpress/plugin/pterodoc.zip
+packages/wordpress/plugin/pterodocs.zip

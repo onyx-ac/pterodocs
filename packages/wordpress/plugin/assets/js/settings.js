@@ -1,5 +1,5 @@
 /**
- * The pterodoc settings page.
+ * The pterodocs settings page.
  *
  * Built from @wordpress/components so it reads as the same interface as the
  * block inspector, and it writes the same option the inspector reads, so a
@@ -29,7 +29,7 @@
 	var Notice = wp.components.Notice;
 	var Spinner = wp.components.Spinner;
 
-	var OPTION = 'pterodoc_settings';
+	var OPTION = 'pterodocs_settings';
 
 	function Settings() {
 		var editEntityRecord = wp.data.useDispatch( 'core' ).editEntityRecord;
@@ -106,21 +106,21 @@
 		return el(
 			Fragment,
 			null,
-			el( 'h1', null, __( 'pterodoc', 'pterodoc' ) ),
+			el( 'h1', null, __( 'pterodocs', 'pterodocs' ) ),
 			el(
 				'p',
 				null,
 				__(
-					'How documentation published by pterodoc is displayed. Every setting here is a default: a block can override it from the editor.',
-					'pterodoc'
+					'How documentation published by pterodocs is displayed. Every setting here is a default: a block can override it from the editor.',
+					'pterodocs'
 				)
 			),
 			el(
 				Notice,
 				{ status: 'info', isDismissible: false },
 				__(
-					'pterodoc rewrites a page’s content on every sync, so an override set on a block in the editor is replaced the next time that page is published. Settings on this page are never touched by a sync.',
-					'pterodoc'
+					'pterodocs rewrites a page’s content on every sync, so an override set on a block in the editor is replaced the next time that page is published. Settings on this page are never touched by a sync.',
+					'pterodocs'
 				)
 			),
 			el(
@@ -129,146 +129,146 @@
 
 				el(
 					PanelBody,
-					{ title: __( 'Layout', 'pterodoc' ), initialOpen: true },
+					{ title: __( 'Layout', 'pterodocs' ), initialOpen: true },
 					choice(
-						__( 'Width', 'pterodoc' ),
+						__( 'Width', 'pterodocs' ),
 						'width',
 						[
-							{ value: 'full', label: __( 'Full width', 'pterodoc' ) },
-							{ value: 'wide', label: __( 'Wide', 'pterodoc' ) },
-							{ value: 'content', label: __( 'Content width', 'pterodoc' ) }
+							{ value: 'full', label: __( 'Full width', 'pterodocs' ) },
+							{ value: 'wide', label: __( 'Wide', 'pterodocs' ) },
+							{ value: 'content', label: __( 'Content width', 'pterodocs' ) }
 						],
-						__( 'Applied with the theme’s own alignment classes.', 'pterodoc' )
+						__( 'Applied with the theme’s own alignment classes.', 'pterodocs' )
 					),
 					text(
-						__( 'Gutter', 'pterodoc' ),
+						__( 'Gutter', 'pterodocs' ),
 						'gutter',
-						__( 'from the theme’s spacing scale', 'pterodoc' ),
-						__( 'Horizontal space around the text. Left empty, the theme’s own spacing scale is used.', 'pterodoc' )
+						__( 'from the theme’s spacing scale', 'pterodocs' ),
+						__( 'Horizontal space around the text. Left empty, the theme’s own spacing scale is used.', 'pterodocs' )
 					),
 					text(
-						__( 'Reading width', 'pterodoc' ),
+						__( 'Reading width', 'pterodocs' ),
 						'measure',
-						__( 'from the theme’s content width', 'pterodoc' ),
-						__( 'How wide a paragraph is allowed to get. Code and tables ignore this and run to the full column.', 'pterodoc' )
+						__( 'from the theme’s content width', 'pterodocs' ),
+						__( 'How wide a paragraph is allowed to get. Code and tables ignore this and run to the full column.', 'pterodocs' )
 					),
 					text(
-						__( 'Class prefix', 'pterodoc' ),
+						__( 'Class prefix', 'pterodocs' ),
 						'classPrefix',
-						'pterodoc',
-						__( 'Must match render.classPrefix in your pterodoc config. Change it here rather than re-syncing.', 'pterodoc' )
+						'pterodocs',
+						__( 'Must match render.classPrefix in your pterodocs config. Change it here rather than re-syncing.', 'pterodocs' )
 					)
 				),
 
 				el(
 					PanelBody,
-					{ title: __( 'Sidebar', 'pterodoc' ), initialOpen: false },
-					toggle( __( 'Collapsible sections', 'pterodoc' ), 'sidebarCollapsible' ),
+					{ title: __( 'Sidebar', 'pterodocs' ), initialOpen: false },
+					toggle( __( 'Collapsible sections', 'pterodocs' ), 'sidebarCollapsible' ),
 					el( RangeControl, {
-						label: __( 'Expanded down to level', 'pterodoc' ),
+						label: __( 'Expanded down to level', 'pterodocs' ),
 						value: values.sidebarCollapsedDepth,
 						min: 0,
 						max: 6,
 						__nextHasNoMarginBottom: true,
-						help: __( 'The path to the page being read is always expanded.', 'pterodoc' ),
+						help: __( 'The path to the page being read is always expanded.', 'pterodocs' ),
 						onChange: function ( next ) {
 							update( 'sidebarCollapsedDepth', next );
 						}
 					} ),
 					toggle(
-						__( 'Stick while the page scrolls', 'pterodoc' ),
+						__( 'Stick while the page scrolls', 'pterodocs' ),
 						'sidebarSticky',
-						__( 'The sidebar then scrolls on its own once it is taller than the space it has.', 'pterodoc' )
+						__( 'The sidebar then scrolls on its own once it is taller than the space it has.', 'pterodocs' )
 					),
 					text(
-						__( 'Greatest height', 'pterodoc' ),
+						__( 'Greatest height', 'pterodocs' ),
 						'sidebarMaxHeight',
 						'calc(100vh - 6rem)',
-						__( 'Any CSS length. Its contents scroll when they do not fit.', 'pterodoc' )
+						__( 'Any CSS length. Its contents scroll when they do not fit.', 'pterodocs' )
 					),
 					text(
-						__( 'Distance from the top', 'pterodoc' ),
+						__( 'Distance from the top', 'pterodocs' ),
 						'sidebarStickyTop',
 						'2rem',
-						__( 'Raise this if your theme has a fixed header.', 'pterodoc' )
+						__( 'Raise this if your theme has a fixed header.', 'pterodocs' )
 					),
-					choice( __( 'On small screens', 'pterodoc' ), 'sidebarMobile', [
-						{ value: 'bottom-sheet', label: __( 'Bottom sheet', 'pterodoc' ) },
-						{ value: 'drawer', label: __( 'Side drawer', 'pterodoc' ) },
-						{ value: 'inline', label: __( 'Stay in the flow', 'pterodoc' ) },
-						{ value: 'hidden', label: __( 'Hide', 'pterodoc' ) }
+					choice( __( 'On small screens', 'pterodocs' ), 'sidebarMobile', [
+						{ value: 'bottom-sheet', label: __( 'Bottom sheet', 'pterodocs' ) },
+						{ value: 'drawer', label: __( 'Side drawer', 'pterodocs' ) },
+						{ value: 'inline', label: __( 'Stay in the flow', 'pterodocs' ) },
+						{ value: 'hidden', label: __( 'Hide', 'pterodocs' ) }
 					] ),
 					choice(
-						__( 'Animation', 'pterodoc' ),
+						__( 'Animation', 'pterodocs' ),
 						'sidebarAnimation',
 						[
-							{ value: 'slide', label: __( 'Slide', 'pterodoc' ) },
-							{ value: 'fade', label: __( 'Fade', 'pterodoc' ) },
-							{ value: 'none', label: __( 'None', 'pterodoc' ) }
+							{ value: 'slide', label: __( 'Slide', 'pterodocs' ) },
+							{ value: 'fade', label: __( 'Fade', 'pterodocs' ) },
+							{ value: 'none', label: __( 'None', 'pterodocs' ) }
 						],
-						__( 'A reader who has asked for reduced motion gets none of these, whatever is chosen.', 'pterodoc' )
+						__( 'A reader who has asked for reduced motion gets none of these, whatever is chosen.', 'pterodocs' )
 					),
 					choice(
-						__( 'Scrolling', 'pterodoc' ),
+						__( 'Scrolling', 'pterodocs' ),
 						'scrollModel',
 						[
-							{ value: 'page', label: __( 'Page scrolls, sidebar sticks', 'pterodoc' ) },
-							{ value: 'panes', label: __( 'Sidebar and content scroll separately', 'pterodoc' ) }
+							{ value: 'page', label: __( 'Page scrolls, sidebar sticks', 'pterodocs' ) },
+							{ value: 'panes', label: __( 'Sidebar and content scroll separately', 'pterodocs' ) }
 						],
-						__( 'Separate panes look more like an application, but fight themes with a fixed header.', 'pterodoc' )
+						__( 'Separate panes look more like an application, but fight themes with a fixed header.', 'pterodocs' )
 					)
 				),
 
 				el(
 					PanelBody,
-					{ title: __( 'Code', 'pterodoc' ), initialOpen: false },
+					{ title: __( 'Code', 'pterodocs' ), initialOpen: false },
 					toggle(
-						__( 'Syntax highlighting', 'pterodoc' ),
+						__( 'Syntax highlighting', 'pterodocs' ),
 						'syntaxHighlight',
-						__( 'Only the languages a page actually uses are loaded.', 'pterodoc' )
+						__( 'Only the languages a page actually uses are loaded.', 'pterodocs' )
 					),
-					toggle( __( 'Copy button', 'pterodoc' ), 'codeCopy' ),
-					choice( __( 'Line numbers', 'pterodoc' ), 'codeLineNumbers', [
-						{ value: 'auto', label: __( 'When the document asked for them', 'pterodoc' ) },
-						{ value: 'always', label: __( 'Always', 'pterodoc' ) },
-						{ value: 'off', label: __( 'Never', 'pterodoc' ) }
+					toggle( __( 'Copy button', 'pterodocs' ), 'codeCopy' ),
+					choice( __( 'Line numbers', 'pterodocs' ), 'codeLineNumbers', [
+						{ value: 'auto', label: __( 'When the document asked for them', 'pterodocs' ) },
+						{ value: 'always', label: __( 'Always', 'pterodocs' ) },
+						{ value: 'off', label: __( 'Never', 'pterodocs' ) }
 					] ),
-					toggle( __( 'Wrap long lines', 'pterodoc' ), 'codeWrap' )
+					toggle( __( 'Wrap long lines', 'pterodocs' ), 'codeWrap' )
 				),
 
 				el(
 					PanelBody,
-					{ title: __( 'Tables', 'pterodoc' ), initialOpen: false },
+					{ title: __( 'Tables', 'pterodocs' ), initialOpen: false },
 					toggle(
-						__( 'Scroll sideways when too wide', 'pterodoc' ),
+						__( 'Scroll sideways when too wide', 'pterodocs' ),
 						'tableScroll',
-						__( 'The table gets its own scrolling region, reachable from the keyboard.', 'pterodoc' )
+						__( 'The table gets its own scrolling region, reachable from the keyboard.', 'pterodocs' )
 					)
 				),
 
 				el(
 					PanelBody,
-					{ title: __( 'Breadcrumb', 'pterodoc' ), initialOpen: false },
+					{ title: __( 'Breadcrumb', 'pterodocs' ), initialOpen: false },
 					text(
-						__( 'Separator', 'pterodoc' ),
+						__( 'Separator', 'pterodocs' ),
 						'breadcrumbSeparator',
 						'›',
-						__( 'Left empty, whatever pterodoc wrote into the page is kept.', 'pterodoc' )
+						__( 'Left empty, whatever pterodocs wrote into the page is kept.', 'pterodocs' )
 					)
 				),
 
 				el(
 					PanelBody,
-					{ title: __( 'Appearance', 'pterodoc' ), initialOpen: false },
+					{ title: __( 'Appearance', 'pterodocs' ), initialOpen: false },
 					choice(
-						__( 'Colour scheme', 'pterodoc' ),
+						__( 'Colour scheme', 'pterodocs' ),
 						'colorScheme',
 						[
-							{ value: 'auto', label: __( 'Follow the reader’s setting', 'pterodoc' ) },
-							{ value: 'light', label: __( 'Light', 'pterodoc' ) },
-							{ value: 'dark', label: __( 'Dark', 'pterodoc' ) }
+							{ value: 'auto', label: __( 'Follow the reader’s setting', 'pterodocs' ) },
+							{ value: 'light', label: __( 'Light', 'pterodocs' ) },
+							{ value: 'dark', label: __( 'Dark', 'pterodocs' ) }
 						],
-						__( 'Colours come from your theme’s palette either way; this only decides which end of it.', 'pterodoc' )
+						__( 'Colours come from your theme’s palette either way; this only decides which end of it.', 'pterodocs' )
 					)
 				)
 			),
@@ -283,14 +283,14 @@
 						disabled: state.saving,
 						onClick: save
 					},
-					state.saving ? __( 'Saving…', 'pterodoc' ) : __( 'Save settings', 'pterodoc' )
+					state.saving ? __( 'Saving…', 'pterodocs' ) : __( 'Save settings', 'pterodocs' )
 				)
 			)
 		);
 	}
 
 	function mount() {
-		var node = document.getElementById( 'pterodoc-settings' );
+		var node = document.getElementById( 'pterodocs-settings' );
 
 		if ( ! node ) {
 			return;

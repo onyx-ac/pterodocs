@@ -14,7 +14,7 @@ import fs from 'node:fs';
  * throw, so the ambient declaration costs nothing at runtime.
  */
 function readVersion(): string {
-  if (typeof __PTERODOC_VERSION__ === 'string') return __PTERODOC_VERSION__;
+  if (typeof __PTERODOCS_VERSION__ === 'string') return __PTERODOCS_VERSION__;
   try {
     const manifest = new URL('../package.json', import.meta.url);
     const parsed = JSON.parse(fs.readFileSync(manifest, 'utf8')) as { version?: string };
@@ -28,4 +28,4 @@ function readVersion(): string {
 export const VERSION = readVersion();
 
 /** The User-Agent every outbound request identifies itself with. */
-export const USER_AGENT = `pterodoc/${VERSION} (+https://github.com/onyx-ac/pterodoc)`;
+export const USER_AGENT = `pterodocs/${VERSION} (+https://github.com/onyx-ac/pterodocs)`;

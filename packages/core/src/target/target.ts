@@ -41,7 +41,7 @@ export interface RemotePage {
   meta?: Record<string, unknown> | undefined;
 }
 
-/** A page as pterodoc would publish it. */
+/** A page as pterodocs would publish it. */
 export interface RenderedPage {
   /** Path within the published tree. */
   path: string;

@@ -5,7 +5,7 @@
  * clock are injectable so the whole sync can be tested without a network.
  */
 
-import { TargetError, USER_AGENT } from '@pterodoc/core/util';
+import { TargetError, USER_AGENT } from '@pterodocs/core/util';
 
 /** Fields needed to compare a remote page with a rendered one. */
 export const PAGE_FIELDS = 'id,parent,slug,status,link,title,menu_order,template';

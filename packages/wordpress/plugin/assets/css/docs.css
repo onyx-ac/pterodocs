@@ -1,5 +1,5 @@
 /*
- * pterodoc documentation styles.
+ * pterodocs documentation styles.
  *
  * Two rules govern everything here.
  *
@@ -612,7 +612,7 @@
 /*
  * Highlighted lines.
  *
- * Docusaurus writes the range in the fence's metastring, pterodoc carries it in
+ * Docusaurus writes the range in the fence's metastring, pterodocs carries it in
  * the block comment, and the plugin turns it into the attribute Prism reads.
  * The band is tinted from the accent rather than a fixed colour, so it stays
  * visible on a code block painted from the palette.

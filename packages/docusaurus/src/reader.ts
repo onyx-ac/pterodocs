@@ -7,7 +7,7 @@
 
 import { loadModel, toSiteModel, type LoadModelOptions } from './model';
 import type { LoadedSite } from './server';
-import { createMemoryReader, type SourceReader, type SiteModel } from '@pterodoc/core/model';
+import { createMemoryReader, type SourceReader, type SiteModel } from '@pterodocs/core/model';
 
 /** Read from a real Docusaurus site, one locale at a time. */
 export function createDocusaurusReader(options: LoadModelOptions): SourceReader {
