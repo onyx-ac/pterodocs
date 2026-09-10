@@ -169,6 +169,13 @@ final class Render {
 		$mobile    = is_string( $mobile ) ? $mobile : 'bottom-sheet';
 		$animation = is_string( $animation ) ? $animation : 'slide';
 
+		// pterodocs writes its own control into the content, and that one works
+		// with no JavaScript at all. Stand down rather than give the reader two
+		// ways to open one menu, and two sheets fighting over the same element.
+		if ( self::has_own_toggle() ) {
+			$mobile = 'inline';
+		}
+
 		$style = sprintf(
 			'--pd-sidebar-max-height:%s;--pd-sticky-top:%s;',
 			Markup::length( Settings::get( 'sidebarMaxHeight' ), 'calc(100vh - 6rem)' ),
@@ -196,6 +203,33 @@ final class Render {
 		);
 
 		return $trigger . '<div class="pd-sheet-scrim" hidden></div>' . $content;
+	}
+
+	/**
+	 * Whether the page already carries pterodocs's own navigation control.
+	 *
+	 * Newer versions write a checkbox and a label into the content so the sheet
+	 * opens without a script. Older ones did not, and this plugin's own trigger
+	 * is what those pages still need — so this is a property of the content,
+	 * read per request, not a setting.
+	 *
+	 * @return bool Whether the content brings its own.
+	 */
+	private static function has_own_toggle(): bool {
+		static $has = null;
+
+		if ( null !== $has ) {
+			return $has;
+		}
+
+		$post   = get_post();
+		$prefix = Settings::get( 'classPrefix' );
+		$has    = $post instanceof \WP_Post
+			&& is_string( $prefix )
+			&& '' !== $prefix
+			&& str_contains( (string) $post->post_content, $prefix . '-docs-toggle' );
+
+		return $has;
 	}
 
 	/**

@@ -5,7 +5,7 @@
   "description": "The pterodocs WordPress plugin. Not published to npm; it ships as a plugin zip.",
   "type": "module",
   "scripts": {
-    "vendor": "node tools/vendor-prism.mjs",
+    "vendor": "node tools/vendor-prism.mjs && node tools/vendor-stylesheet.mjs",
     "lint:js": "node tools/lint.mjs",
     "lint:php": "node tools/lint-php.mjs",
     "plugin:zip": "node tools/zip.mjs",

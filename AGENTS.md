@@ -65,7 +65,9 @@ the file that ships is the file that was written. Four rules hold it together.
   `--wp--preset--*` and `--wp--style--*` first; colours are derived with
   `color-mix` from the block's own resolved colours; the gutter is padding on the
   column, never on a block. Every default is wrapped in `:where()`. There is no
-  `!important`, and adding one is a bug.
+  `!important` except where an inline style is being answered — the block
+  theme's own `margin-top` on `#wp--skip-link--target` is the only such case
+  today, and it carries a comment saying so. Anywhere else, adding one is a bug.
 - **`WP_HTML_Tag_Processor` cannot insert elements.** It changes attributes.
   Anything needing new DOM is either a wrapper around a whole block or is added
   by the front-end script.

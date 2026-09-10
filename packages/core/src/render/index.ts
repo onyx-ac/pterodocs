@@ -20,7 +20,7 @@ import { IssueCollector } from '../util/issues';
 
 export { createTheme, DEFAULT_STRINGS } from './theme';
 export type { Theme, Strings, BlockVocabulary } from './theme';
-export { stylesheetFor } from './stylesheet';
+export { stylesheetFor, STYLESHEET_TEMPLATE } from './stylesheet';
 export type { StylePolicy } from './stylesheet';
 export { highlightCode } from './highlight';
 export { parseMarkdown, detectFormat } from './parse';

@@ -29,8 +29,22 @@ import type { Theme } from './theme';
  * is a kilobyte times the size of the documentation.
  */
 const TEMPLATE = `
-:where(.{p}-docs){--{p}-gutter:clamp(1rem,4vw,2rem);--{p}-measure:var(--wp--style--global--content-size,46rem);--{p}-rule:color-mix(in oklab,currentColor 14%,transparent);--{p}-muted:color-mix(in oklab,currentColor 62%,transparent);--{p}-surface:color-mix(in oklab,currentColor 5%,transparent);--{p}-surface-solid:var(--wp--preset--color--base,Canvas);--{p}-radius:8px;--{p}-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--{p}-accent:var(--wp--preset--color--primary,var(--wp--preset--color--accent,currentColor))}
+:where(.{p}-docs){--{p}-gutter:clamp(1rem,4vw,2rem);--{p}-measure:var(--wp--style--global--content-size,46rem);--{p}-rule:color-mix(in oklab,currentColor 14%,transparent);--{p}-muted:color-mix(in oklab,currentColor 62%,transparent);--{p}-surface:color-mix(in oklab,currentColor 5%,transparent);--{p}-surface-solid:var(--wp--preset--color--base,Canvas);--{p}-radius:8px;--{p}-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .wp-block-columns.{p}-docs{display:grid;grid-template-columns:minmax(0,min(var(--{p}-nav-width,25%),20rem)) minmax(0,1fr);gap:clamp(1.5rem,4vw,3rem);align-items:start;padding-inline:var(--wp--style--root--padding-left,var(--{p}-gutter)) var(--wp--style--root--padding-right,var(--{p}-gutter))}
+/* The block theme's own main container, when it is holding documentation.
+
+   A theme writes both of these as inline styles on the elements themselves --
+   a margin-top on the container, a padding-top on the group inside it -- to sit
+   the page's content below the header. Documentation is full width and brings
+   its own spacing, so that gap only pushes it down the page.
+
+   This is the one place the stylesheet says !important, and an inline style is
+   the reason: no amount of specificity beats one. The :has() keeps it to pages
+   that actually carry documentation, so nothing else on the site is touched,
+   and a browser without :has() simply keeps the theme's spacing. */
+#wp--skip-link--target:has(.{p}-docs){margin-top:0 !important}
+#wp--skip-link--target:has(.{p}-docs)>.wp-block-group[style*="padding-top"]{padding-top:var(--wp--preset--spacing--30,1rem) !important}
+
 :where(.{p}-docs-main){min-width:0}
 :where(.{p}-docs-main)>*{max-width:var(--{p}-measure)}
 :where(.{p}-docs-main)>.wp-block-code,:where(.{p}-docs-main)>.wp-block-table,:where(.{p}-docs-main)>figure{max-width:none}
@@ -44,7 +58,7 @@ const TEMPLATE = `
 
 /* Navigation. The list markers and the cramped column are the two things that
    make an unstyled docs page unreadable. */
-:where(.{p}-docs-nav){min-width:0;position:sticky;top:2rem;max-height:calc(100vh - 4rem);max-height:calc(100dvh - 4rem);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+:where(.{p}-docs-nav){min-width:0;position:sticky;top:2rem;z-index:999;max-height:calc(100vh - 4rem);max-height:calc(100dvh - 4rem);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
 :where(.{p}-docs-nav) ul{list-style:none;margin:0;padding-inline-start:0}
 :where(.{p}-docs-nav) li{margin:0}
 :where(.{p}-docs-nav) ul ul{margin-inline-start:.75em;padding-inline-start:.75em;border-inline-start:1px solid var(--{p}-rule)}
@@ -56,15 +70,6 @@ const TEMPLATE = `
 :where(.{p}-docs-main) .wp-block-code{background:var(--{p}-surface);border:1px solid var(--{p}-rule);border-radius:var(--{p}-radius);padding:1rem 1.15rem;overflow-x:auto;font-family:var(--{p}-mono);font-size:.875em;line-height:1.6;tab-size:2}
 :where(.{p}-docs-main) .wp-block-code code{font-family:inherit;white-space:pre}
 
-/* Inline code. A theme that styles it at all usually only changes the font,
-   which leaves a word set in a different face and nothing else — no edge, no
-   ground to sit on. The tint is currentColor over whatever is behind it, so a
-   dark page lightens and a light page darkens: never a white chip on a dark
-   theme. The text takes the theme's accent only as a tint, kept on top of
-   currentColor so it cannot land somewhere unreadable, and a link keeps its
-   own colour. Sized in em, so the chip scales with the text it sits in. */
-:where(.{p}-docs-main) :not(pre)>code{background:color-mix(in oklab,currentColor 8%,transparent);color:color-mix(in oklab,var(--{p}-accent) 38%,currentColor);border:1px solid var(--{p}-rule);border-radius:.3em;padding:.1em .35em;font-family:var(--{p}-mono);font-size:.875em;overflow-wrap:break-word}
-:where(.{p}-docs-main) a code{color:inherit}
 :where(.{p}-code-title){margin-bottom:0;font-size:.8125em;color:var(--{p}-muted);font-family:var(--{p}-mono)}
 
 /* Syntax tokens. Prism tokenises at publish time and emits these classes; the
@@ -141,7 +146,7 @@ const TEMPLATE = `
 .{p}-docs-toggle:checked+.{p}-docs-toggle-label{background:var(--{p}-surface)}
 
 /* The sheet. It covers rather than pushes, so the document keeps its place. */
-.{p}-docs:has(.{p}-docs-toggle) .{p}-docs-nav{position:fixed;inset-inline:0;top:auto;bottom:0;z-index:40;max-width:none;max-height:min(88vh,52rem);max-height:min(88dvh,52rem);margin:0;padding:1rem clamp(.75rem,4vw,1.25rem) calc(1rem + env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;background:var(--{p}-surface-solid,Canvas);border-top:1px solid var(--{p}-rule);border-radius:1rem 1rem 0 0;box-shadow:0 -8px 40px color-mix(in oklab,currentColor 22%,transparent);transform:translateY(101%);visibility:hidden;transition:transform .22s cubic-bezier(.2,0,0,1),visibility 0s linear .22s}
+.{p}-docs:has(.{p}-docs-toggle) .{p}-docs-nav{position:fixed;inset-inline:0;top:auto;bottom:0;z-index:999;max-width:none;max-height:min(88vh,52rem);max-height:min(88dvh,52rem);margin:0;padding:1rem clamp(.75rem,4vw,1.25rem) calc(1rem + env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;background:var(--{p}-surface-solid,Canvas);border-top:1px solid var(--{p}-rule);border-radius:1rem 1rem 0 0;box-shadow:0 -8px 40px color-mix(in oklab,currentColor 22%,transparent);transform:translateY(101%);visibility:hidden;transition:transform .22s cubic-bezier(.2,0,0,1),visibility 0s linear .22s}
 .{p}-docs:has(.{p}-docs-toggle:checked) .{p}-docs-nav{transform:none;visibility:visible;transition-delay:0s}
 
 /* A grab handle, so it reads as a sheet. */
@@ -150,7 +155,7 @@ const TEMPLATE = `
 /* Closing from outside: a second label over the page, for the same checkbox. */
 /* A dark veil rather than one mixed from the text colour, so the cross drawn on
    it is legible whichever way the theme runs. */
-.{p}-docs:has(.{p}-docs-toggle:checked) .{p}-docs-scrim{display:block;position:fixed;inset:0;z-index:35;background:color-mix(in oklab,#000 45%,transparent);cursor:pointer}
+.{p}-docs:has(.{p}-docs-toggle:checked) .{p}-docs-scrim{display:block;position:fixed;inset:0;z-index:998;background:color-mix(in oklab,#000 45%,transparent);cursor:pointer}
 .{p}-docs-scrim::before,.{p}-docs-scrim::after{content:"";position:absolute;top:1.5rem;inset-inline-end:1.5rem;width:1.5rem;height:2px;border-radius:2px;background:#fff;opacity:.9}
 .{p}-docs-scrim::before{transform:rotate(45deg)}
 .{p}-docs-scrim::after{transform:rotate(-45deg)}
@@ -168,6 +173,15 @@ const TEMPLATE = `
  * @param theme The class prefix and strings in force.
  * @returns CSS, with the run's own class prefix substituted in.
  */
+/**
+ * The stylesheet before a prefix is put into it.
+ *
+ * Exported for one reader: the WordPress plugin's build, which writes this out
+ * so the plugin can serve the same design site-wide instead of every page
+ * carrying a copy. Two stylesheets meaning to look alike drift; one does not.
+ */
+export const STYLESHEET_TEMPLATE = TEMPLATE;
+
 export function stylesheetFor(theme: Theme, options: { navWidth?: string } = {}): string {
   const css = TEMPLATE.replace(/\{p\}/g, theme.classPrefix).trim();
 

@@ -77,6 +77,31 @@ final class Assets {
 	}
 
 	/**
+	 * Whether the editor is editing a page pterodocs published.
+	 *
+	 * `should_load` cannot answer this: it deliberately returns false in the
+	 * admin, because it is about the page being *shown*. The editor needs the
+	 * same question asked of the post being *edited* — and asking it matters,
+	 * because the alternative is what this plugin did until now: load its
+	 * inspector panel into every block editor on the site, including posts,
+	 * products, the site editor and every other plugin's screens. A panel that
+	 * has nothing to say about a block it does not own has no business being
+	 * loaded next to it.
+	 */
+	private static function editing_documentation(): bool {
+		$post = get_post();
+
+		if ( ! $post instanceof \WP_Post ) {
+			return false;
+		}
+
+		$prefix = Settings::get( 'classPrefix' );
+		$prefix = is_string( $prefix ) && '' !== $prefix ? $prefix : 'pterodocs';
+
+		return str_contains( (string) $post->post_content, $prefix . '-docs' );
+	}
+
+	/**
 	 * Load the front-end assets.
 	 */
 	public static function enqueue(): void {
@@ -84,13 +109,58 @@ final class Assets {
 			return;
 		}
 
-		wp_enqueue_style( 'pterodocs', PTERODOCS_URL . 'assets/css/docs.css', array(), VERSION );
+		// The design is registered with no file of its own: `docs.css` is written
+		// with `{p}` where the class prefix goes, because the prefix is a
+		// per-site setting and a static file cannot carry it. Filling it in here
+		// is what lets one stylesheet serve whatever prefix a site published
+		// with — and lets `render.styles` be 'none', so the design is fetched
+		// once for the site rather than stored on every page.
+		wp_register_style( 'pterodocs', false, array(), VERSION );
+		wp_enqueue_style( 'pterodocs' );
+		wp_add_inline_style( 'pterodocs', self::design() );
 		wp_add_inline_style( 'pterodocs', self::custom_properties() );
+
+		// What needs a script, and therefore has no counterpart in a stylesheet
+		// stored with the content. Written against the plugin's own classes, so
+		// it is a real file that browsers can cache.
+		wp_enqueue_style( 'pterodocs-plugin', PTERODOCS_URL . 'assets/css/plugin.css', array( 'pterodocs' ), VERSION );
 
 		wp_enqueue_script( 'pterodocs', PTERODOCS_URL . 'assets/js/docs.js', array(), VERSION, true );
 		wp_set_script_translations( 'pterodocs', 'pterodocs', PTERODOCS_DIR . 'languages' );
 
 		Prism::enqueue( self::content() );
+	}
+
+	/**
+	 * The generated stylesheet, with this site's class prefix in it.
+	 *
+	 * Cached, because the substitution is the same on every request until either
+	 * the prefix or the plugin changes — and both are in the key.
+	 */
+	private static function design(): string {
+		$prefix = Settings::get( 'classPrefix' );
+		$prefix = is_string( $prefix ) && '' !== $prefix ? $prefix : 'pterodocs';
+
+		$key    = 'pterodocs_design_' . md5( $prefix . '|' . VERSION );
+		$cached = get_transient( $key );
+
+		if ( is_string( $cached ) && '' !== $cached ) {
+			return $cached;
+		}
+
+		$css = (string) file_get_contents( PTERODOCS_DIR . 'assets/css/docs.css' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+
+		// The prefix is a slug by the time pterodocs writes it, but this ends up
+		// inside a stylesheet, so anything that is not one is refused rather
+		// than substituted.
+		if ( ! preg_match( '/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/', $prefix ) ) {
+			$prefix = 'pterodocs';
+		}
+
+		$css = str_replace( '{p}', $prefix, $css );
+		set_transient( $key, $css, WEEK_IN_SECONDS );
+
+		return $css;
 	}
 
 	/**
@@ -135,6 +205,10 @@ final class Assets {
 	 * ordinary core markup.
 	 */
 	public static function editor(): void {
+		if ( ! self::editing_documentation() ) {
+			return;
+		}
+
 		wp_enqueue_script(
 			'pterodocs-editor',
 			PTERODOCS_URL . 'assets/js/editor.js',

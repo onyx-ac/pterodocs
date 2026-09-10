@@ -1,0 +1,312 @@
+/*
+ * What the plugin adds that pterodocs cannot.
+ *
+ * The design itself lives in docs.css, generated from the very stylesheet
+ * pterodocs publishes with a page — see tools/vendor-stylesheet.mjs. This file
+ * is only for behaviour that needs a script and therefore has no counterpart in
+ * a stylesheet stored with the content: the collapsible tree, the copy button,
+ * line numbers.
+ *
+ * Everything here is written against the plugin's own `pd-` classes, which
+ * `render_block` adds, so it needs no class prefix substituted into it.
+ */
+
+:where(.pd-docs) {
+	/* Colour, from the theme's palette. */
+	--pd-surface: var(--wp--preset--color--base, #fff);
+	--pd-ink: var(--wp--preset--color--contrast, #1b1b1f);
+	--pd-accent: var(--wp--preset--color--primary, var(--wp--preset--color--accent, #2f6feb));
+	--pd-secondary: var(--wp--preset--color--secondary, #2e7d5b);
+
+	--pd-border: color-mix(in oklab, var(--pd-ink) 14%, transparent);
+	--pd-border-strong: color-mix(in oklab, var(--pd-ink) 24%, transparent);
+	--pd-muted: color-mix(in oklab, var(--pd-ink) 62%, transparent);
+	--pd-surface-2: color-mix(in oklab, var(--pd-ink) 4%, var(--pd-surface));
+	--pd-surface-3: color-mix(in oklab, var(--pd-ink) 8%, var(--pd-surface));
+
+	/* Spacing, from the theme's scale. */
+	--pd-gutter: var(--wp--preset--spacing--40, clamp(1rem, 4vw, 2rem));
+	--pd-flow: var(--wp--style--block-gap, 1.5rem);
+
+	/* Measure and width, from global styles. */
+	--pd-measure: var(--wp--style--global--content-size, 46rem);
+
+	/* Typography: inherit the theme's; only the mono stack is ours. */
+	--pd-mono: var(--wp--preset--font-family--monospace, ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace);
+
+	--pd-radius: var(--wp--custom--border-radius, 8px);
+	--pd-sidebar-max-height: calc(100vh - 6rem);
+	--pd-sticky-top: 2rem;
+	--pd-motion: 180ms;
+	--pd-ease: cubic-bezier(0.2, 0, 0, 1);
+
+	/* Syntax tokens, derived so they compose with whatever the block is painted. */
+	--pd-syntax-comment: color-mix(in oklab, currentColor 50%, transparent);
+	--pd-syntax-punctuation: color-mix(in oklab, currentColor 70%, transparent);
+	--pd-syntax-keyword: color-mix(in oklab, var(--pd-accent) 82%, currentColor);
+	--pd-syntax-string: color-mix(in oklab, var(--pd-secondary) 82%, currentColor);
+	--pd-syntax-number: color-mix(in oklab, var(--pd-accent) 55%, currentColor);
+	--pd-syntax-function: color-mix(in oklab, var(--pd-accent) 68%, currentColor);
+	--pd-syntax-tag: color-mix(in oklab, var(--pd-secondary) 60%, currentColor);
+}
+
+/*
+ * Dark. `auto` follows the viewer; the two explicit settings do not, so a site
+ * that has committed to one look keeps it.
+ */
+@media (prefers-color-scheme: dark) {
+	:where(.pd-docs[data-pd-scheme="auto"]) {
+		--pd-surface: var(--wp--preset--color--base, #14141a);
+		--pd-ink: var(--wp--preset--color--contrast, #e9e9ef);
+		--pd-surface-2: color-mix(in oklab, #fff 6%, var(--pd-surface));
+		--pd-surface-3: color-mix(in oklab, #fff 10%, var(--pd-surface));
+	}
+}
+
+:where(.pd-docs[data-pd-scheme="dark"]) {
+	--pd-surface: var(--wp--preset--color--base, #14141a);
+	--pd-ink: var(--wp--preset--color--contrast, #e9e9ef);
+	--pd-surface-2: color-mix(in oklab, #fff 6%, var(--pd-surface));
+	--pd-surface-3: color-mix(in oklab, #fff 10%, var(--pd-surface));
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:where(.pd-docs) {
+		--pd-motion: 0ms;
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * Layout
+ *
+ * Width comes from the alignment class the plugin adds server-side, so the
+ * theme's own alignment handling does the work. On a theme with root-padding
+ * aware alignments, the outer inset is the theme's, not a number of ours.
+ * ---------------------------------------------------------------------- */
+
+
+/* -------------------------------------------------------------------------
+ * Undoing the wrappers
+ * ---------------------------------------------------------------------- */
+
+/* The generated stylesheet lets code and tables out of the measure with a
+   direct-child selector. Wrapping them — which the copy button and the scroll
+   region both need — puts them one level down, so the exemption has to be
+   restated for the wrapper. */
+:where(.pd-main) > .pd-code,
+:where(.pd-main) > .pd-scroll,
+:where(.pd-main) > figure.pd-scroll {
+	max-width: none;
+}
+
+/* The copy button and the language tag are positioned against this. */
+.pd-code {
+	position: relative;
+}
+
+/* The scroll region is the plugin's; the table inside it is styled by the
+   generated stylesheet, which reaches it as a descendant either way. */
+.pd-scroll {
+	overflow-x: auto;
+	overscroll-behavior-inline: contain;
+	scrollbar-width: thin;
+}
+
+.pd-scroll:focus-visible {
+	outline: 2px solid var(--pd-accent);
+	outline-offset: 2px;
+}
+
+/* The twisty, inserted by script; the row makes space for it either way. */
+.pd-tree--collapsible.is-enhanced li.pd-branch > .pd-row {
+	display: flex;
+	align-items: center;
+	gap: 0.125rem;
+}
+
+.pd-tree--collapsible.is-enhanced li.pd-branch > .pd-row > a {
+	flex: 1 1 auto;
+}
+
+.pd-twisty {
+	flex: 0 0 auto;
+	display: grid;
+	place-items: center;
+	width: 1.5rem;
+	height: 1.5rem;
+	padding: 0;
+	border: 0;
+	border-radius: calc(var(--pd-radius) / 2);
+	background: none;
+	color: var(--pd-muted);
+	cursor: pointer;
+}
+
+.pd-twisty:hover {
+	background: color-mix(in oklab, currentColor 10%, transparent);
+	color: inherit;
+}
+
+.pd-twisty:focus-visible {
+	outline: 2px solid var(--pd-accent);
+	outline-offset: -2px;
+}
+
+.pd-twisty::before {
+	content: "";
+	width: 0.4rem;
+	height: 0.4rem;
+	border-right: 1.5px solid currentColor;
+	border-bottom: 1.5px solid currentColor;
+	transform: rotate(-45deg);
+	transition: transform var(--pd-motion) var(--pd-ease);
+}
+
+.pd-twisty[aria-expanded="true"]::before {
+	transform: rotate(45deg);
+}
+
+.pd-code__block--wrap :where(code) {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+.pd-code[data-pd-lang]:not([data-pd-lang=""])::after {
+	content: attr(data-pd-lang);
+	position: absolute;
+	top: 0.5rem;
+	inset-inline-end: 0.6rem;
+	font-family: var(--pd-mono);
+	font-size: 0.6875rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--pd-muted);
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity var(--pd-motion) linear;
+}
+
+.pd-code:hover::after {
+	opacity: 1;
+}
+
+.pd-copy {
+	position: absolute;
+	top: 0.5rem;
+	inset-inline-end: 0.5rem;
+	display: inline-flex;
+	align-items: center;
+	padding: 0.25rem 0.6rem;
+	border: 1px solid var(--pd-border);
+	border-radius: calc(var(--pd-radius) / 1.5);
+	background: var(--pd-surface);
+	color: var(--pd-muted);
+	font: inherit;
+	font-size: 0.75rem;
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity var(--pd-motion) linear, color var(--pd-motion) linear;
+}
+
+.pd-code:hover .pd-copy,
+.pd-copy:focus-visible {
+	opacity: 1;
+}
+
+.pd-copy:hover {
+	color: inherit;
+	border-color: var(--pd-border-strong);
+}
+
+.pd-copy:focus-visible {
+	outline: 2px solid var(--pd-accent);
+	outline-offset: 2px;
+}
+
+.pd-copy__done {
+	display: none;
+}
+
+.pd-copy.is-done {
+	color: var(--pd-secondary);
+	opacity: 1;
+}
+
+.pd-copy.is-done .pd-copy__label {
+	display: none;
+}
+
+.pd-copy.is-done .pd-copy__done {
+	display: inline;
+}
+
+/* When a copy button is present the language tag would sit under it. */
+.pd-code:has(.pd-copy)::after {
+	inset-inline-end: auto;
+	inset-inline-start: 0.75rem;
+}
+
+/* Line numbers, from Prism's own plugin. */
+.pd-code :where(pre.line-numbers) {
+	position: relative;
+	padding-inline-start: 3.2rem;
+	counter-reset: linenumber;
+}
+
+.pd-code :where(.line-numbers-rows) {
+	position: absolute;
+	top: 1rem;
+	inset-inline-start: 0;
+	width: 2.4rem;
+	border-inline-end: 1px solid var(--pd-border);
+	font-size: 100%;
+	line-height: inherit;
+	letter-spacing: -1px;
+	user-select: none;
+	pointer-events: none;
+}
+
+.pd-code :where(.line-numbers-rows > span) {
+	display: block;
+	counter-increment: linenumber;
+}
+
+.pd-code :where(.line-numbers-rows > span)::before {
+	content: counter(linenumber);
+	display: block;
+	padding-inline-end: 0.6rem;
+	text-align: end;
+	color: var(--pd-syntax-comment);
+}
+
+/*
+ * Highlighted lines.
+ *
+ * Docusaurus writes the range in the fence's metastring, pterodocs carries it in
+ * the block comment, and the plugin turns it into the attribute Prism reads.
+ * The band is tinted from the accent rather than a fixed colour, so it stays
+ * visible on a code block painted from the palette.
+ */
+.pd-code :where(pre[data-line]) {
+	position: relative;
+}
+
+.pd-code :where(.line-highlight) {
+	position: absolute;
+	inset-inline: 0;
+	margin-top: 1rem;
+	background: color-mix(in oklab, var(--pd-accent) 12%, transparent);
+	box-shadow: inset 3px 0 0 color-mix(in oklab, var(--pd-accent) 60%, transparent);
+	pointer-events: none;
+	white-space: pre;
+}
+
+.pd-code :where(pre.line-numbers .line-highlight) {
+	margin-top: 0;
+}
+
+/* Prism prints the line number into the band; ours are already in the gutter. */
+.pd-code :where(.line-highlight)::before,
+.pd-code :where(.line-highlight)::after {
+	content: none;
+}
