@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@pterodocs/core": "0.4.2",
-    "@pterodocs/docusaurus": "0.4.1",
+    "@pterodocs/docusaurus": "0.4.2",
     "@pterodocs/wordpress": "0.4.2"
   },
   "peerDependencies": {

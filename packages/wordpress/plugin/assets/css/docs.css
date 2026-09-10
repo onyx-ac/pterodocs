@@ -431,6 +431,33 @@
  * Code
  * ---------------------------------------------------------------------- */
 
+/* Inline code.
+
+   Most themes give it a monospace face and stop, which leaves a word in a
+   different font with no edge and no ground under it. The tint is the block's
+   own text colour laid over whatever is behind it, so a dark page lightens and
+   a light page darkens — a fixed pale background would be a white chip on a
+   dark theme. The accent only tints the text, kept on top of currentColor so
+   it cannot land somewhere unreadable, and inside a link the link's colour
+   wins. Everything is sized in `em`, so the chip tracks the text it sits in.
+
+   `:where()` throughout, so a font size, colour or padding set on the block
+   from the inspector still beats every one of these. */
+:where(.pd-main) :not(pre) > code {
+	background: color-mix(in oklab, currentColor 8%, transparent);
+	color: color-mix(in oklab, var(--pd-accent) 38%, currentColor);
+	border: 1px solid var(--pd-border);
+	border-radius: 0.3em;
+	padding: 0.1em 0.35em;
+	font-family: var(--pd-mono);
+	font-size: 0.875em;
+	overflow-wrap: break-word;
+}
+
+:where(.pd-main) a code {
+	color: inherit;
+}
+
 .pd-code {
 	position: relative;
 }

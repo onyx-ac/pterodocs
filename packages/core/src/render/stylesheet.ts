@@ -29,7 +29,7 @@ import type { Theme } from './theme';
  * is a kilobyte times the size of the documentation.
  */
 const TEMPLATE = `
-:where(.{p}-docs){--{p}-gutter:clamp(1rem,4vw,2rem);--{p}-measure:var(--wp--style--global--content-size,46rem);--{p}-rule:color-mix(in oklab,currentColor 14%,transparent);--{p}-muted:color-mix(in oklab,currentColor 62%,transparent);--{p}-surface:color-mix(in oklab,currentColor 5%,transparent);--{p}-surface-solid:var(--wp--preset--color--base,Canvas);--{p}-radius:8px}
+:where(.{p}-docs){--{p}-gutter:clamp(1rem,4vw,2rem);--{p}-measure:var(--wp--style--global--content-size,46rem);--{p}-rule:color-mix(in oklab,currentColor 14%,transparent);--{p}-muted:color-mix(in oklab,currentColor 62%,transparent);--{p}-surface:color-mix(in oklab,currentColor 5%,transparent);--{p}-surface-solid:var(--wp--preset--color--base,Canvas);--{p}-radius:8px;--{p}-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--{p}-accent:var(--wp--preset--color--primary,var(--wp--preset--color--accent,currentColor))}
 .wp-block-columns.{p}-docs{display:grid;grid-template-columns:minmax(0,min(var(--{p}-nav-width,25%),20rem)) minmax(0,1fr);gap:clamp(1.5rem,4vw,3rem);align-items:start;padding-inline:var(--wp--style--root--padding-left,var(--{p}-gutter)) var(--wp--style--root--padding-right,var(--{p}-gutter))}
 :where(.{p}-docs-main){min-width:0}
 :where(.{p}-docs-main)>*{max-width:var(--{p}-measure)}
@@ -53,9 +53,19 @@ const TEMPLATE = `
 :where(.{p}-docs-nav) .current-menu-item>a{background:color-mix(in oklab,currentColor 10%,transparent);font-weight:600}
 
 /* Code. */
-:where(.{p}-docs-main) .wp-block-code{background:var(--{p}-surface);border:1px solid var(--{p}-rule);border-radius:var(--{p}-radius);padding:1rem 1.15rem;overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.875em;line-height:1.6;tab-size:2}
+:where(.{p}-docs-main) .wp-block-code{background:var(--{p}-surface);border:1px solid var(--{p}-rule);border-radius:var(--{p}-radius);padding:1rem 1.15rem;overflow-x:auto;font-family:var(--{p}-mono);font-size:.875em;line-height:1.6;tab-size:2}
 :where(.{p}-docs-main) .wp-block-code code{font-family:inherit;white-space:pre}
-:where(.{p}-code-title){margin-bottom:0;font-size:.8125em;color:var(--{p}-muted);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+/* Inline code. A theme that styles it at all usually only changes the font,
+   which leaves a word set in a different face and nothing else — no edge, no
+   ground to sit on. The tint is currentColor over whatever is behind it, so a
+   dark page lightens and a light page darkens: never a white chip on a dark
+   theme. The text takes the theme's accent only as a tint, kept on top of
+   currentColor so it cannot land somewhere unreadable, and a link keeps its
+   own colour. Sized in em, so the chip scales with the text it sits in. */
+:where(.{p}-docs-main) :not(pre)>code{background:color-mix(in oklab,currentColor 8%,transparent);color:color-mix(in oklab,var(--{p}-accent) 38%,currentColor);border:1px solid var(--{p}-rule);border-radius:.3em;padding:.1em .35em;font-family:var(--{p}-mono);font-size:.875em;overflow-wrap:break-word}
+:where(.{p}-docs-main) a code{color:inherit}
+:where(.{p}-code-title){margin-bottom:0;font-size:.8125em;color:var(--{p}-muted);font-family:var(--{p}-mono)}
 
 /* Syntax tokens. Prism tokenises at publish time and emits these classes; the
    colours live here, so changing them is a CSS edit rather than a republication.

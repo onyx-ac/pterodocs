@@ -24,6 +24,9 @@ final class Settings {
 	/** Option name. */
 	public const OPTION = 'pterodocs_settings';
 
+	/** Menu slug, which also names the admin page's hook suffix. */
+	public const SLUG = 'pterodocs';
+
 	/**
 	 * The built-in defaults.
 	 *
@@ -178,7 +181,7 @@ final class Settings {
 			__( 'pterodocs', 'pterodocs' ),
 			__( 'pterodocs', 'pterodocs' ),
 			'manage_options',
-			'pterodocs',
+			self::SLUG,
 			static function (): void {
 				if ( ! current_user_can( 'manage_options' ) ) {
 					return;
@@ -194,7 +197,10 @@ final class Settings {
 	 * @param string $hook The admin page being rendered.
 	 */
 	public static function admin_assets( string $hook ): void {
-		if ( 'settings_page_pterodoc' !== $hook ) {
+		// `add_options_page` builds this from the menu slug, so the two are one
+		// string in two places. Getting it wrong costs nothing at load time and
+		// renders an empty settings page.
+		if ( 'settings_page_' . self::SLUG !== $hook ) {
 			return;
 		}
 

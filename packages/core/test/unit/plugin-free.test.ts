@@ -97,6 +97,15 @@ test('highlighting never invents or loses source text', () => {
  * The stylesheet
  * ---------------------------------------------------------------------- */
 
+/** One declaration block from the stylesheet, found by a selector fragment. */
+function ruleFor(what: string): string {
+  const css = stylesheetFor(createTheme({ classPrefix: 'x' }));
+  const selectors: Record<string, string> = { 'inline code': ':not(pre)>code' };
+  const line = css.split(String.fromCharCode(10)).find((l) => l.includes(selectors[what] as string));
+  assert.ok(line, `no rule for ${what}`);
+  return line as string;
+}
+
 test('the stylesheet is written with the run’s own class prefix', () => {
   const css = stylesheetFor(createTheme({ classPrefix: 'docstack' }));
 
@@ -116,6 +125,51 @@ test('the stylesheet assumes neither a light theme nor a dark one', () => {
     const mixed = declaration.includes('currentColor');
     assert.ok(!fixed || mixed, `not adaptive: ${declaration}`);
   }
+});
+
+test('inline code gets a ground, an edge and room to breathe', () => {
+  // A theme that styles it at all usually only changes the font, which leaves a
+  // word in a different face sitting on nothing.
+  const rule = ruleFor('inline code');
+
+  assert.ok(rule.includes('background:'), rule);
+  assert.ok(rule.includes('border:'), rule);
+  assert.ok(rule.includes('padding:'), rule);
+  assert.ok(rule.includes('border-radius:'), rule);
+});
+
+test('the inline code chip is mixed from the text colour, never painted', () => {
+  // The property the whole rule exists for: on a dark theme the chip has to
+  // lighten what is behind it. A literal pale background would be a white chip.
+  const rule = ruleFor('inline code');
+  const background = /background:([^;}]+)/.exec(rule)?.[1] ?? '';
+
+  assert.ok(background.includes('currentColor'), background);
+  assert.equal(/#[0-9a-f]{3,6}/i.test(background), false, background);
+  assert.equal(/(white|black|#fff|#000)/i.test(background), false, background);
+});
+
+test('the accent only tints the inline code text, so it cannot go unreadable', () => {
+  // Blended on top of currentColor rather than replacing it: a theme whose
+  // primary is very light or very dark still leaves legible text.
+  const rule = ruleFor('inline code');
+  const colour = /(?:^|;)color:([^;}]+)/.exec(rule)?.[1] ?? '';
+
+  assert.ok(colour.includes('currentColor'), colour);
+  assert.ok(colour.includes('-accent'), colour);
+});
+
+test('the inline rule does not reach inside a code block', () => {
+  // `.wp-block-code` is a pre, and its contents are already styled as a block.
+  const rule = ruleFor('inline code');
+
+  assert.ok(rule.includes(':not(pre)>code'), rule);
+});
+
+test('inline code inside a link keeps the link’s colour', () => {
+  const css = stylesheetFor(createTheme({ classPrefix: 'x' }));
+
+  assert.ok(css.includes(':where(.x-docs-main) a code{color:inherit}'), 'no link reset');
 });
 
 /** A page with a parent, so there is a breadcrumb to compose. */

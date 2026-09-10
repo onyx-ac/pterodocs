@@ -16,7 +16,7 @@
     "test": "node ../../scripts/tests.mjs unit"
   },
   "dependencies": {
-    "@pterodocs/core": "0.4.1"
+    "@pterodocs/core": "0.4.2"
   },
   "repository": { "type": "git", "url": "git+https://github.com/onyx-ac/pterodocs.git" },
   "license": "CC-BY-SA-4.0",

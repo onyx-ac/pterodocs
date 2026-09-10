@@ -60,6 +60,7 @@ final class Llms {
 		add_action( 'init', array( self::class, 'register' ) );
 		add_filter( 'query_vars', array( self::class, 'query_vars' ) );
 		add_action( 'template_redirect', array( self::class, 'serve' ) );
+		add_filter( 'redirect_canonical', array( self::class, 'no_canonical_redirect' ), 10, 2 );
 		add_action( 'wp_head', array( self::class, 'link_tag' ) );
 		add_filter( 'robots_txt', array( self::class, 'robots' ), 10, 2 );
 
@@ -152,6 +153,24 @@ final class Llms {
 		// markup context to escape into, and escaping would corrupt the file.
 		echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		exit;
+	}
+
+	/**
+	 * Keep WordPress from putting a trailing slash on a filename.
+	 *
+	 * Permalinks here end in a slash, so `redirect_canonical` sees
+	 * `.../llms.txt`, decides it is missing one, and 301s to `.../llms.txt/`.
+	 * The request still resolves — the rewrite is matched against a trimmed
+	 * path — but the address an agent was told to use answers with a redirect
+	 * instead of the file, and `llms.txt` without the slash is the convention.
+	 *
+	 * @param string|false $redirect Where WordPress means to send the request.
+	 * @param string       $requested The URL that was asked for.
+	 * @return string|false False for our own requests, otherwise unchanged.
+	 */
+	public static function no_canonical_redirect( $redirect, $requested ) {
+		unset( $requested );
+		return get_query_var( 'pterodocs_llms' ) ? false : $redirect;
 	}
 
 	/**
