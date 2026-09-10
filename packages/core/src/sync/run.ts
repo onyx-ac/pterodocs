@@ -483,6 +483,33 @@ async function syncVersion(input: SyncVersionInput): Promise<{
     log(`updated ${node.path || '(root)'} (${changed.join(', ')})`);
   }
 
+  // A page that was created carries a slug the site has never had to route
+  // before, which is the only moment a collision can appear. Pages that merely
+  // changed already resolved on an earlier run, so checking them again would be
+  // a request each to learn nothing.
+  if (session) {
+    for (const treePath of created) {
+      const id = ids.get(treePath);
+      if (typeof id !== 'number') continue;
+
+      const url = absoluteHref(config.targetUrl, href(treePath));
+      const { verdict, servedId } = await session.verifyResolution(id, url);
+
+      if (verdict === 'shadowed') {
+        issues.add({
+          code: 'page-shadowed',
+          severity: 'warning',
+          path: treePath,
+          message:
+            `${url} was published but does not serve itself: the site answered with page ${servedId} instead. ` +
+            'Something claims that path before WordPress looks for a page — a rewrite endpoint registered by ' +
+            'another plugin is the usual cause, and it shadows every page with that slug anywhere on the site. ' +
+            'Give the document a different slug, or remove whatever registers the endpoint.',
+        });
+      }
+    }
+  }
+
   // Anything under this version's root that no document accounts for.
   if (session && navRootId !== null) {
     if (config.only) {

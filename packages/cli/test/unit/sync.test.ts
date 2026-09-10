@@ -379,3 +379,91 @@ test('a site that refuses the metadata is warned about, not failed', async () =>
   assert.equal(plan.summary['create'], 6);
   await t.cleanup();
 });
+
+/* ---------------------------------------------------------------------- *
+ * Pages that cannot reach themselves
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Answer front-end requests with the body class WordPress writes.
+ *
+ * `served` decides which page id the site claims to have rendered; null omits
+ * the class entirely, which is what a theme that never calls `body_class()`
+ * looks like from outside.
+ */
+function servesPage(fake: FakeWp, served: (url: string) => number | null): void {
+  const inner = fake.fetch;
+  fake.fetch = async (url: string | URL | Request, init?: RequestInit) => {
+    const href = String(url);
+    if (href.includes('/wp-json/')) return inner(url, init);
+
+    const id = served(href);
+    const body =
+      id === null
+        ? '<html><body class="page"></body></html>'
+        : `<html><body class="page page-id-${id}"></body></html>`;
+    return new Response(body, { status: 200, headers: { 'content-type': 'text/html' } });
+  };
+}
+
+/** The id of the page whose slug ends the URL, as the real site would serve. */
+const itself = (fake: FakeWp) => (url: string): number | null => {
+  const slug = url.replace(/\/+$/, '').split('/').pop() ?? '';
+  return fake.pages.find((page) => page.slug === slug)?.id ?? null;
+};
+
+test('a published page that does not serve itself is reported', async () => {
+  // The failure this exists for: a rewrite endpoint claims the path, so the
+  // URL answers 200 with somebody else's page and nothing else notices.
+  const fake = createFakeWp();
+  servesPage(fake, () => 4242);
+
+  const t = await setup({}, fake);
+  const { plan } = await t.run();
+
+  const shadowed = plan.issues.filter((issue) => issue.code === 'page-shadowed');
+  assert.ok(shadowed.length > 0, 'nothing was reported');
+  assert.match(shadowed[0]!.message, /does not serve itself/);
+  assert.match(shadowed[0]!.message, /4242/);
+  await t.cleanup();
+});
+
+test('a page that serves itself is not reported', async () => {
+  const fake = createFakeWp();
+  servesPage(fake, itself(fake));
+
+  const t = await setup({}, fake);
+  const { plan } = await t.run();
+
+  assert.deepEqual(plan.issues.filter((issue) => issue.code === 'page-shadowed'), []);
+  await t.cleanup();
+});
+
+test('a site that cannot be identified is left alone rather than guessed at', async () => {
+  // No `page-id` class means the check has no answer. A warning nobody can act
+  // on is worse than none.
+  const fake = createFakeWp();
+  servesPage(fake, () => null);
+
+  const t = await setup({}, fake);
+  const { plan } = await t.run();
+
+  assert.deepEqual(plan.issues.filter((issue) => issue.code === 'page-shadowed'), []);
+  await t.cleanup();
+});
+
+test('only pages that were created are checked', async () => {
+  // A page that merely changed resolved on an earlier run already, so checking
+  // it again is a request each to learn nothing.
+  const fake = createFakeWp();
+  const t = await setup({}, fake);
+  await t.run();
+
+  // Now make every URL answer with the wrong page, and run again. Nothing is
+  // created this time, so nothing should be checked.
+  servesPage(fake, () => 4242);
+  const { plan } = await t.run();
+
+  assert.deepEqual(plan.issues.filter((issue) => issue.code === 'page-shadowed'), []);
+  await t.cleanup();
+});

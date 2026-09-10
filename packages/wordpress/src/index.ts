@@ -27,6 +27,7 @@ import {
   type PageInput,
 } from './pages';
 import { hrefFor, splitOwnership, type WordpressUrlPolicy } from './url';
+import { verifyResolution, type Resolution } from './resolve';
 
 /** What WordPress can do. */
 export const WORDPRESS_CAPABILITIES: TargetCapabilities = {
@@ -263,6 +264,14 @@ export function createWordpressTarget(
           }
 
           return { warnings: [] };
+        },
+
+        async verifyResolution(id, url): Promise<Resolution> {
+          // A page nobody can see yet cannot be checked from the outside, and a
+          // dry run has written nothing to check.
+          if (dryRun || options.status !== 'publish') return { verdict: 'unknown' };
+
+          return verifyResolution(id, url, deps);
         },
 
         computePrune(pages, rootId, keepIds): RemotePage[] {

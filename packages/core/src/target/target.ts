@@ -131,6 +131,22 @@ export interface TargetSession {
    * never worth failing a publish over.
    */
   writeMeta(id: number, meta: Record<string, string>): Promise<{ warnings: string[] }>;
+  /**
+   * Check that a page's own URL actually serves that page.
+   *
+   * Publishing a page is not the same as being able to reach it. A site can
+   * carry rules that claim a path before the page ever gets a look in — a
+   * rewrite endpoint registered by some other plugin is the usual way — and
+   * the symptom is silent: the URL answers 200 with somebody else's content,
+   * so nothing in the publish reports a problem.
+   *
+   * Answers `unknown` rather than guessing when the page it served cannot be
+   * identified, because a warning nobody can act on is worse than none.
+   */
+  verifyResolution(
+    id: number,
+    url: string,
+  ): Promise<{ verdict: 'ok' | 'shadowed' | 'unknown'; servedId?: number | undefined }>;
   /** Pages below a root that no rendered page accounts for, deepest first. */
   computePrune(index: RemotePage[], rootId: number, keepIds: Set<number>): RemotePage[];
   /** Remove a page. Never a permanent delete. */
