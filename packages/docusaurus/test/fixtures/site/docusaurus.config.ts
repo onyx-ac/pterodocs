@@ -19,7 +19,7 @@ const config: Config = {
       'classic',
       {
         docs: { sidebarPath: './sidebars.ts', routeBasePath: 'documentation' },
-        blog: false,
+        blog: { routeBasePath: 'news', blogTitle: 'Release notes', authorsMapPath: './authors.yml' },
         pages: false,
         theme: {},
       },

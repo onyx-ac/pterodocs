@@ -11,10 +11,18 @@ import { detectFormat, type MarkdownFormat } from '@pterodocs/core/render';
 import { relativeToPrefix, resolveAliasedPath, toPosix } from '@pterodocs/core/util';
 import { DEFAULT_ADMONITION_KEYWORDS } from '@pterodocs/core/render';
 import { loadDocusaurusServer, type LoadedSite } from './server';
-import type { Doc, DocsInstance, DocsVersion, SidebarItem, SiteModel } from '@pterodocs/core/model';
+import type {
+  Doc,
+  DocAuthor,
+  DocsInstance,
+  DocsVersion,
+  SidebarItem,
+  SiteModel,
+} from '@pterodocs/core/model';
 
 /** Name Docusaurus gives the docs plugin. */
 const DOCS_PLUGIN = 'docusaurus-plugin-content-docs';
+const BLOG_PLUGIN = 'docusaurus-plugin-content-blog';
 
 /** What to load, and which parts of it to keep. */
 export interface LoadModelOptions {
@@ -30,6 +38,14 @@ export interface LoadModelOptions {
   versions?: string[] | 'all' | 'last' | undefined;
   /** Publish draft documents. Docusaurus normally drops them from a build. */
   includeDrafts?: boolean | undefined;
+  /**
+   * Also read the blog, as instances of kind `blog`.
+   *
+   * Off unless asked. A site's blog is not documentation, and publishing one
+   * without being told to would put posts on a target that never expected
+   * them. `true` takes every blog instance; a list names them.
+   */
+  blog?: boolean | string[] | undefined;
   /** Called with warnings raised while loading. */
   warn?: ((message: string) => void) | undefined;
 }
@@ -102,6 +118,92 @@ function toDoc(
   };
 }
 
+/**
+ * Turn one blog post into a document.
+ *
+ * A post is very nearly a document already: it has an id, a title, a
+ * description, a source file, a permalink and front matter, and the body is
+ * the same markdown or MDX. What it has instead of a sidebar position is a
+ * date, and what it has that a document never does is authors.
+ *
+ * @param raw One entry from the blog plugin's loaded content.
+ * @param version The synthetic version posts belong to.
+ * @param siteDir The site directory, for resolving the source path.
+ * @param siteFormat The site's markdown flavour.
+ */
+function toPost(
+  raw: Record<string, unknown>,
+  version: { name: string; pathPrefix: string },
+  siteDir: string,
+  siteFormat: 'md' | 'mdx' | 'detect',
+): Doc {
+  const sourceAliased = String(raw['source'] ?? '');
+  const sourceAbsolutePath = resolveAliasedPath(sourceAliased, siteDir);
+  const permalink = String(raw['permalink'] ?? '');
+  const frontMatter = (raw['frontMatter'] ?? {}) as Record<string, unknown>;
+
+  const declaredFormat = frontMatter['format'];
+  const format: MarkdownFormat =
+    declaredFormat === 'md' || declaredFormat === 'mdx'
+      ? declaredFormat
+      : siteFormat === 'detect'
+        ? detectFormat(sourceAbsolutePath)
+        : siteFormat;
+
+  const treePath = relativeToPrefix(permalink, version.pathPrefix) ?? '';
+
+  return {
+    id: String(raw['id'] ?? permalink),
+    versionName: version.name,
+    title: String(raw['title'] ?? ''),
+    description: String(raw['description'] ?? ''),
+    sourceAliased,
+    sourceAbsolutePath,
+    sourceRelativePath: toPosix(path.relative(siteDir, sourceAbsolutePath)),
+    // Posts are flat however their files are foldered, so the tree path is the
+    // whole of what sits below the blog's own base.
+    sourceDirName: '.',
+    slug: treePath,
+    permalink,
+    treePath,
+    draft: raw['draft'] === true,
+    unlisted: raw['unlisted'] === true,
+    frontMatter,
+    previous: neighbour(raw['prevItem']),
+    next: neighbour(raw['nextItem']),
+    tags: (raw['tags'] as Doc['tags']) ?? [],
+    date: dateOf(raw['date']),
+    authors: authorsOf(raw['authors']),
+    format,
+  };
+}
+
+/** A neighbouring post, in the shape a document's neighbour has. */
+function neighbour(raw: unknown): Doc['previous'] {
+  if (!raw || typeof raw !== 'object') return undefined;
+  const item = raw as Record<string, unknown>;
+  return { title: String(item['title'] ?? ''), permalink: String(item['permalink'] ?? '') };
+}
+
+/** Docusaurus hands the date back as a Date; the model carries strings. */
+function dateOf(raw: unknown): string | undefined {
+  if (raw instanceof Date) return raw.toISOString();
+  if (typeof raw === 'string' && raw) return new Date(raw).toISOString();
+  return undefined;
+}
+
+/** Authors, already resolved against the site's authors map. */
+function authorsOf(raw: unknown): DocAuthor[] | undefined {
+  if (!Array.isArray(raw) || raw.length === 0) return undefined;
+  return raw.map((entry) => {
+    const author = (entry ?? {}) as Record<string, unknown>;
+    const name = String(author['name'] ?? author['key'] ?? '');
+    const title = author['title'] === undefined ? undefined : String(author['title']);
+    const url = author['url'] === undefined ? undefined : String(author['url']);
+    return { name, ...(title ? { title } : {}), ...(url ? { url } : {}) };
+  });
+}
+
 /** Turn one of Docusaurus's loaded versions into ours. */
 function toVersion(
   raw: Record<string, unknown>,
@@ -129,6 +231,79 @@ function toVersion(
     sidebars: (raw['sidebars'] as Record<string, SidebarItem[]> | undefined) ?? {},
     docs: source.map((doc) => toDoc(doc, { name, pathPrefix }, siteDir, siteFormat)),
     draftCount: drafts.length,
+  };
+}
+
+/**
+ * Turn a blog plugin instance into one of ours.
+ *
+ * The blog has no sidebar, so one is made: every post as a doc item, newest
+ * first, which is the order a changelog is read in. That is the whole trick —
+ * with a sidebar in hand, `buildPageTree` and everything downstream of it
+ * treats a blog exactly as it treats documentation, and none of it had to
+ * learn what a post is.
+ *
+ * @param plugin The loaded blog plugin.
+ * @param siteDir The site directory.
+ * @param siteFormat The site's markdown flavour.
+ * @param includeDrafts Whether to publish posts Docusaurus marks as drafts.
+ */
+function toBlogInstance(
+  plugin: { name: string; options: Record<string, unknown>; content: unknown },
+  siteDir: string,
+  siteFormat: 'md' | 'mdx' | 'detect',
+  includeDrafts: boolean,
+): DocsInstance {
+  const routeBasePath = String(plugin.options['routeBasePath'] ?? 'blog');
+  const contentDirName = String(plugin.options['path'] ?? 'blog');
+  const entries = get<Record<string, unknown>[]>(plugin.content, ['blogPosts'], []) ?? [];
+
+  // Docusaurus hands back `{ id, metadata, content }` per post.
+  const raw = entries.map((entry) => (entry['metadata'] ?? entry) as Record<string, unknown>);
+
+  // The permalink of the first post, minus its own slug, is the blog's base —
+  // read rather than assembled, so a `baseUrl` or a localised prefix is
+  // already accounted for.
+  const first = raw[0];
+  const pathPrefix = first
+    ? String(first['permalink'] ?? '').replace(/[^/]*\/?$/, '').replace(/\/$/, '')
+    : routeBasePath;
+
+  const version = { name: 'current', pathPrefix };
+  const posts = raw
+    .map((entry) => toPost(entry, version, siteDir, siteFormat))
+    .filter((post) => includeDrafts || !post.draft);
+
+  // Newest first. Docusaurus already sorts them, but a post with no date at
+  // all must not silently jump to the front.
+  const ordered = [...posts].sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''));
+
+  const synthetic: DocsVersion = {
+    name: 'current',
+    label: String(plugin.options['blogTitle'] ?? 'Blog'),
+    isLast: true,
+    pathPrefix,
+    contentPath: path.resolve(siteDir, contentDirName),
+    contentPathLocalized: path.resolve(siteDir, contentDirName),
+    banner: null,
+    noIndex: false,
+    sidebars: {
+      blog: ordered
+        .filter((post) => !post.unlisted)
+        .map((post): SidebarItem => ({ type: 'doc', id: post.id })),
+    },
+    docs: ordered,
+    draftCount: posts.length - ordered.filter((post) => !post.draft).length,
+  };
+
+  return {
+    id: String(plugin.options['id'] ?? 'default'),
+    kind: 'blog',
+    routeBasePath,
+    contentDirName,
+    admonitionKeywords: admonitionKeywords(plugin.options),
+    breadcrumbs: false,
+    versions: [synthetic],
   };
 }
 
@@ -177,6 +352,17 @@ export function toSiteModel(site: LoadedSite, options: LoadModelOptions): SiteMo
         options.instances.includes(instance.id),
     );
 
+  const blogSelector = options.blog;
+  const blogInstances: DocsInstance[] =
+    blogSelector === undefined || blogSelector === false
+      ? []
+      : props.plugins
+          .filter((plugin) => plugin.name === BLOG_PLUGIN)
+          .map((plugin) => toBlogInstance(plugin, siteDir, siteFormat, options.includeDrafts === true))
+          .filter(
+            (instance) => blogSelector === true || (blogSelector as string[]).includes(instance.id),
+          );
+
   return {
     siteDir,
     url: String(siteConfig['url'] ?? ''),
@@ -190,7 +376,7 @@ export function toSiteModel(site: LoadedSite, options: LoadModelOptions): SiteMo
     siteTitle: String(siteConfig['title'] ?? ''),
     staticDirs: staticDirectories.map((dir) => path.resolve(siteDir, dir)),
     docusaurusVersion: props.siteMetadata.docusaurusVersion,
-    instances,
+    instances: [...instances, ...blogInstances],
   };
 }
 

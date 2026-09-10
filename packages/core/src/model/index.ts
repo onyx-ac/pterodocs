@@ -6,6 +6,7 @@
 
 export type {
   Doc,
+  DocAuthor,
   DocNeighbour,
   DocsInstance,
   DocsVersion,
