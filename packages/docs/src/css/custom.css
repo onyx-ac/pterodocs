@@ -1,0 +1,11 @@
+/* Only what the Docusaurus preview needs. What the published pages look like on
+   WordPress is decided by the stylesheet pterodocs emits and by the plugin —
+   nothing here travels with the content. */
+:root {
+  --ifm-color-primary: #2f6feb;
+  --ifm-code-font-size: 95%;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #7aa2f7;
+}

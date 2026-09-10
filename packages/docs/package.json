@@ -1,0 +1,34 @@
+{
+  "name": "@pterodocs/docs",
+  "version": "0.4.2",
+  "description": "pterodocs's own documentation. A Docusaurus site, published to WordPress by pterodocs itself.",
+  "private": true,
+  "files": [],
+  "engines": { "node": ">=20.11" },
+  "scripts": {
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "clear": "docusaurus clear",
+    "wp:doctor": "pterodocs doctor",
+    "wp:render": "pterodocs render",
+    "wp:sync": "pterodocs sync",
+    "wp:sync:dry": "pterodocs sync --dry-run"
+  },
+  "dependencies": {
+    "@docusaurus/core": "3.10.2",
+    "@docusaurus/preset-classic": "3.10.2",
+    "@mdx-js/react": "^3.0.0",
+    "clsx": "^2.1.1",
+    "prism-react-renderer": "^2.4.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "3.10.2",
+    "@docusaurus/tsconfig": "3.10.2",
+    "@docusaurus/types": "3.10.2",
+    "@types/react": "^19.0.0",
+    "pterodocs": "*"
+  },
+  "license": "CC-BY-SA-4.0"
+}

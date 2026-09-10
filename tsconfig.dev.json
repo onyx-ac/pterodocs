@@ -24,5 +24,9 @@
       "pterodocs": ["packages/cli/src/index.ts"]
     }
   },
-  "include": ["packages/*/src", "packages/*/test", "scripts"]
+  "include": ["packages/*/src", "packages/*/test", "scripts"],
+  // The documentation site is a Docusaurus site, not a package this builds:
+  // it has JSX, the DOM and its own tsconfig, none of which this program has.
+  // `node_modules` is restated because naming `exclude` replaces the default.
+  "exclude": ["node_modules", "packages/docs"]
 }
